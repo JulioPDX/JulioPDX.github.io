@@ -44,7 +44,7 @@
 <meta itemprop="description" content="Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.">
 <meta itemprop="datePublished" content="2021-02-02T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-02-02T00:00:00+00:00" />
-<meta itemprop="wordCount" content="502">
+<meta itemprop="wordCount" content="500">
 <meta itemprop="image" content="https://juliopdx.github.io/"/>
 
 
@@ -193,8 +193,8 @@
      <span style="color:#e6db74">&#34;msg&#34;</span>: <span style="color:#e6db74">&#34;MYLOWERCASESTRING&#34;</span>
  <span style="color:#f92672">}</span>
 </code></pre></div><p>As you can see, filters are pretty neat ways to transform data. So there I was trying to create a list of IP addresses from a prefix, with no end in sight, and Google-fu failing me. I’m sure there is some whacky ways to make it happen, like a jinja template and reading a file or using some kind of range/with sequence option. In the end I came up with the following python script. This can be placed in the /filter_plugins directory where your playbook is stored.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># ip_list.py</span>
-<span style="color:#75715e">#!/usr/bin/python</span>
+<p><code>ip_list.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/python</span>
 
 <span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> IPNetwork
 
@@ -209,8 +209,8 @@
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">filters</span>(self):
         <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#39;ip_list&#39;</span>: ip_stuff}
 </code></pre></div><p>Breaking down the code, we first import one library, I know some folks aren’t a fan of this on filters but oh well. Then we create an empty list called ips, we then trigger a for loop to each individual entry under the prefix that will be passed in. Each entry will be added to the ips list. After that is all done we return the final list. Shout out to the oddbit blog for giving me a place to start on creating this filter.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># ip_list_test.yaml</span>
----
+<p><code>ip_list_test.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">IP List Test</span>
   <span style="color:#f92672">connection</span>: <span style="color:#ae81ff">local</span>
   <span style="color:#f92672">hosts</span>: <span style="color:#ae81ff">localhost</span>
@@ -272,7 +272,7 @@
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        502 Words
+        500 Words
       </p>
 
       <p>

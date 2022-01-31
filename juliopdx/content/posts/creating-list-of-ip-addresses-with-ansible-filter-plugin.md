@@ -43,8 +43,9 @@ PLAY [Filter Test]
 
 As you can see, filters are pretty neat ways to transform data. So there I was trying to create a list of IP addresses from a prefix, with no end in sight, and Google-fu failing me. I’m sure there is some whacky ways to make it happen, like a jinja template and reading a file or using some kind of range/with sequence option. In the end I came up with the following python script. This can be placed in the /filter_plugins directory where your playbook is stored.
 
+`ip_list.py`
+
 ```python
-# ip_list.py
 #!/usr/bin/python
 
 from netaddr import IPNetwork
@@ -63,8 +64,9 @@ class FilterModule(object):
 
 Breaking down the code, we first import one library, I know some folks aren’t a fan of this on filters but oh well. Then we create an empty list called ips, we then trigger a for loop to each individual entry under the prefix that will be passed in. Each entry will be added to the ips list. After that is all done we return the final list. Shout out to the oddbit blog for giving me a place to start on creating this filter.
 
+`ip_list_test.yaml`
+
 ```yaml
-# ip_list_test.yaml
 ---
 - name: IP List Test
   connection: local
