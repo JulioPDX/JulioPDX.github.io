@@ -6,8 +6,770 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Tue, 02 Feb 2021 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</title>
+            <link>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
+            <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
+            <description>Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
+ You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/leaf_spine_link_local.png" alt="Link Local"></p>
+<h2 id="introduction">Introduction</h2>
+<p>I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:</p>
+<blockquote>
+<p>You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.</p>
+</blockquote>
+<p>In my previous post about deploying an Aruba spine leaf, I mentioned the possibility of wasting IP space. In IPv6, we do have an abundance of IP space, but this is still something the operator would have to maintain and work into their workflow or automation. Once I read this, I immediately looked up <a href="https://datatracker.ietf.org/doc/html/rfc7404">RFC 7404</a> “Using Only Link-Local Addressing inside an IPv6 Network”. The RFC does a really great job of breaking down the pros and cons. In this post we’ll be going over the pros. If want to learn more, feel free to check out the RFC.</p>
+<p>Here is a list of a few of the advantages this provides. We’ll be going over most of these in this post.</p>
+<ul>
+<li>Simple address management (automation)</li>
+<li>Lower configuration complexity (automation and reduced errors)</li>
+<li>Smaller routing tables</li>
+<li>Reduced attack surface (less routed links)</li>
+</ul>
+<h2 id="simple-address-management">Simple Address Management</h2>
+<p>If you recall from the previous post, we had to assign the IPv6 equivalent of a point to point address on each spine to leaf connections. This would increase the amount of IP addresses used as well as burden the operator to maintain these configurations. When assigning a link local address on a router, we can essentially assign the same address to each interface. One note as well, I mentioned that Aruba did not support IP unnumbered in the last post. If you are assigning the same address to each interface, we are essentially arriving at the same objective. Below is a sample configuration of a leaf and spine router. Please be aware that we are still configuring a global unicast address (GUA) on a loopback for these devices. This can also be used for device connections (SSH) or handling traffic to NMS.</p>
+<p><code>Spine01 Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface 1/1/1
+     no shutdown
+     description link to leaf01
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+ interface 1/1/2
+     no shutdown
+     description link to leaf02
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+ interface 1/1/3
+     no shutdown
+     description link to leaf03
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+ interface 1/1/4
+     no shutdown
+     description link to leaf04
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+ interface loopback 0
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:ffff::1/128
+     ipv6 ospfv3 1 area 0.0.0.0
+ !
+ router ospfv3 1
+     router-id 1.1.1.1
+     passive-interface default
+     area 0.0.0.0
+</code></pre></div><p>Only the loopback 0 interface on spine01 has a GUA. Essentially, every interface connected to the leaf nodes has the exact same configuration. Easy win for our automation folks!</p>
+<p><code>Leaf01 Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">lan 1,10
+ interface mgmt
+     no shutdown
+     ip dhcp
+ interface 1/1/1
+     no shutdown
+     description link to spine01
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+ interface 1/1/2
+     no shutdown
+     description link to spine02
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+ interface 1/1/6
+     no shutdown
+     description link to Linux1
+     no routing
+     vlan access 10
+ interface loopback 0
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 address 2001:db8:cafe:fd00::1/128
+     ipv6 ospfv3 1 area 0.0.0.0
+ interface vlan 10
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 address 2001:db8:cafe🅰️:1/64
+     no ipv6 nd suppress-ra
+     ipv6 ospfv3 1 area 0.0.0.0
+ !
+ router ospfv3 1
+     router-id 10.0.0.1
+     passive-interface default
+     area 0.0.0.0
+</code></pre></div><p>Difference in leaf nodes are the port VLAN assignments and VLAN interfaces.</p>
+<h2 id="lower-configuration-complexity">Lower Configuration Complexity</h2>
+<p>My main background on automation is around Ansible. I will provide some basic YAML variable file as an idea on how the configuration has been simplified. I’ll use spine01 for this example.</p>
+<p><code>Spine01 variables with GUA addresses</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">spine01</span>
+<span style="color:#f92672">link_local</span>: <span style="color:#ae81ff">fe80:face:cafe::1/64</span>
+<span style="color:#f92672">interfaces</span>:
+  <span style="color:#f92672">1/1/1</span>:
+    <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:fe01::a/127</span>
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf01</span>
+  <span style="color:#f92672">1/1/2</span>:
+    <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:fe02::a/127</span>
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf02</span>
+  <span style="color:#f92672">1/1/3</span>:
+    <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:fe03::a/127</span>
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf03</span>
+  <span style="color:#f92672">1/1/4</span>:
+    <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:fe04::a/127</span>
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf04</span>
+  <span style="color:#f92672">loopback0</span>:
+    <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:ffff::1/128</span>
+</code></pre></div><p><code>Spine01 variables with only link-local</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">spine01</span>
+<span style="color:#f92672">link_local</span>: <span style="color:#ae81ff">fe80:face:cafe::1/64</span>
+<span style="color:#f92672">interfaces</span>:
+  <span style="color:#f92672">1/1/1</span>:
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf01</span>
+  <span style="color:#f92672">1/1/2</span>:
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf02</span>
+  <span style="color:#f92672">1/1/3</span>:
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf03</span>
+  <span style="color:#f92672">1/1/4</span>:
+    <span style="color:#f92672">description</span>: <span style="color:#ae81ff">link to leaf04</span>
+  <span style="color:#f92672">loopback0</span>:
+    <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:ffff::1/128</span>
+</code></pre></div><p>The example is basic in nature but you can see how mistakes can be reduced and configuration can be simplified.</p>
+<h2 id="smaller-routing-tables">Smaller Routing Tables</h2>
+<p>Since we are using link local addresses, they have a scope that is… local to the link. The routing protocols will not propagate this as reachable networks, this in turn will reduce the total size of our routing tables. This has a great benefit of saving memory and speeding up convergence times. For comparison, check out the routing table on leaf01 when using GUA addresses and only using link local.</p>
+<p><code>Using GUA /127 addresses</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
+  2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+       directly attached to interface vlan10, cost 100 distance 110
+  2001:db8:cafe:14::/64 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+  2001:db8:cafe:14::/64 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+  2001:db8:cafe:1e::/64 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+  2001:db8:cafe:1e::/64 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+  2001:db8:cafe:28::/64 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+  2001:db8:cafe:28::/64 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+  2001:db8:cafe:fd00::2/128 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+  2001:db8:cafe:fd00::2/128 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+  2001:db8:cafe:fd00::3/128 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+  2001:db8:cafe:fd00::3/128 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+  2001:db8:cafe:fd00::4/128 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+  2001:db8:cafe:fd00::4/128 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+  2001:db8:cafe:fe01::a/127 (i) area:0.0.0.0
+       directly attached to interface 1/1/1, cost 100 distance 110
+  2001:db8:cafe:fe02::a/127 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+  2001:db8:cafe:fe03::a/127 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+  2001:db8:cafe:fe04::a/127 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+  2001:db8:cafe:ff01::a/127 (i) area:0.0.0.0
+       directly attached to interface 1/1/2, cost 100 distance 110
+  2001:db8:cafe:ff02::a/127 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+  2001:db8:cafe:ff03::a/127 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+  2001:db8:cafe:ff04::a/127 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+  2001:db8:cafe:ffff::1/128 (i) area:0.0.0.0
+       via fe80:face:cafe::1 interface 1/1/1, cost 100 distance 110
+  2001:db8:cafe:ffff::2/128 (i) area:0.0.0.0
+       via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
+</code></pre></div><p><code>Only link local addresses</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01#   show ipv6 ospfv3 routes | b 2001
+ 2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+      directly attached to interface vlan10, cost 100 distance 110
+ 2001:db8:cafe:14::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+ 2001:db8:cafe:14::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+ 2001:db8:cafe:1e::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+ 2001:db8:cafe:1e::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+ 2001:db8:cafe:28::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+ 2001:db8:cafe:28::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+ 2001:db8:cafe:fd00::2/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fd00::2/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:fd00::3/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fd00::3/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:fd00::4/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fd00::4/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:ffff::1/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 100 distance 110
+ 2001:db8:cafe:ffff::2/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
+</code></pre></div><p><code>Trace from leaf01 and linux04</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# traceroute6 2001:db8:cafe:28:5200:ff:fe0a:0
+ traceroute to 2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0) from 2001:db8:cafe🅰️:1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
+  1  2001:db8:cafe:ffff::1 (2001:db8:cafe:ffff::1)  4.712 ms  70.151 ms  24.438 ms
+  2  2001:db8:cafe:28::1 (2001:db8:cafe:28::1)  18.437 ms  58.055 ms  17.812 ms
+  3  2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0)  12.547 ms  53.539 ms  17.951 ms
+ leaf01#
+</code></pre></div><p>Last little bit, if you notice the output of the trace, the first hop is the GUA of loopback0 on spine01</p>
+<h2 id="wrap-up">Wrap Up</h2>
+<p>Thank you for reading this far, I really do appreciate it. If you want to learn more on using link-local addresses between router links, check out <a href="https://datatracker.ietf.org/doc/html/rfc7404">RFC 7404</a>! Take care and stay safe! Cheers!</p>
+<ul>
+<li>Previous post: <a href="https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/">Aruba Spine Leaf with OSPFv3 and IPv6</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Aruba Spine Leaf With OSPFv3 and IPv6</title>
+            <link>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</link>
+            <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</guid>
+            <description>Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/aruba_spine_leaf.png" alt="Aruba Spine Leaf"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago. Its been sitting there haunting me for months.</p>
+<p>I finally cracked it open and I can say it is incredible in getting you used to IPv6 and understanding the technologies involved. I’m about a third of the way done with the book and I hope to put some of what I’ve learned to practice in the topology above and in this post. Also, maybe helping folks learn a bit about spine leaf deployments and IPv6 in general.</p>
+<p>Since its just you and me here. Lets pretend our site was assigned the 2001:db8:cafe::/48 global unicast prefix. Let me tell you, this gives us a whole bunch of IP space. I mean unimaginable amounts of IP space. This prefix will be more important as we go through the post. Please note, this design is fairly basic in nature and doesn’t use any fancy stuff like EVPN/VXLAN/LAG.</p>
+<h2 id="design">Design</h2>
+<p>The design you see above is using Aruba CX nodes with version 10.06.0001 running on EVE-NG. The base of the topology is a spine leaf design. In a spine leaf design, every spine connects to every leaf. Every leaf connects to every spine. Spines do not connect with each other. In some situations, leaf switches can connect together. For example, when dual connecting a host. In the case of this topology we have two spines and four leaf nodes. The Linux nodes you see below are just running Linux Slax. They will be used for some lightweight testing and verification of connectivity.</p>
+<p>Lets knock out a few of the simple things. I’ll be using OSPFv3 in this example. The nodes were required to have a router ID set. In this case I stuck with spine01 having 1.1.1.1, spine02 having 1.1.1.2, and so on. For the leaf nodes I used the 10.0.0.x pattern. X being the number of the leaf.</p>
+<p>The leaf to spine connections just follow a pattern, port 1 on each leaf connects to spine01 and port 2 on each leaf connects to spine02. Speaking of the leaf to spine connections, you will notice that these are point to point connections. In the IPv4 world this would usually mean we have a /30 or /31 network on the link. IPv6 has something similar, the /127 network.</p>
+<p>We will use a portion of the highest network in 2001:db8:cafe::/48. Connections to spine01 will be on 2001:db8:cafe:fe::/56 and connections to spine02 will be on the 2001:db8:cafe:ff::/56 network. You will probably notice the pattern I followed in the diagram. Leaf nodes will always get the ::b address and spines will be assigned the ::a address.</p>
+<p>At this point you might be thinking, wow this is wasting a lot of IP space. Remember, with IPv6 you have an incredible amount of IP space. This doesn’t mean you shouldn’t plan ahead but also don’t spend months on this. One small caveat, I’m not saying this is a great or even good IP plan for this deployment. Just going by what I’ve learned so far and putting it to use. Below you’ll see the link configurations on spine01. The output for spine02 is essentially the same.</p>
+<h2 id="ospfv3-and-spine-nodes">OSPFv3 and Spine Nodes</h2>
+<p><code>Spine01 Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
+interface mgmt
+     no shutdown
+     ip dhcp
+interface 1/1/1
+     no shutdown
+     description link to leaf01
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:fe01::a/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+interface 1/1/2
+     no shutdown
+     description link to leaf02
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:fe02::a/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+interface 1/1/3
+     no shutdown
+     description link to leaf03
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:fe03::a/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+interface 1/1/4
+     no shutdown
+     description link to leaf04
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:fe04::a/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+interface loopback 0
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:ffff::1/128
+     ipv6 ospfv3 1 area 0.0.0.0
+!
+router ospfv3 1
+     router-id 1.1.1.1
+     passive-interface default
+     area 0.0.0.0
+!
+</code></pre></div><p>A lot to unpack there right? Ill do my best to break it down below. Lets just focus on the small snippet below.</p>
+<p><code>Interface Snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface 1/1/4
+     no shutdown
+     description link to leaf04
+     ipv6 address link-local fe80:face:cafe::1/64
+     ipv6 address 2001:db8:cafe:fe04::a/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+!
+router ospfv3 1
+     router-id 1.1.1.1
+     passive-interface default
+     area 0.0.0.0
+</code></pre></div><p>The link local address comes with every IPv6 enabled interface. Whether its Windows, Mac, or whatever. Doesn’t matter. You can leave this alone and the device will generate a link local address on its own. In our world, its better to just configure the link local address ourselves. This helps when working with routing protocols and figuring out what the source of traffic may be. You can configure the same link local address on each interface of a device. Link local addresses start with fe80, and as you can see, I’ve assigned the same throughout each interface.</p>
+<p>Not much to add on the global unicast address (2001:). This is following the plan mentioned above. Note that all spine01 GUA end in ::a. “ipv6 ospfv3 1 area 0.0.0.0”, just enabling OSPF under the interface. One good thing to note, if you noticed there is “no ipv6 ospfv3 passive” under each point to point interface. By default we are setting each OSPF enabled interface to passive.</p>
+<p>This is a good way of limiting the amount of chatter in a OSPF network. This will also skip some OSPF states since no DR/BDR elections occur or even need to occur on point to point links. Under the main OSPFv3 configuration; we are setting every interface to passive by default, setting router ID, and activating area 0. Bidirectional forwarding detection (BFD) is enabled under each point to point interface to help with failure detection on links.</p>
+<p>I want to take a quick second and mention IP unnumbered. This does seem like a lot of IP addresses to manage, even if we are following a pattern. To my knowledge and some google searches, I don’t believe Aruba supports this feature. IP unnumbered essentially lets you borrow an IP address from an interface. For example, borrowing the loopback 0 address in our deployment and using it on all point to point links. If your network operating system supports this feature, use it! I think that’s enough for the spines, lets take a look at one of the leaf nodes. Below is leaf01, again, all other leaf nodes are essentially the same.</p>
+<h2 id="ospfv3-and-leaf-nodes">OSPFv3 and Leaf Nodes</h2>
+<p><code>Leaf01 Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">vlan 1,10
+interface 1/1/1
+     no shutdown
+     description link to spine01
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 address 2001:db8:cafe:fe01::b/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+interface 1/1/2
+     no shutdown
+     description link to spine02
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 address 2001:db8:cafe:ff01::b/127
+     ipv6 ospfv3 1 area 0.0.0.0
+     no ipv6 ospfv3 passive
+     ipv6 ospfv3 network point-to-point
+     ipv6 ospfv3 bfd
+interface 1/1/6
+     no shutdown
+     description link to Linux1
+     no routing
+     vlan access 10
+interface loopback 0
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 address 2001:db8:cafe:fd00::1/128
+     ipv6 ospfv3 1 area 0.0.0.0
+interface vlan 10
+     ipv6 address link-local fe80:beef:cafe::1/64
+     ipv6 address 2001:db8:cafe🅰️:1/64
+     no ipv6 nd suppress-ra
+     ipv6 ospfv3 1 area 0.0.0.0
+!
+router ospfv3 1
+     router-id 10.0.0.1
+     passive-interface default
+     area 0.0.0.0
+</code></pre></div><p>Looks fairly similar right? Lets just focus on the new stuff. I added VLAN 10 on leaf01, VLAN 20 on leaf02, and so on. After that I just assigned the host interface to the appropriate VLAN. Here is where things get fun. In hex you get the range of 1-15. A-F make up what we know as 10-15. Remember our whole network is 2001:db8:cafe::/48. I decided to use the next available prefix that matched the VLAN number.</p>
+<p>For example if the VLAN is 10, that would give us 2001:db8:cafe🅰️:/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16s place, so that adds up to 16, and the 4 is in the 1s place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.</p>
+<h2 id="hosts">Hosts</h2>
+<p>You may have wondered, what does the “no ipv6 nd suppress-ra” command do? This is a great time to talk about hosts or end devices. Usually these systems will have static addresses for management and tracking. I left the Linux hosts as default so they could use the built in processes with IPv6 to acquire an address. Back to the /64 prefix size. We have just split the 128 bit address in half. 64 are for the prefix/subnet and what’s left are for hosts, called an interface ID in IPv6.</p>
+<p>In IPv6 hosts can use a process called SLAAC (stateless address autoconfiguration). I wont go deep into details but essentially the host sends router solicitation (RS) messages and the router responds with router advertisement (RA) messages. The host uses the information in the RA message, with the prefix to determine how to go about getting an interface ID.</p>
+<p>In our case the host will use EUI-64. Another new thing! This ones not so bad. Essentially the host uses its 48 bit MAC address, splits it in half to insert FFFE in the middle, and then flips the seventh bit to make it a zero or a one. Don’t worry if its over your head. Just know the host uses its MAC to build the interface ID and inserts FFFE in the middle!</p>
+<p>Back to our “no ipv6 nd suppress-ra” command. From my testing it seems that Aruba CX devices wont send the RA message needed by the hosts by default. In this case, just add that command and away you go. I&rsquo;ll finish the technical stuff with a snap of Wireshark between Linux1 and leaf01</p>
+<p><code>Packet capture between leaf01 and linux01</code></p>
+<p><img src="/blog/images/aruba_ipv6_wireshark.png" alt="IPv6 Packets"></p>
+<p><code>Packet Information</code></p>
+<table>
+<thead>
+<tr>
+<th>Packet #</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>Router Solicitation (RS)</td>
+<td>Linux1 using its link local address (fe80:5200:ff:fe07:0) to reach the All-routers address (ff02::2)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Router Advertisement (RA)</td>
+<td>leaf01 using its link local address (fe80:beef:cafe::1) to reach the All-nodes address (ff02::1)</td>
+</tr>
+</tbody>
+</table>
+<p>Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe🅰️:/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.</p>
+<p>What’s a good network engineering article without some routes and pings!</p>
+<p><code>OSPFv3 Routes at leaf01</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
+ 2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+      directly attached to interface vlan10, cost 100 distance 110
+ 2001:db8:cafe:14::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+ 2001:db8:cafe:14::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+ 2001:db8:cafe:1e::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+ 2001:db8:cafe:1e::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+ 2001:db8:cafe:28::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
+ 2001:db8:cafe:28::/64 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 300 distance 110
+ 2001:db8:cafe:fd00::2/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fd00::2/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:fd00::3/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fd00::3/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:fd00::4/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fd00::4/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:fe01::a/127 (i) area:0.0.0.0
+      directly attached to interface 1/1/1, cost 100 distance 110
+ 2001:db8:cafe:fe02::a/127 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fe03::a/127 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:fe04::a/127 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 200 distance 110
+ 2001:db8:cafe:ff01::a/127 (i) area:0.0.0.0
+      directly attached to interface 1/1/2, cost 100 distance 110
+ 2001:db8:cafe:ff02::a/127 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:ff03::a/127 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:ff04::a/127 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 200 distance 110
+ 2001:db8:cafe:ffff::1/128 (i) area:0.0.0.0
+      via fe80:face:cafe::1 interface 1/1/1, cost 100 distance 110
+ 2001:db8:cafe:ffff::2/128 (i) area:0.0.0.0
+      via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
+</code></pre></div><p><code>Trace from leaf01 to VLAN 40 at leaf04</code></p>
+<p><img src="/blog/images/ping6_linux1_linux4.png" alt="Pings"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you so much for reading this far! I am just getting my bearings with IPv6 but it really is great. Maybe as I work through the book I&rsquo;ll add some border leaf nodes and get some NAT64 going! Check out the links below if curious about learning more on IPv6 or data center networking. Too many RFCs to list but you can easily google them. For example RFC 6164, “Using 127-Bit IPv6 Prefixes on Inter-Router Links”.</p>
+<ul>
+<li><a href="https://www.amazon.com/Cloud-Native-Data-Center-Networking/dp/1492045608">Cloud Native Data Center Networking: Architecture, Protocols, and Tools - I cant find the free link!</a></li>
+<li><a href="https://www.amazon.com/IPv6-Fundamentals-Straightforward-Approach-Understanding/dp/1587144778/ref=sr_1_2?dchild=1&amp;keywords=ipv6+fundamentals&amp;qid=1616115794&amp;sr=8-2">IPv6 Fundamentals: A Straightforward Approach to Understanding IPv6 2nd Edition</a></li>
+<li>FYI, these are not sponsored links at all. I earn nothing if you buy or don’t buy a product.</li>
+<li>Follow up post: <a href="https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/">Using only link-local addresses between routers</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>My Journey to Completing the David Goggins 4x4x48 Challenge</title>
+            <link>https://juliopdx.github.io/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</link>
+            <pubDate>Mon, 08 Mar 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</guid>
+            <description>Introduction Hello and thank you for tuning in. Just for clarity, the 4x4x48 challenge was created by David Goggins. The challenge requires participants to run 4 miles every 4 hours for 48 hours. Participants are allowed to substitute running with walking or general exercise. The main goal is to get people moving as well as donate to charity!
+The next thought may be why the hell would someone want to run 48 miles on a perfectly nice weekend?</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for tuning in. Just for clarity, the 4x4x48 challenge was created by David Goggins. The challenge requires participants to run 4 miles every 4 hours for 48 hours. Participants are allowed to substitute running with walking or general exercise. The main goal is to get people moving as well as donate to charity!</p>
+<p>The next thought may be why the hell would someone want to run 48 miles on a perfectly nice weekend? Everyone will have their own reasons, heck for some this may just be a training run, shout-out to all the ultra runners out there (I am not one). I had a few reasons for attempting this challenge. Most of them are pretty selfish of me to be honest. This was a physical test for a distance I’ve never even come close to reaching. Even greater than the physical challenge was the mental challenge I would eventually be faced with. This impacted me mentally way more than physically when it was all done with.</p>
+<p>I think this is a good spot to give you all a bit of a background on my running history. I have an okay athletic background. Never been the fastest, strongest, or lowest weight. Heck before this challenge I was sitting right at 235 lbs. My time in the military only required running 1.5 miles under 13 minutes or so to get a decent physical score. I’ve competed with teams on endurance races, but even then I was responsible for maybe one or two legs of the eventual 70 plus miles. Where each leg I may be responsible for 3-5 miles. For this event I wasn’t just the leg, I was the team… yikes!</p>
+<p>Since my time in the military I still run 3-4 times a week for about 3-5 miles each run. Last year I had the idea of training for a marathon. It would be my first and I thought it would be a sweet goal. I was up to 16 miles in one session, which I thought was great. Inevitably, the current pandemic we are all going through put a stop to all races. I figured I’d keep training and eventually I could get one marathon under my belt. Well we are all human and around August/September of last year, I dealt with a nagging upper calf injury that wouldn’t go away. I did some PT and took a lot of time off (months). Injuries aren’t new to me, hell I’ve torn the ACL in my left knee 3 times! At least that injury puts you all the way down for some time.</p>
+<h2 id="run-preparation">Run Preparation</h2>
+<p>That was a really long winded background but its my blog so its all good! Now for how I prepared for this challenge. Full disclosure, I am no running expert and this is definitely not the go to plan or even a good plan. Its just what worked for me. I continued running 3-4 times a week for about 3-5 miles after I recovered from the calf injury. I also added weight training using those fancy adjustable dumbbells, yay for home gyms! I eventually started running right after doing a leg day workout. Trying to trick my mind into dealing with the soreness I would face during this challenge. Oh boy I couldn’t be more wrong.</p>
+<h2 id="running-technique">Running Technique</h2>
+<p>The running technique I use is pretty damn simple. I run for a few minutes… then walk for 30 seconds. This technique was developed or popularized by Jeff Galloway. I heard about Jeff from a fellow co worker and picked up his book to train for the marathon, “Marathon, You Can Do It!”. The thought behind this technique is that you run for a certain amount of time and then walk. You basically do this in intervals and repeat. The small walk breaks in between running lowers the muscle breakdown and soreness experienced from constant running. Runners have even accomplished personal bests using this technique. Some folks may put you down because you aren’t constantly running, but take my advice and tell them to FUCK right off.</p>
+<h2 id="nutrition">Nutrition</h2>
+<p>Sorry for getting so spicy there at the end. While running the challenge, when I hit mile 30+ and other weekend runners are doing their thing and passing you, don’t get down. Just tell yourself “IM ON MILE FUCKING 30!”. Just a bit on nutrition, again I’m no expert. I basically searched the internets, what are the best fruits to eat after runs? I saw bananas (cramps) / oranges (muscle recovery). Besides the usual protein source to fuel muscles and a whole lot of carbs. I had some chicken and rice as my main meals. Pictured below is my race set up (thanks to my lovely wife).</p>
+<p><img src="/blog/images/run_nutrition.jpg" alt="Food"></p>
+<h2 id="pre-race">Pre Race</h2>
+<p>So now its the night before the race. I tried for a while to place it in the back of my mind. Thinking about that many miles in general makes me nervous and boy was I nervous the night before. My advice would be to lay out all your clothes, gear, food, and chargers in one room or general area. It makes transitioning from relaxing to running so much easier. In my case I left all chargers connected so I just dropped off running watch or earbuds on their charger when a leg was done. Don’t forget this! My running light ran out of juice during one run and damn it was dark!</p>
+<p>I did some simple math and figured we would all be running 12 total legs to complete the challenge. Initially I wanted to break down this write up leg by leg and honestly I think its better if I group them into thirds. Since the pain and tiredness you experience is similar between them.</p>
+<h2 id="legs-1-4">Legs 1-4</h2>
+<p>Some of the fastest legs here for obvious reason haha. I mentioned before I reached 16 miles in one running session. In my mind I knew I could at the very least make it to mile 16, which would take me to the end of leg 4. These runs were overall pretty fun and the muscle soreness and fatigue was low.</p>
+<p><img src="/blog/images/legs_1_4.png" alt="1-4"></p>
+<h2 id="midnight-runs">Midnight Runs</h2>
+<p>I have to mention this. Being a two day event, you will be running in the dark. I would recommend getting a reflective vest and a light for the front and back. Stay safe out there folks and protect yourselves. The night runs for me were truly special. The world is so silent but loud at the same time. You hear everything; the wind moving grass, stop signs shaking, small critters, the sound of your breath, or the college kid puking his guts out over the porch. I’m not hating, enjoy yourself young man!</p>
+<h2 id="legs-5-8">Legs 5-8</h2>
+<p>These legs were honestly a total surprise to me. It would be mileage I have never reached before and that might be what fueled me during these runs. My overall times were pretty good. I maintained a good pace and muscle soreness around the quad, hip, and calf areas just started. Remember when I said “IM ON MILE FUCKING 30!”</p>
+<p><img src="/blog/images/legs_5_8.png" alt="5-8"></p>
+<h2 id="legs-9-12-go-get-it">Legs 9-12 &ldquo;Go get it&rdquo;</h2>
+<p>I wont lie to anyone. Unless you are some experienced distance runner, these legs will hurt! I say that for a good reason. No one is making us do this. You can stop at anytime. Whatever the reason is that you chose to do this, I’m so happy and proud of you. It’ll hurt to even think of leaving that warm comfy bed at 4AM. Just know that you made it this far and you should be so proud. “One more to go!! Go get it!!” – John Spiegel</p>
+<p><img src="/blog/images/legs_9_12.png" alt="9-12"></p>
+<p>Some of you may have wondered, if you have to run 4 miles every four hours, why the hell is this dude running 4.4? Again, for selfish reasons. I’ve never gone for this many miles. This got me thinking, “if I can make it that far, how much will I need to run to hit 52.4”. The equivalent of TWO marathons. From never running one to running two in 48 hours. I thought that would be incredible and pretty damn special.</p>
+<h2 id="in-between-time">In Between Time</h2>
+<p>What do you do in between each leg? I developed a pretty normal routine. I ate half a banana after each leg and some orange slices. I would then hydrate with plain water and get a meal in at normal times of the day. I stretched and foam rolled after each and every run, no exceptions. Even if you have to stretch in bed at 1AM… do it! Besides that I just played some video games and read messages from awesome supporters.</p>
+<h2 id="support">Support</h2>
+<p>When embarking on great challenges, having a support team or person is critical. Thank you to everyone who like, comment, and subscribed… wait a minute this isn’t YouTube. Seriously, thank you to everyone that supported me and left a positive message. Thank you to all the support teams out there, y’all rock! Last but definitely not least. Big thanks to my wife Amanda, without her support I don’t know what I would be doing. Definitely not running 52 miles…</p>
+<h2 id="you-can-do-it">You Can Do It</h2>
+<p>This experience has showed me if you put your mind to it, you really can do anything. Cliché I know. Take me as a small example. After the third ACL tear, I could’ve given up on all athletic hopes and dreams. Maybe now I can claim the title of being the greatest to ever run 52 miles with a twitter handle of Julio_PDX…</p>
+<p><img src="/blog/images/night_run.jpg" alt="Night Run"></p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Network Validation With Nornir &amp; Napalm</title>
+            <link>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</link>
+            <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</guid>
+            <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/nornir_logo_02.jpg" alt="Nornir Image"></p>
+<h2 id="intro">Intro</h2>
+<p>I wanted to get my feet wet with <a href="https://nornir.readthedocs.io/en/latest/">Nornir</a>/<a href="https://napalm.readthedocs.io/en/latest/">NAPALM</a> and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</p>
+<p>I think its worth knowing a bit of background to set the stage for future network engineers that are curious about diving into python for network automation. For starters, you can do it! I started my career with zero knowledge about python or programming in general. My initial and current automation efforts revolve mostly around using <a href="https://docs.ansible.com/ansible/latest/network/index.html">Ansible</a>. I think both tools are great and they each have their place in this space. In the bottom of this post I’ll include some links on resources I’ve used.</p>
+<p>I wont go too deep into explaining Nornir and NAPALM but I’ll do my best. Nornir is a framework in which, it can provide a foundation for plugins or tools to be constructed around it. Think of Ansible but pure Python. NAPALM acts almost like a translator for multivendor environments. For example, if our goal is to get interface information or SNMP information from a device, we don’t care what commands are executed. We just need the data returned to use in a constructed manner.</p>
+<p>NAPALM does this in a concept it calls “getters”. Getters are basically functions in NAPALM that interact with networking devices and return structured information. For a list of all supported vendors and getters, please see <a href="https://napalm.readthedocs.io/en/latest/support/">here</a>.</p>
+<p><code>Current Structure</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-virtual-2004:~/git/nornir_snmp_validation$ tree -I venv
+ .
+ ├── config.yaml
+ ├── inventory
+ │   ├── defaults.yaml
+ │   ├── groups.yaml
+ │   └── hosts.yaml
+ ├── nornir.log
+ ├── README.md
+ ├── requirements.txt
+ ├── snmp_validate.py
+ └── validate
+     └── cisco.yaml
+ <span style="color:#ae81ff">2</span> directories, <span style="color:#ae81ff">9</span> files
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Creating python environment</span>
+python3 -m venv venv
+
+<span style="color:#75715e"># Activating virtual environment</span>
+source venv/bin/activate
+
+<span style="color:#75715e"># Clone git repo</span>
+git clone https://github.com/JulioPDX/nornir_snmp_validation.git
+cd nornir_snmp_validation/
+
+<span style="color:#75715e"># Install requirements</span>
+pip install -r requirements.txt
+</code></pre></div><p>Nornir was recently updated to split some of the functionality from Nornir core and the additional plugins. I just went ahead and installed pretty much all of the third party plugins at once. <a href="https://nornir.tech/nornir/plugins/">Here is a link to those plugins</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> nornir<span style="color:#f92672">==</span>3.0.0
+ nornir-ansible<span style="color:#f92672">==</span>2020.9.26
+ nornir-jinja2<span style="color:#f92672">==</span>0.1.1
+ nornir-napalm<span style="color:#f92672">==</span>0.1.1
+ nornir-netbox<span style="color:#f92672">==</span>0.2.0
+ nornir-netmiko<span style="color:#f92672">==</span>0.1.1
+ nornir-pyez<span style="color:#f92672">==</span>0.0.10
+ nornir-scrapli<span style="color:#f92672">==</span>2021.1.30
+ nornir-utils<span style="color:#f92672">==</span>0.1.1
+</code></pre></div><p>lets take a look at the config.yaml file. If you are coming from an Ansible background, just think about this as the ansible.cfg file. This allows you to set the inventory plugin, runner (# of ssh sessions and serial vs threaded), and locations for certain files that we’ll talk about in a bit.</p>
+<p><code>config.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+ <span style="color:#f92672">inventory</span>:
+   <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">SimpleInventory</span>
+   <span style="color:#f92672">options</span>:
+     <span style="color:#f92672">host_file</span>: <span style="color:#e6db74">&#34;inventory/hosts.yaml&#34;</span>
+     <span style="color:#f92672">group_file</span>: <span style="color:#e6db74">&#34;inventory/groups.yaml&#34;</span>
+     <span style="color:#f92672">defaults_file</span>: <span style="color:#e6db74">&#34;inventory/defaults.yaml&#34;</span>
+ <span style="color:#f92672">runner</span>:
+   <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">threaded</span>
+   <span style="color:#f92672">options</span>:
+     <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
+</code></pre></div><p>Now lets go into our inventory folder. You will notice that we have three files; hosts.yaml (for host data), group.yaml (group data), and defaults.yaml (defaults/global data). I found that Nornir is really flexible on where you can store information. I’ll show you what made sense to me.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+ <span style="color:#f92672">port</span>: <span style="color:#ae81ff">22</span>
+ <span style="color:#f92672">username</span>: <span style="color:#ae81ff">cisco</span>
+ <span style="color:#f92672">password</span>: <span style="color:#ae81ff">cisco</span>
+ <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ios</span>
+<span style="color:#75715e"># Since I am using only Cisco devices in this lab, I just set the</span>
+<span style="color:#75715e"># login information at the defaults level.</span>
+<span style="color:#75715e"># In multivendor deployments, you would probably break this out</span>
+<span style="color:#75715e"># into the groups.yaml file or under each hosts...</span>
+</code></pre></div><p>At the moment I didn’t do much of anything with the goups.yaml file. In my testing it seems that if a group is called out in the hosts.yaml file, it must exist in the groups.yaml file.</p>
+<p><code>groups.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">cisco</span>:
+   <span style="color:#f92672">data</span>:
+ <span style="color:#f92672">switches</span>:
+   <span style="color:#f92672">data</span>:
+ <span style="color:#f92672">routers</span>:
+   <span style="color:#f92672">data</span>:
+</code></pre></div><p>I tried to keep the host.yaml file as simple as possible. I created some fake data under each host to signify what site they belong to. This was mainly as an example from the official documentation. I assigned different hosts to different groups depending on if they were switches or routers, and what vendor. Oh, going back to the group variables. If different systems had different connection parameters, you could put that under the groups.yaml file and just assign the host to that group.</p>
+<p><code>hosts.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">NY-SW-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.37</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco</span>
+    - <span style="color:#ae81ff">switches</span>
+  <span style="color:#f92672">data</span>:
+    <span style="color:#f92672">site</span>: <span style="color:#ae81ff">NY</span>
+<span style="color:#f92672">NE-RTR-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.38</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco</span>
+    - <span style="color:#ae81ff">routers</span>
+  <span style="color:#f92672">data</span>:
+    <span style="color:#f92672">site</span>: <span style="color:#ae81ff">NE</span>
+<span style="color:#f92672">OR-SW-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.36</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco</span>
+    - <span style="color:#ae81ff">switches</span>
+  <span style="color:#f92672">data</span>:
+    <span style="color:#f92672">site</span>: <span style="color:#ae81ff">OR</span>
+</code></pre></div><p>I’m going to side step a bit here and get into NAPALM. NAPALM has a lot of great plugin tasks that work with Nornir but the two that I used in this test were napalm_get and napalm_validate. The reason I used the get task? I needed to see how the information was returned by NAPALM so that I could then build the source file to validate against. A seasoned professional could probably just go straight to the docs, but I needed a bit more. The following NAPALM docs helped in creating this. <a href="https://napalm.readthedocs.io/en/develop/validate/index.html">Napalm Validate</a>.</p>
+<p>Below is a view of the /validate/cisco.yaml file. This was created from the link mentioned above and running the napalm_get task. Notice that the cisco.yaml file lists the name of the getter at the top or root of the file. You could lists multiple getters to validate multiple pieces of information, as long as its supported with your device.</p>
+<p><code>/validate/cisco.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+- <span style="color:#f92672">get_snmp_information</span>:
+    <span style="color:#f92672">community</span>:
+      <span style="color:#f92672">myreadonly</span>:
+        <span style="color:#f92672">acl</span>: <span style="color:#66d9ef">N</span><span style="color:#ae81ff">/A</span>
+        <span style="color:#f92672">mode</span>: <span style="color:#ae81ff">ro</span>
+      <span style="color:#f92672">mysecurestring</span>:
+        <span style="color:#f92672">acl</span>: <span style="color:#66d9ef">N</span><span style="color:#ae81ff">/A</span>
+        <span style="color:#f92672">mode</span>: <span style="color:#ae81ff">rw</span>
+    <span style="color:#f92672">contact</span>: <span style="color:#ae81ff">JulioPDX</span>
+    <span style="color:#f92672">location</span>: <span style="color:#ae81ff">mylocation</span>
+</code></pre></div><p>Here is a snippet from each devices SNMP configuration. Looking at the validate file above and the snippets, can you guess which device will fail?</p>
+<p><code>SNMP Configurations</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">NY-SW-01<span style="color:#f92672">(</span>config<span style="color:#f92672">)</span><span style="color:#75715e">#do show run | inc snmp</span>
+ snmp-server community mysecurestring RW
+ snmp-server community myreadonly RO
+ snmp-server location mylocation
+ snmp-server contact JulioPDX
+
+NE-RTR-01<span style="color:#f92672">(</span>config<span style="color:#f92672">)</span><span style="color:#75715e">#do show run | inc snmp</span>
+ snmp-server community public RO
+ snmp-server community private RW
+ snmp-server location mylocation
+ snmp-server contact JulioPDX
+
+OR-SW-01<span style="color:#f92672">(</span>config<span style="color:#f92672">)</span><span style="color:#75715e">#do show run | inc snmp</span>
+ snmp-server community myreadonly RO
+ snmp-server community mysecurestring RW
+ snmp-server location mylocation
+ snmp-server contact JulioPDX
+</code></pre></div><p><code>snmp_validate.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Import required modules</span>
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_utils.plugins.functions <span style="color:#f92672">import</span> print_result
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get, napalm_validate
+
+<span style="color:#75715e"># Initializing Nornir</span>
+nr <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config.yaml&#34;</span>)
+
+get_snmp <span style="color:#f92672">=</span> nr<span style="color:#f92672">.</span>run(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;GATHERING SNMP&#34;</span>, task<span style="color:#f92672">=</span>napalm_get, getters<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;get_snmp_information&#34;</span>])
+
+print_result(get_snmp)
+
+validate <span style="color:#f92672">=</span> nr<span style="color:#f92672">.</span>run(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;VALIDATE SNMP&#34;</span>, task<span style="color:#f92672">=</span>napalm_validate, src<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./validate/cisco.yaml&#34;</span>)
+
+print_result(validate)
+</code></pre></div><p>Here is the output of the script, main parts to look at are towards the bottom when the snmp validations are printed to the screen.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-virtual-2004:~/git/nornir_snmp_validation$ python snmp_validate.py
+ GATHERING SNMP**
+ NE-RTR-01 ** changed : False *
+ vvvv GATHERING SNMP ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+ <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;get_snmp_information&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;chassis_id&#39;</span>: <span style="color:#e6db74">&#39;&#39;</span>,
+                         <span style="color:#e6db74">&#39;community&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;private&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;acl&#39;</span>: <span style="color:#e6db74">&#39;N/A&#39;</span>,
+                                                     <span style="color:#e6db74">&#39;mode&#39;</span>: <span style="color:#e6db74">&#39;rw&#39;</span><span style="color:#f92672">}</span>,
+                                        <span style="color:#e6db74">&#39;public&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;acl&#39;</span>: <span style="color:#e6db74">&#39;N/A&#39;</span>,
+                                                    <span style="color:#e6db74">&#39;mode&#39;</span>: <span style="color:#e6db74">&#39;ro&#39;</span><span style="color:#f92672">}}</span>,
+                         <span style="color:#e6db74">&#39;contact&#39;</span>: <span style="color:#e6db74">&#39;JulioPDX&#39;</span>,
+                         <span style="color:#e6db74">&#39;location&#39;</span>: <span style="color:#e6db74">&#39;mylocation&#39;</span><span style="color:#f92672">}}</span>
+ ^^^^ END GATHERING SNMP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ NY-SW-01 ** changed : False
+ vvvv GATHERING SNMP ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+ <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;get_snmp_information&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;chassis_id&#39;</span>: <span style="color:#e6db74">&#39;9NA76XNH9Z8&#39;</span>,
+                         <span style="color:#e6db74">&#39;community&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;myreadonly&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;acl&#39;</span>: <span style="color:#e6db74">&#39;N/A&#39;</span>,
+                                                        <span style="color:#e6db74">&#39;mode&#39;</span>: <span style="color:#e6db74">&#39;ro&#39;</span><span style="color:#f92672">}</span>,
+                                        <span style="color:#e6db74">&#39;mysecurestring&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;acl&#39;</span>: <span style="color:#e6db74">&#39;N/A&#39;</span>,
+                                                            <span style="color:#e6db74">&#39;mode&#39;</span>: <span style="color:#e6db74">&#39;rw&#39;</span><span style="color:#f92672">}}</span>,
+                         <span style="color:#e6db74">&#39;contact&#39;</span>: <span style="color:#e6db74">&#39;JulioPDX&#39;</span>,
+                         <span style="color:#e6db74">&#39;location&#39;</span>: <span style="color:#e6db74">&#39;mylocation&#39;</span><span style="color:#f92672">}}</span>
+ ^^^^ END GATHERING SNMP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ OR-SW-01 ** changed : False
+ vvvv GATHERING SNMP ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+ <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;get_snmp_information&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;chassis_id&#39;</span>: <span style="color:#e6db74">&#39;9QA913OVFJS&#39;</span>,
+                         <span style="color:#e6db74">&#39;community&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;myreadonly&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;acl&#39;</span>: <span style="color:#e6db74">&#39;N/A&#39;</span>,
+                                                        <span style="color:#e6db74">&#39;mode&#39;</span>: <span style="color:#e6db74">&#39;ro&#39;</span><span style="color:#f92672">}</span>,
+                                        <span style="color:#e6db74">&#39;mysecurestring&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;acl&#39;</span>: <span style="color:#e6db74">&#39;N/A&#39;</span>,
+                                                            <span style="color:#e6db74">&#39;mode&#39;</span>: <span style="color:#e6db74">&#39;rw&#39;</span><span style="color:#f92672">}}</span>,
+                         <span style="color:#e6db74">&#39;contact&#39;</span>: <span style="color:#e6db74">&#39;JulioPDX&#39;</span>,
+                         <span style="color:#e6db74">&#39;location&#39;</span>: <span style="color:#e6db74">&#39;mylocation&#39;</span><span style="color:#f92672">}}</span>
+ ^^^^ END GATHERING SNMP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ VALIDATE SNMP***
+ NE-RTR-01 ** changed : False *
+ vvvv VALIDATE SNMP ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+ <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: False,
+ <span style="color:#e6db74">&#39;get_snmp_information&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: False,
+                         <span style="color:#e6db74">&#39;extra&#39;</span>: <span style="color:#f92672">[]</span>,
+                         <span style="color:#e6db74">&#39;missing&#39;</span>: <span style="color:#f92672">[]</span>,
+                         <span style="color:#e6db74">&#39;present&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;community&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: False,
+                                                     <span style="color:#e6db74">&#39;diff&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: False,
+                                                               <span style="color:#e6db74">&#39;extra&#39;</span>: <span style="color:#f92672">[]</span>,
+                                                               <span style="color:#e6db74">&#39;missing&#39;</span>: <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;myreadonly&#39;</span>,
+                                                                            <span style="color:#e6db74">&#39;mysecurestring&#39;</span><span style="color:#f92672">]</span>,
+                                                               <span style="color:#e6db74">&#39;present&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#f92672">}}</span>,
+                                                     <span style="color:#e6db74">&#39;nested&#39;</span>: True<span style="color:#f92672">}</span>,
+                                      <span style="color:#e6db74">&#39;contact&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                   <span style="color:#e6db74">&#39;nested&#39;</span>: False<span style="color:#f92672">}</span>,
+                                      <span style="color:#e6db74">&#39;location&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                    <span style="color:#e6db74">&#39;nested&#39;</span>: False<span style="color:#f92672">}}}</span>,
+ <span style="color:#e6db74">&#39;skipped&#39;</span>: <span style="color:#f92672">[]}</span>
+ ^^^^ END VALIDATE SNMP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ NY-SW-01 ** changed : False
+ vvvv VALIDATE SNMP ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+ <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+ <span style="color:#e6db74">&#39;get_snmp_information&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                         <span style="color:#e6db74">&#39;extra&#39;</span>: <span style="color:#f92672">[]</span>,
+                         <span style="color:#e6db74">&#39;missing&#39;</span>: <span style="color:#f92672">[]</span>,
+                         <span style="color:#e6db74">&#39;present&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;community&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                     <span style="color:#e6db74">&#39;nested&#39;</span>: True<span style="color:#f92672">}</span>,
+                                      <span style="color:#e6db74">&#39;contact&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                   <span style="color:#e6db74">&#39;nested&#39;</span>: False<span style="color:#f92672">}</span>,
+                                      <span style="color:#e6db74">&#39;location&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                    <span style="color:#e6db74">&#39;nested&#39;</span>: False<span style="color:#f92672">}}}</span>,
+ <span style="color:#e6db74">&#39;skipped&#39;</span>: <span style="color:#f92672">[]}</span>
+ ^^^^ END VALIDATE SNMP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ OR-SW-01 ** changed : False
+ vvvv VALIDATE SNMP ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+ <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+ <span style="color:#e6db74">&#39;get_snmp_information&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                         <span style="color:#e6db74">&#39;extra&#39;</span>: <span style="color:#f92672">[]</span>,
+                         <span style="color:#e6db74">&#39;missing&#39;</span>: <span style="color:#f92672">[]</span>,
+                         <span style="color:#e6db74">&#39;present&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;community&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                     <span style="color:#e6db74">&#39;nested&#39;</span>: True<span style="color:#f92672">}</span>,
+                                      <span style="color:#e6db74">&#39;contact&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                   <span style="color:#e6db74">&#39;nested&#39;</span>: False<span style="color:#f92672">}</span>,
+                                      <span style="color:#e6db74">&#39;location&#39;</span>: <span style="color:#f92672">{</span> <span style="color:#e6db74">&#39;complies&#39;</span>: True,
+                                                    <span style="color:#e6db74">&#39;nested&#39;</span>: False<span style="color:#f92672">}}}</span>,
+ <span style="color:#e6db74">&#39;skipped&#39;</span>: <span style="color:#f92672">[]}</span>
+ ^^^^ END VALIDATE SNMP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-virtual-2004:~/git/nornir_snmp_validation$
+</code></pre></div><p>Did you catch which one failed? If you guessed NE-RTR-01 earlier you would be correct. If you look at the output for the NE router, there is a key for “complies” and it is set to False. So now we know one device in our three device environment did not pass our SNMP validation check. This could then be tied to kick off another task to fix SNMP, report to monitoring, or some other workflow. All up to the imagination.</p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>I hope this post has shown you how NAPALM and Nornir can be leveraged to validate device configurations and dive into a bit of network automation with Python. Not too bad right? Below you’ll find some links to resources I have used and a link to the git repo. There really are so many great resources in this space for network engineers. I cant possibly list them all. Thank you for reading this far, it is much appreciated! Stay safe out there.</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/nornir_snmp_validation">Git Repository</a></li>
+<li><a href="https://nostarch.com/pythoncrashcourse2e">Python Crash Course 2nd Edition</a></li>
+<li><a href="https://www.packtpub.com/product/mastering-python-networking-third-edition/9781839214677">Mastering Python Networking</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLKZjLeG8AwtES8apo6gonH4XmN_9xIo8W">Chuck Black 52 Weeks of Python</a></li>
+<li><a href="https://github.com/networktocode/awesome-network-automation">NTC Awesome List</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
@@ -16,7 +778,8 @@
             
             <guid>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
             <description>Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</description>
-            <content type="html"><![CDATA[<h2 id="intro">Intro</h2>
+            <content type="html"><![CDATA[<p><img src="/blog/images/router_pool_large.png" alt="Router Image"></p>
+<h2 id="intro">Intro</h2>
 <p>I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</p>
 <p>I should probably explain what a filter does just in case the reader isn’t aware. Filters allow you to transform data from something to something else. The simplest example being, turn this lower case string to upper case. See example below.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---

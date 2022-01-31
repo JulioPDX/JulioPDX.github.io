@@ -7,7 +7,45 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 02 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</title>
+      <link>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
+      <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
+      <description>Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
+ You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.</description>
+    </item>
+    
+    <item>
+      <title>Aruba Spine Leaf With OSPFv3 and IPv6</title>
+      <link>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</link>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</guid>
+      <description>Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago.</description>
+    </item>
+    
+    <item>
+      <title>My Journey to Completing the David Goggins 4x4x48 Challenge</title>
+      <link>https://juliopdx.github.io/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</link>
+      <pubDate>Mon, 08 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</guid>
+      <description>Introduction Hello and thank you for tuning in. Just for clarity, the 4x4x48 challenge was created by David Goggins. The challenge requires participants to run 4 miles every 4 hours for 48 hours. Participants are allowed to substitute running with walking or general exercise. The main goal is to get people moving as well as donate to charity!
+The next thought may be why the hell would someone want to run 48 miles on a perfectly nice weekend?</description>
+    </item>
+    
+    <item>
+      <title>Network Validation With Nornir &amp; Napalm</title>
+      <link>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</link>
+      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</guid>
+      <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
+    </item>
+    
     <item>
       <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
       <link>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>

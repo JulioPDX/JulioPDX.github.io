@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 02 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 27 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Network Validation With Nornir &amp; Napalm</title>
+      <link>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</link>
+      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</guid>
+      <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
+    </item>
+    
     <item>
       <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
       <link>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>

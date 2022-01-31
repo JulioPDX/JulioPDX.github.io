@@ -1,14 +1,16 @@
 ---
 title: "Creating List of IP Addresses With Ansible Filter Plugin"
 date: 2021-02-02
-draft: False
-toc: True
+draft: false
+toc: true
 images:
 tags:
   - Ansible
   - Python
   - Network Automation
 ---
+
+![Router Image](/blog/images/router_pool_large.png)
 
 ## Intro
 
