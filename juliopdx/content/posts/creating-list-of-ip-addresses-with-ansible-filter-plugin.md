@@ -83,7 +83,7 @@ Breaking down the code, we first import one library, I know some folks aren’t 
 ...
 ```
 
-```
+```bash
 PLAY [IP List Test] *
  TASK [Setting a fact for my list of IP addresses] ***
  ok: [localhost]

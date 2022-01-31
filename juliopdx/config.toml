@@ -3,7 +3,7 @@ title        = "My Blog"
 languageCode = "en-us"
 theme        = "hello-friend-ng"
 paginate     = 10
-publishDir = "public"
+publishDir = "../docs"
 
 [permalinks]
   posts = '/:year/:month/:day/:title/'
