@@ -7,6 +7,7 @@ images:
 tags:
   - Ansible
   - Python
+  - Network Automation
 ---
 
 ## Intro
