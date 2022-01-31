@@ -1,0 +1,40 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Posts on JulioPDX</title>
+        <link>https://juliopdx.github.io/posts/</link>
+        <description>Recent content in Posts on JulioPDX</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+        <lastBuildDate>Tue, 02 Feb 2021 00:00:00 +0000</lastBuildDate>
+        <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
+            <link>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
+            <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
+            <description>Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</description>
+            <content type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</p>
+<p>I should probably explain what a filter does just in case the reader isn’t aware. Filters allow you to transform data from something to something else. The simplest example being, turn this lower case string to upper case. See example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Filter Test</span>
+  <span style="color:#f92672">connection</span>: <span style="color:#ae81ff">local</span>
+  <span style="color:#f92672">hosts</span>: <span style="color:#ae81ff">localhost</span>
+  <span style="color:#f92672">gather_facts</span>: <span style="color:#66d9ef">no</span>
+  <span style="color:#f92672">vars</span>:
+    <span style="color:#f92672">my_variable</span>: <span style="color:#ae81ff">mylowercasestring</span>
+
+  <span style="color:#f92672">tasks</span>:
+    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Turning lower case string to UPPER CASE</span>
+      <span style="color:#f92672">debug</span>:
+        <span style="color:#f92672">msg</span>: <span style="color:#e6db74">&#34;{{ my_variable | upper }}&#34;</span>
+
+...
+</code></pre></div>]]></content>
+        </item>
+        
+    </channel>
+</rss>
