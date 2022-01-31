@@ -39,6 +39,7 @@ PLAY [Filter Test]
      "msg": "MYLOWERCASESTRING"
  }
 ```
+
 As you can see, filters are pretty neat ways to transform data. So there I was trying to create a list of IP addresses from a prefix, with no end in sight, and Google-fu failing me. I’m sure there is some whacky ways to make it happen, like a jinja template and reading a file or using some kind of range/with sequence option. In the end I came up with the following python script. This can be placed in the /filter_plugins directory where your playbook is stored.
 
 ```python

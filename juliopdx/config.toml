@@ -3,7 +3,8 @@ title        = "My Blog"
 languageCode = "en-us"
 theme        = "hello-friend-ng"
 paginate     = 10
-publishDir = "../docs"
+publishDir   = "../docs"
+enableEmoji  = true
 
 [permalinks]
   posts = '/:year/:month/:day/:title/'
@@ -27,6 +28,34 @@ publishDir = "../docs"
   description = "My new homepage or blog"
   keywords = "homepage, blog"
   images = [""]
+
+  # Theme toggle
+  enableThemeToggle = true
+
+  [params.footer]
+    trademark = true
+    rss = false
+    copyright = true
+    author = true
+
+    topText = []
+    bottomText = [
+      "Powered by <a href=\"http://gohugo.io\">Hugo</a>",
+      "Made with &#10084; by <a href=\"https://github.com/rhazdon\">Djordje Atlialp</a>"
+    ]
+
+  # Social icons
+  [[params.social]]
+    name = "twitter"
+    url  = "https://twitter.com/Julio_PDX"
+
+  [[params.social]]
+    name = "github"
+    url  = "https://github.com/JulioPDX"
+
+  [[params.social]]
+    name = "linkedin"
+    url  = "https://www.linkedin.com/in/julioperez-pdx/"
 
 [taxonomies]
     category = "blog"
