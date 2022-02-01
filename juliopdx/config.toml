@@ -61,6 +61,7 @@ enableEmoji  = true
     category = "blog"
     tag      = "tags"
     series   = "series"
+    author = "authors"
 
 [languages]
   [languages.en]

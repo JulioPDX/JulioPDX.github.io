@@ -4,11 +4,86 @@
   
   <url>
     <loc>https://juliopdx.github.io/tags/aruba/</loc>
-    <lastmod>2021-03-29T00:00:00+00:00</lastmod>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/cisco/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/eigrpv6/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ipv6/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ospfv3/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/posts/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/</loc>
+    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/eve-ng/</loc>
+    <lastmod>2021-04-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/radius/</loc>
+    <lastmod>2021-04-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</loc>
+    <lastmod>2021-04-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/arista/</loc>
+    <lastmod>2021-04-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</loc>
+    <lastmod>2021-04-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/network-automation/</loc>
+    <lastmod>2021-04-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</loc>
+    <lastmod>2021-03-29T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/authors/</loc>
     <lastmod>2021-03-29T00:00:00+00:00</lastmod>
   </url>
   
@@ -18,27 +93,7 @@
   </url>
   
   <url>
-    <loc>https://juliopdx.github.io/tags/ipv6/</loc>
-    <lastmod>2021-03-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/</loc>
-    <lastmod>2021-03-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/ospfv3/</loc>
-    <lastmod>2021-03-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/posts/</loc>
-    <lastmod>2021-03-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/</loc>
+    <loc>https://juliopdx.github.io/authors/julio-perez/</loc>
     <lastmod>2021-03-29T00:00:00+00:00</lastmod>
   </url>
   
@@ -59,11 +114,6 @@
   
   <url>
     <loc>https://juliopdx.github.io/tags/napalm/</loc>
-    <lastmod>2021-02-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/network-automation/</loc>
     <lastmod>2021-02-27T00:00:00+00:00</lastmod>
   </url>
   

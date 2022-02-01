@@ -6,8 +6,615 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Mon, 03 May 2021 00:00:00 +0000</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Route Redistribution OSPFv3 and EIGRPv6</title>
+            <link>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
+            <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
+            <description>Introduction Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.
+In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.</p>
+<p>In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols. Both protocols can form neighbors using only link local addressing, so we wont see any global IPv6 addresses on those links.</p>
+<p><img src="/blog/images/ospftoeigrp.png" alt="OSPF to EIGRP"></p>
+<h2 id="ospfv3">OSPFv3</h2>
+<p>The OSPFv3 node is an Aruba CX switch running …OSPFv3! I have a few loopbacks configured so we can add some networks for testing. All of OSPF will be in area 0 for simplicity. We set all interfaces to passive besides the uplink to REDIS. Configuration snippet is below.</p>
+<p><code>OSPFv3 Node Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname OSPFv3
+!
+interface 1/1/1
+    no shutdown
+    description to REDIS
+    ipv6 address link-local fe80::3/64
+    ipv6 ospfv3 1 area 0.0.0.0
+    no ipv6 ospfv3 passive
+    ipv6 ospfv3 network point-to-point
+interface loopback 0
+    ipv6 address link-local fe80::3/64
+    ipv6 address 2001:db8:456:4::1/64
+    ipv6 ospfv3 1 area 0.0.0.0
+interface loopback 1
+    ipv6 address link-local fe80::3/64
+    ipv6 address 2001:db8:456:5::1/64
+    ipv6 ospfv3 1 area 0.0.0.0
+interface loopback 2
+    ipv6 address link-local fe80::3/64
+    ipv6 address 2001:db8:456:6::1/64
+    ipv6 ospfv3 1 area 0.0.0.0
+!
+router ospfv3 1
+    router-id 3.3.3.3
+    passive-interface default
+    area 0.0.0.0
+!
+</code></pre></div><h2 id="eigrpv6">EIGRPv6</h2>
+<p>In the case of EIGRPv6, we will be using named EIGRP with an address family of IPv6. We add a few loopbacks for testing as well. One difference you’ll see in the configurations, EIGRPv6 is enabled on all interfaces with IPv6 addresses. There is no specific enablement of an interface to run EIGRPv6 or network statements. Configuration snippet is below.</p>
+<p><code>EIGRPv6 Node Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname EIGRPv6
+!
+ipv6 unicast-routing
+!
+interface Loopback0
+ no ip address
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:123:1::1/64
+!
+interface Loopback1
+ no ip address
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:123:2::1/64
+!
+interface Loopback2
+ no ip address
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:123:3::1/64
+!
+interface GigabitEthernet0/0
+ description to REDIS
+ no ip address
+ ipv6 address FE80::1 link-local
+!
+router eigrp JULIOPDX
+ !
+ address-family ipv6 unicast autonomous-system 123
+  !
+  topology base
+  exit-af-topology
+  eigrp router-id 1.1.1.1
+ exit-address-family
+</code></pre></div><h2 id="redis">REDIS</h2>
+<p>This node is special, it gets to run two routing protocols and perform redistribution between them! The configuration is very basic indeed. Only two interfaces set for link local addresses. Oh remember when I mentioned EIGRPv6 is enabled for all IPv6 interfaces? I will shutdown the interface towards OSPFv3. Good to reduce all the chatter. Configuration snippet is below.</p>
+<p><code>REDIS Node Initial Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname REDIS
+!
+ipv6 unicast-routing
+!
+interface GigabitEthernet0/0
+ description to EIGRPv6
+ no ip address
+ ipv6 address FE80::2 link-local
+!
+interface GigabitEthernet0/1
+ description to OSPFv3
+ no ip address
+ ipv6 address FE80::2 link-local
+ ospfv3 network point-to-point
+ ospfv3 1 ipv6 area 0
+!
+router eigrp JULIOPDX
+ !
+ address-family ipv6 unicast autonomous-system 123
+  !
+  af-interface GigabitEthernet0/1
+   shutdown
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  eigrp router-id 2.2.2.2
+ exit-address-family
+!
+router ospfv3 1
+ router-id 2.2.2.2
+ !
+ address-family ipv6 unicast
+  passive-interface default
+  no passive-interface GigabitEthernet0/1
+ exit-address-family
+</code></pre></div><h2 id="neighbors-and-routes">Neighbors and Routes</h2>
+<p><code>EIGRPv6 Neighbor</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 eigrp neighbors
+EIGRP-IPv6 VR(JULIOPDX) Address-Family Neighbors for AS(123)
+H   Address                 Interface              Hold Uptime   SRTT   RTO  Q  Seq
+                                                    (sec)         (ms)       Cnt Num
+0   Link-local address:     Gi0/0                    11 00:23:40  275  1650  0  11
+     FE80::1
+REDIS#
+</code></pre></div><p><code>EIGRPv6 Routes</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 route eigrp
+D   2001:DB8:123:1::/64 [90/10880]
+     via FE80::1, GigabitEthernet0/0
+D   2001:DB8:123:2::/64 [90/10880]
+     via FE80::1, GigabitEthernet0/0
+D   2001:DB8:123:3::/64 [90/10880]
+     via FE80::1, GigabitEthernet0/0
+REDIS#
+</code></pre></div><p><code>OSPFv3 Neighbor</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 ospf neighbor
+        OSPFv3 Router with ID (2.2.2.2) (Process ID 1)
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+3.3.3.3           0   FULL/  -        00:00:35    1360007168      GigabitEthernet0/1
+REDIS#
+#### Notice, no DR or BDR due to the point to point network
+</code></pre></div><p><code>OSPFv3 Routes</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 route ospf
+O   2001:DB8:456:4::1/128 [110/1]
+     via FE80::3, GigabitEthernet0/1
+O   2001:DB8:456:5::1/128 [110/1]
+     via FE80::3, GigabitEthernet0/1
+O   2001:DB8:456:6::1/128 [110/1]
+     via FE80::3, GigabitEthernet0/1
+REDIS#
+</code></pre></div><p>I wont bother sharing the neighbor states of EIGRPv6 or OSPFv3, but below you will see their routes before redistribution.</p>
+<p><code>Routes on Nodes</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">#### EIGRPv6 node first
+EIGRPv6#show ipv6 route eigrp
+EIGRPv6#
+##### Now for OSPFv3 node
+OSPFv3# show ipv6 route ospf
+No ipv6 routes configured
+OSPFv3#
+</code></pre></div><h2 id="the-redistribution">The Redistribution</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show run | s router
+router eigrp JULIOPDX
+ !
+ address-family ipv6 unicast autonomous-system 123
+  !
+  topology base
+   redistribute ospf 1 metric 1000000 1 255 1 1500
+  exit-af-topology
+ exit-address-family
+router ospfv3 1
+ address-family ipv6 unicast
+  redistribute eigrp 123
+ exit-address-family
+</code></pre></div><p><code>New Routes on OSPFv3 and EIGRPv6</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">EIGRPv6#show ipv6 route eigrp
+EX  2001:DB8:456:4::1/128 [170/15360]
+     via FE80::2, GigabitEthernet0/0
+EX  2001:DB8:456:5::1/128 [170/15360]
+     via FE80::2, GigabitEthernet0/0
+EX  2001:DB8:456:6::1/128 [170/15360]
+     via FE80::2, GigabitEthernet0/0
+EIGRPv6#
+
+OSPFv3# show ipv6 route ospf
+2001:db8:123:1::/64, vrf default
+        via  fe80::2%1/1/1,  [110/20],  ospf
+2001:db8:123:2::/64, vrf default
+        via  fe80::2%1/1/1,  [110/20],  ospf
+2001:db8:123:3::/64, vrf default
+        via  fe80::2%1/1/1,  [110/20],  ospf
+OSPFv3#
+</code></pre></div><h2 id="simple-ping-and-trace">Simple Ping and Trace</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">EIGRPv6#ping 2001:db8:456:4::1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 2001:DB8:456:4::1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 13/18/27 ms
+EIGRPv6#traceroute 2001:db8:456:4::1
+Type escape sequence to abort.
+Tracing the route to 2001:DB8:456:4::1
+  1 FE80::2 39 msec 15 msec 16 msec
+  2 2001:DB8:456:4::1 13 msec 19 msec 19 msec
+EIGRPv6#
+
+OSPFv3# ping6 2001:db8:123:1::1 repetitions 1
+PING 2001:db8:123:1::1(2001:db8:123:1::1) 100 data bytes
+108 bytes from 2001:db8:123:1::1: icmp_seq=1 ttl=63 time=21.0 ms
+
+--- 2001:db8:123:1::1 ping statistics ---
+ 1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 21.016/21.016/21.016/0.000 ms
+OSPFv3# traceroute6 2001:db8:123:1::1
+traceroute to 2001:db8:123:1::1 (2001:db8:123:1::1) from 2001:db8:456:4::1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
+ 1  fe80::2 (fe80::2)  18.681 ms  13.902 ms  15.768 ms
+ 2  2001:db8:123:1::1 (2001:db8:123:1::1)  20.081 ms  15.943 ms  19.944 ms
+OSPFv3#
+</code></pre></div><p>Thank you for reading this far, I really do appreciate it. I wish you the best and I hope you find something useful or interesting in this post. Cheers!</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Simple Radius Server in EVE-NG</title>
+            <link>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</link>
+            <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</guid>
+            <description>Introduction I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.
+If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/freeradius-new.png" alt="Topology"></p>
+<h2 id="introduction">Introduction</h2>
+<p>I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.</p>
+<p>If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server. Deploying a full on RADIUS VM can definitely eat up a lot of resources. GNS3, for example, has an appliance that can be added to provide this functionality. To my knowledge, EVE-NG does not. We will be leveraging FreeRADIUS on a lightweight Ubuntu VM. If you want to learn more about FreeRADIUS, check out the link mentioned below.</p>
+<p>I hope to keep this as simple as possible to help the next engineer that has to stand up a simple RADIUS server in their topologies. I will have a few assumptions in this writing. For example, I assume you have some knowledge of using EVE-NG, adding Linux nodes, and most importantly AAA. I will include configurations of the Cisco nodes and useful links at the end of the post!</p>
+<h2 id="topology">Topology</h2>
+<p>The topology you see above is pretty bare bones. Two nodes running OSPF and all the networks in area 0. One Linux machine will be used for SSH testing and the other is the FreeRADIUS server (Ubuntu 18.04). I linked the image used above but you can use any standard Ubuntu 18.04 image to run FreeRADIUS.</p>
+<h2 id="freeradius">FreeRADIUS</h2>
+<p>If your topology already has internet access, you may be able to skip a few of these steps. In my case, this topology is isolated. Start by adding a network connection, this will connect the server to my internal network and give the server access to the internet.</p>
+<p>Within the VM console session, run the following commands:</p>
+<p><code>FreeRADIUS Install</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get update
+sudo apt-get install freeradius -y
+</code></pre></div><h2 id="static-ip-for-ubuntu-server">Static IP for Ubuntu Server</h2>
+<p>At this point, the server has FreeRADIUS installed. Now we connect the server as shown in the topology image above and assign a static IP address. In Ubuntu 18.04 this can be done by editing the /etc/netplan/01-netcfg.yaml file. You can edit this file using vi, vim, or nano. Doesn&rsquo;t really matter. I believe vi and nano come pre installed on this image. Edit that file and save. Example below.</p>
+<p><code>/etc/netplan/01-netcfg.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">network</span>:
+   <span style="color:#f92672">version</span>: <span style="color:#ae81ff">2</span>
+   <span style="color:#f92672">renderer</span>: <span style="color:#ae81ff">networkd</span>
+   <span style="color:#f92672">ethernets</span>:
+     <span style="color:#f92672">ens3</span>:
+       <span style="color:#f92672">dhcp4</span>: <span style="color:#66d9ef">no</span>
+       <span style="color:#f92672">addresses</span>:
+         - <span style="color:#ae81ff">192.168.2.2</span><span style="color:#ae81ff">/24</span>
+       <span style="color:#f92672">gateway4</span>: <span style="color:#ae81ff">192.168.2.1</span>
+</code></pre></div><p>Once that file is saved, run the command below to apply the configuration.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo netplan apply
+</code></pre></div><h2 id="add-clients-and-users">Add Clients and Users</h2>
+<p>The next step isn’t too bad. You essentially have to modify two files. One for user logins and the other for clients (network devices). The files have a lot of examples and working options. Most all of it is commented out. I’ll include just the portions that are active. Again, feel free to modify this with whatever editor you are comfortable with.</p>
+<p><code>/etc/freeradius/3.0/clients.conf</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">client vIOS1 {
+    ipaddr = 10.0.0.1
+    secret = freeradius
+}
+client vIOS2 {
+    ipaddr = 10.0.0.2
+    secret = freeradius
+}
+</code></pre></div><p><code>/etc/freeradius/3.0/mods-config/files/authorize</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Julio    Cleartext-Password := &#34;PDX&#34;
+         Reply-Message = &#34;Welcome to the world of tomorrow&#34;,
+         cisco-avpair := &#34;shell:priv-lvl=15&#34;
+</code></pre></div><p>Once that is completed, run the following commands to activate FreeRADIUS:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo service freeradius stop
+sudo freeradius -X
+</code></pre></div><h2 id="ssh-validation">SSH Validation</h2>
+<p><img src="/blog/images/ssh_test_radius.png" alt="SSH Test"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Overall I don’t think it was too much work to get this going. If you build in some automation on the radius server, you could populate all the client entries with Ansible or Python. I think someone with a bit more brain power could probably create a pre built image that has FreeRADIUS pre packaged as an EVE-NG appliance. Thank you for reading this far and I hope this helps you down the road. Best of luck!</p>
+<ul>
+<li><a href="https://www.eve-ng.net/index.php/documentation/howtos/howto-create-own-linux-host-image/">How to add Linux images to EVE-NG</a></li>
+<li><a href="https://ipnet.xyz/2018/06/ubuntu-image-for-eve-ng-python-for-network-engineers/">Ubuntu 18.04 image used in lab, can be generic as well</a></li>
+<li><a href="https://freeradius.org/">FreeRADIUS Documentation</a></li>
+<li><a href="https://linuxize.com/post/how-to-configure-static-ip-address-on-ubuntu-18-04/">Configure static addresses on Ubuntu 18.04</a></li>
+<li><a href="/blog/files/vIOS1.txt">vIOS1 Configuration</a></li>
+<li><a href="/blog/files/vIOS2.txt">vIOS2 Configuration</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Automating Multi Vendor Environments With Netmiko</title>
+            <link>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
+            <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
+            <description>Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
+The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/multi_ospf.png" alt="Multi Routers"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.</p>
+<p>The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors. As you can see above, we are featuring Arista, Aruba, and Cisco. The topology is nothing crazy. All router facing ports are in area 0 and sharing routes. Every router will have a loopback interface to host a network. The only other caveat is that interfaces are passive by default and we enable each interface separately.</p>
+<h2 id="host-variables">Host Variables</h2>
+<p>Each host has its own variable file. I tried to use something that made sense to me. There’s probably a better way to organize this file, it works, so I can dig it. Below is a sample of the Arista vEOS node. Each one is essentially the same besides two or three variables.</p>
+<p><code>vEOS.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">vEOS</span>
+<span style="color:#f92672">interfaces</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Ethernet1</span>
+    <span style="color:#f92672">ip</span>: <span style="color:#ae81ff">10.0.0.2</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ospf</span>:
+      <span style="color:#f92672">process</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">area</span>: <span style="color:#ae81ff">0</span>
+      <span style="color:#f92672">passive</span>: <span style="color:#66d9ef">False</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Loopback0</span>
+    <span style="color:#f92672">ip</span>: <span style="color:#ae81ff">192.168.2.1</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ospf</span>:
+      <span style="color:#f92672">process</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">area</span>: <span style="color:#ae81ff">1</span>
+<span style="color:#f92672">ospf</span>:
+  <span style="color:#f92672">process</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">router_id</span>: <span style="color:#ae81ff">2.2.2.2</span>
+  <span style="color:#f92672">area</span>:
+    - <span style="color:#ae81ff">0</span>
+    - <span style="color:#ae81ff">1</span>
+</code></pre></div><h2 id="ospf-and-jinja">OSPF and Jinja</h2>
+<p>The jinja file process isn’t too bad. If you know loops, if, and else statements, you’ll be just fine. I’m pretty familiar with Aruba and Cisco but not so much with Arista. Lucky for me Arista is eerily similar to Cisco Syntax. I generally work my way through configuring the devices manually once and then convert the configurations to a template. Below is the Aruba version of the jinja template, each vendor gets its own jinja file.</p>
+<p><code>hp_procurve.j2</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jinja" data-lang="jinja"><span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> data.ospf <span style="color:#75715e">%}</span>
+router ospf <span style="color:#75715e">{{</span> data.ospf.process <span style="color:#75715e">}}</span>
+    router-id <span style="color:#75715e">{{</span> data.ospf.router_id <span style="color:#75715e">}}</span>
+    passive-interface default
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> area <span style="color:#66d9ef">in</span> data.ospf.areas <span style="color:#75715e">%}</span>
+    area <span style="color:#75715e">{{</span> area <span style="color:#75715e">}}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> int <span style="color:#66d9ef">in</span> data.interfaces <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf <span style="color:#75715e">%}</span>
+interface <span style="color:#75715e">{{</span> int.name <span style="color:#75715e">}}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;back&#34;</span> <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">in</span> int.name <span style="color:#75715e">%}</span>
+    no shutdown
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span><span style="color:#75715e">%}</span>
+    ip address <span style="color:#75715e">{{</span> int.ip <span style="color:#75715e">}}</span>
+    ip ospf <span style="color:#75715e">{{</span> int.ospf.process <span style="color:#75715e">}}</span> area <span style="color:#75715e">{{</span> int.ospf.area <span style="color:#75715e">}}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf.passive <span style="color:#f92672">==</span> <span style="color:#66d9ef">False</span> <span style="color:#75715e">%}</span>
+    no ip ospf passive
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+copy running-config startup-config
+</code></pre></div><h2 id="the-script">The Script</h2>
+<p>I wont go too deep in breaking down the file as I think it would take a while and I would really recommend you check out Nicks’ course I linked above. If I were to break down the script at a high level, below are the steps that are being performed.</p>
+<ul>
+<li>Import the required libraries.</li>
+<li>Define functions for address management (more on this later).</li>
+<li>Define the main function to load in host variables, jinja environment, and loop over each host.</li>
+<li>Bonus, network backup task (why not?).</li>
+</ul>
+<p><code>ospf_netmiko.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#! /usr/bin/env python</span>
+
+<span style="color:#75715e"># Import requirements</span>
+<span style="color:#f92672">from</span> yaml <span style="color:#f92672">import</span> safe_load
+<span style="color:#f92672">from</span> netmiko <span style="color:#f92672">import</span> Netmiko
+<span style="color:#f92672">from</span> jinja2 <span style="color:#f92672">import</span> Environment, FileSystemLoader
+<span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> IPNetwork
+<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> <span style="color:#66d9ef">print</span> <span style="color:#66d9ef">as</span> pr
+
+<span style="color:#75715e"># functions to be used in jinja templates for IP management</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">address</span>(a):
+    a <span style="color:#f92672">=</span> str(IPNetwork(a)<span style="color:#f92672">.</span>ip)
+    <span style="color:#66d9ef">return</span> a
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mask</span>(b):
+    b <span style="color:#f92672">=</span> str(IPNetwork(b)<span style="color:#f92672">.</span>netmask)
+    <span style="color:#66d9ef">return</span> b
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+
+    <span style="color:#75715e"># Open hosts file as variable for future use</span>
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;hosts.yaml&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> handle:
+        host_root <span style="color:#f92672">=</span> safe_load(handle)
+    pr(host_root)
+
+    <span style="color:#75715e"># Set platform map to match netmiko</span>
+    platform_map <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;ios&#34;</span>: <span style="color:#e6db74">&#34;cisco_ios&#34;</span>, <span style="color:#e6db74">&#34;arista&#34;</span>: <span style="color:#e6db74">&#34;arista_eos&#34;</span>, <span style="color:#e6db74">&#34;aruba&#34;</span>: <span style="color:#e6db74">&#34;hp_procurve&#34;</span>}
+
+    <span style="color:#75715e"># Assigning platform variable to each host</span>
+    <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> host_root[<span style="color:#e6db74">&#34;host_list&#34;</span>]:
+        platform <span style="color:#f92672">=</span> platform_map[host[<span style="color:#e6db74">&#34;platform&#34;</span>]]
+
+        <span style="color:#75715e"># Load in the host specific vars</span>
+        <span style="color:#66d9ef">with</span> open(f<span style="color:#e6db74">&#34;vars/{host[&#39;name&#39;]}.yaml&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> handle:
+            ospf <span style="color:#f92672">=</span> safe_load(handle)
+
+        <span style="color:#75715e"># This portion is essentially configuring our jinja environment</span>
+        j2_env <span style="color:#f92672">=</span> Environment(
+            loader<span style="color:#f92672">=</span>FileSystemLoader(<span style="color:#e6db74">&#34;.&#34;</span>), trim_blocks<span style="color:#f92672">=</span>True, autoescape<span style="color:#f92672">=</span>True
+        )
+        <span style="color:#75715e"># https://www.kite.com/python/answers/how-to-call-a-function-in-a-jinja2-template-in-python</span>
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;address&#34;</span>] <span style="color:#f92672">=</span> address
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;mask&#34;</span>] <span style="color:#f92672">=</span> mask
+
+        template <span style="color:#f92672">=</span> j2_env<span style="color:#f92672">.</span>get_template(f<span style="color:#e6db74">&#34;templates/netmiko/{platform}.j2&#34;</span>)
+        new_ospf_config <span style="color:#f92672">=</span> template<span style="color:#f92672">.</span>render(data<span style="color:#f92672">=</span>ospf)
+        pr(f<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{new_ospf_config}&#34;</span>)
+
+        conn <span style="color:#f92672">=</span> Netmiko(
+            host<span style="color:#f92672">=</span>host[<span style="color:#e6db74">&#34;mgmt&#34;</span>],
+            username<span style="color:#f92672">=</span>host[<span style="color:#e6db74">&#34;username&#34;</span>],
+            password<span style="color:#f92672">=</span>host[<span style="color:#e6db74">&#34;password&#34;</span>],
+            device_type<span style="color:#f92672">=</span>platform,
+        )
+
+        pr(f<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">#### Logged into {conn.find_prompt()}, woohoo! ####&#34;</span>)
+
+        result <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>send_config_set(new_ospf_config<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>))
+
+        <span style="color:#66d9ef">print</span>(result)
+
+        <span style="color:#66d9ef">with</span> open(f<span style="color:#e6db74">&#34;backups/{host[&#39;name&#39;]}.conf&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#66d9ef">as</span> writer:
+            result <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>send_command(<span style="color:#e6db74">&#34;show run&#34;</span>)
+            writer<span style="color:#f92672">.</span>writelines(result)
+
+        conn<span style="color:#f92672">.</span>disconnect()
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><h2 id="bonus-the-ansibilism">Bonus, The Ansibilism</h2>
+<p>Something you will run into when diving into network automation is address management. Hmm or should I say address format conversion. Some network operating systems accept the format of “192.168.1.1/24” for address assignment and others accept “192.168.1.1 255.255.255.255.0”. My background is more in Ansible and I would usually do something like the following.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;192.168.1.1/24&#34;</span>
+<span style="color:#75715e"># Jinja</span>
+interface gig0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+   ip address {{ address <span style="color:#f92672">|</span> ipaddr(<span style="color:#e6db74">&#39;address&#39;</span>) }} {{ address <span style="color:#f92672">|</span> ipaddr(<span style="color:#e6db74">&#39;netmask&#39;</span>) }}
+   no shutdown
+</code></pre></div><p>I was curious if something similar was available when using Jinja in Python. Honestly, I’m not sure and I bet there’s an easier way. If there is please let me know, and tell me “this is the way”. Long story short, this led me to the link included in the script and a bit of time on the python interpreter for testing. My testing went something like the following.</p>
+<p><code>testing</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">In [<span style="color:#ae81ff">1</span>]: <span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+In [<span style="color:#ae81ff">2</span>]: a <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;192.168.1.1/24&#34;</span>
+In [<span style="color:#ae81ff">3</span>]: str(IPNetwork(a)<span style="color:#f92672">.</span>ip)
+Out[<span style="color:#ae81ff">3</span>]: <span style="color:#e6db74">&#39;192.168.1.1&#39;</span>
+In [<span style="color:#ae81ff">4</span>]: str(IPNetwork(a)<span style="color:#f92672">.</span>netmask)
+Out[<span style="color:#ae81ff">4</span>]: <span style="color:#e6db74">&#39;255.255.255.0&#39;</span>
+In [<span style="color:#ae81ff">5</span>]:
+</code></pre></div><p>Now that I had the format, I created two functions, one for the address portion and one for the netmask. Ill show the relevant snippets from all the pieces involved below!</p>
+<p><code>Odds and Ends</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> IPNetwork
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">address</span>(a):
+    a <span style="color:#f92672">=</span> str(IPNetwork(a)<span style="color:#f92672">.</span>ip)
+    <span style="color:#66d9ef">return</span> a
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mask</span>(b):
+    b <span style="color:#f92672">=</span> str(IPNetwork(b)<span style="color:#f92672">.</span>netmask)
+    <span style="color:#66d9ef">return</span> b
+
+<span style="color:#75715e"># https://www.kite.com/python/answers/how-to-call-a-function-in-a-jinja2-template-in-python</span>
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;address&#34;</span>] <span style="color:#f92672">=</span> address
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;mask&#34;</span>] <span style="color:#f92672">=</span> mask
+
+<span style="color:#75715e"># From Template</span>
+ip address {{ address(int<span style="color:#f92672">.</span>ip) }} {{ mask(int<span style="color:#f92672">.</span>ip) }}
+</code></pre></div><h1 id="script-output">Script Output</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{
+     <span style="color:#e6db74">&#39;host_list&#39;</span>: [
+         {
+             <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;vIOS&#39;</span>,
+             <span style="color:#e6db74">&#39;platform&#39;</span>: <span style="color:#e6db74">&#39;ios&#39;</span>,
+             <span style="color:#e6db74">&#39;mgmt&#39;</span>: <span style="color:#e6db74">&#39;192.168.10.122&#39;</span>,
+             <span style="color:#e6db74">&#39;username&#39;</span>: <span style="color:#e6db74">&#39;cisco&#39;</span>,
+             <span style="color:#e6db74">&#39;password&#39;</span>: <span style="color:#e6db74">&#39;cisco&#39;</span>
+         },
+         {
+             <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;ArubaCX&#39;</span>,
+             <span style="color:#e6db74">&#39;platform&#39;</span>: <span style="color:#e6db74">&#39;aoscx&#39;</span>,
+             <span style="color:#e6db74">&#39;mgmt&#39;</span>: <span style="color:#e6db74">&#39;192.168.10.142&#39;</span>,
+             <span style="color:#e6db74">&#39;username&#39;</span>: <span style="color:#e6db74">&#39;admin&#39;</span>,
+             <span style="color:#e6db74">&#39;password&#39;</span>: <span style="color:#e6db74">&#39;aruba&#39;</span>
+         },
+         {
+             <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;vEOS&#39;</span>,
+             <span style="color:#e6db74">&#39;platform&#39;</span>: <span style="color:#e6db74">&#39;eos&#39;</span>,
+             <span style="color:#e6db74">&#39;mgmt&#39;</span>: <span style="color:#e6db74">&#39;192.168.10.151&#39;</span>,
+             <span style="color:#e6db74">&#39;username&#39;</span>: <span style="color:#e6db74">&#39;admin&#39;</span>,
+             <span style="color:#e6db74">&#39;password&#39;</span>: <span style="color:#e6db74">&#39;arista&#39;</span>
+         }
+     ]
+ }
+ Configuration to be loaded on vIOS:
+ router ospf <span style="color:#ae81ff">1</span>
+     router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">3.3</span><span style="color:#f92672">.</span><span style="color:#ae81ff">3.3</span>
+     passive<span style="color:#f92672">-</span>interface default
+     no passive<span style="color:#f92672">-</span>interface GigabitEthernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ interface GigabitEthernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+     no shutdown
+     ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.3</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">0</span>
+ interface Loopback0
+     ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">3.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">1</span>
+ do wr
+ Logged into vIOS<span style="color:#75715e">#, woohoo!</span>
+ configure terminal
+ Enter configuration commands, one per line<span style="color:#f92672">.</span>  End <span style="color:#66d9ef">with</span> CNTL<span style="color:#f92672">/</span>Z<span style="color:#f92672">.</span>
+ vIOS(config)<span style="color:#75715e">#router ospf 1</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#    router-id 3.3.3.3</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#    passive-interface default</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#    no passive-interface GigabitEthernet0/0</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#interface GigabitEthernet0/0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    no shutdown</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip address 10.0.0.3 255.255.255.0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip ospf 1 area 0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#interface Loopback0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip address 192.168.3.1 255.255.255.0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip ospf 1 area 1</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#do wr</span>
+ Building configuration<span style="color:#960050;background-color:#1e0010">…</span>
+ [OK]
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#end</span>
+ vIOS<span style="color:#75715e">#</span>
+ Configuration to be loaded on ArubaCX:
+ router ospf <span style="color:#ae81ff">1</span>
+     router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">1.1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span>
+     passive<span style="color:#f92672">-</span>interface default
+     area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+     area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+ interface <span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1</span>
+     no shutdown
+     ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+     no ip ospf passive
+ interface loopback <span style="color:#ae81ff">0</span>
+     ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+ copy running<span style="color:#f92672">-</span>config startup<span style="color:#f92672">-</span>config
+ Logged into ArubaCX<span style="color:#75715e">#, woohoo!</span>
+ configure terminal
+ ArubaCX(config)<span style="color:#75715e"># router ospf 1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     router-id 1.1.1.1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     passive-interface default</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     area 0.0.0.0</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     area 0.0.0.1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e"># interface 1/1/1</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     no shutdown</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip address 10.0.0.1/24</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip ospf 1 area 0.0.0.0</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     no ip ospf passive</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e"># interface loopback 0</span>
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip address 192.168.1.1/24</span>
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip ospf 1 area 0.0.0.1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e"># copy running-config startup-config</span>
+ Copying configuration: []
+ Copying configuration: [<span style="color:#f92672">|</span>]
+ Copying configuration: [<span style="color:#f92672">/</span>]
+ Copying configuration: [<span style="color:#f92672">-</span>]
+ Copying configuration: []
+ Copying configuration: [<span style="color:#f92672">|</span>]
+ Copying configuration: [<span style="color:#f92672">/</span>]
+ Copying configuration: [<span style="color:#f92672">-</span>]
+ Copying configuration: [Success]
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e"># end</span>
+ ArubaCX<span style="color:#75715e">#</span>
+ Configuration to be loaded on vEOS:
+ ip routing
+ router ospf <span style="color:#ae81ff">1</span>
+     router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">2.2</span><span style="color:#f92672">.</span><span style="color:#ae81ff">2.2</span>
+     passive<span style="color:#f92672">-</span>interface default
+     no passive<span style="color:#f92672">-</span>interface Ethernet1
+ interface Ethernet1
+     no switchport
+     no shutdown
+     ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ interface Loopback0
+     ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">2.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+ do wr
+ Logged into vEOS<span style="color:#75715e">#, woohoo!</span>
+ configure terminal
+ vEOS(config)<span style="color:#75715e">#ip routing</span>
+ vEOS(config)<span style="color:#75715e">#router ospf 1</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#    router-id 2.2.2.2</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#    passive-interface default</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#    no passive-interface Ethernet1</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#interface Ethernet1</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    no switchport</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    no shutdown</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    ip address 10.0.0.2/24</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    ip ospf area 0.0.0.0</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#interface Loopback0</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#    ip address 192.168.2.1/24</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#    ip ospf area 0.0.0.1</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#do wr</span>
+ Copy completed successfully<span style="color:#f92672">.</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#end</span>
+ vEOS<span style="color:#75715e">#</span>
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you for reading this far. I really do appreciate it. Stay safe and cheers!</p>
+<ul>
+<li><a href="https://www.pluralsight.com/authors/nick-russo">Courses by Nick Russo</a></li>
+<li><a href="https://github.com/JulioPDX/multi-vendor-python">GitHub Repo</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</title>

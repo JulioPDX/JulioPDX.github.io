@@ -9,6 +9,8 @@ tags:
   - Aruba
   - Data Center
   - OSPFv3
+authors:
+  - Julio Perez
 ---
 
 ![Link Local](/blog/images/leaf_spine_link_local.png)

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
+The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors." />
+<meta name="keywords" content=", Arista, Aruba, Network Automation, Cisco" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/" />
+
+
+    <title>
+        
+            Automating Multi Vendor Environments With Netmiko :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Automating Multi Vendor Environments With Netmiko">
+<meta itemprop="description" content="Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
+The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.">
+<meta itemprop="datePublished" content="2021-04-02T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2021-04-02T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1334">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="Arista,Aruba,Network Automation,Cisco," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="Automating Multi Vendor Environments With Netmiko"/>
+<meta name="twitter:description" content="Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
+The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors."/>
+
+
+
+
+    <meta property="og:title" content="Automating Multi Vendor Environments With Netmiko" />
+<meta property="og:description" content="Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
+The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2021-04-02T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-04-02T00:00:00+00:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-04-02 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        7 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/">Automating Multi Vendor Environments With Netmiko</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#host-variables">Host Variables</a></li>
+    <li><a href="#ospf-and-jinja">OSPF and Jinja</a></li>
+    <li><a href="#the-script">The Script</a></li>
+    <li><a href="#bonus-the-ansibilism">Bonus, The Ansibilism</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <p><img src="/blog/images/multi_ospf.png" alt="Multi Routers"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.</p>
+<p>The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors. As you can see above, we are featuring Arista, Aruba, and Cisco. The topology is nothing crazy. All router facing ports are in area 0 and sharing routes. Every router will have a loopback interface to host a network. The only other caveat is that interfaces are passive by default and we enable each interface separately.</p>
+<h2 id="host-variables">Host Variables</h2>
+<p>Each host has its own variable file. I tried to use something that made sense to me. There’s probably a better way to organize this file, it works, so I can dig it. Below is a sample of the Arista vEOS node. Each one is essentially the same besides two or three variables.</p>
+<p><code>vEOS.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">vEOS</span>
+<span style="color:#f92672">interfaces</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Ethernet1</span>
+    <span style="color:#f92672">ip</span>: <span style="color:#ae81ff">10.0.0.2</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ospf</span>:
+      <span style="color:#f92672">process</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">area</span>: <span style="color:#ae81ff">0</span>
+      <span style="color:#f92672">passive</span>: <span style="color:#66d9ef">False</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Loopback0</span>
+    <span style="color:#f92672">ip</span>: <span style="color:#ae81ff">192.168.2.1</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ospf</span>:
+      <span style="color:#f92672">process</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">area</span>: <span style="color:#ae81ff">1</span>
+<span style="color:#f92672">ospf</span>:
+  <span style="color:#f92672">process</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">router_id</span>: <span style="color:#ae81ff">2.2.2.2</span>
+  <span style="color:#f92672">area</span>:
+    - <span style="color:#ae81ff">0</span>
+    - <span style="color:#ae81ff">1</span>
+</code></pre></div><h2 id="ospf-and-jinja">OSPF and Jinja</h2>
+<p>The jinja file process isn’t too bad. If you know loops, if, and else statements, you’ll be just fine. I’m pretty familiar with Aruba and Cisco but not so much with Arista. Lucky for me Arista is eerily similar to Cisco Syntax. I generally work my way through configuring the devices manually once and then convert the configurations to a template. Below is the Aruba version of the jinja template, each vendor gets its own jinja file.</p>
+<p><code>hp_procurve.j2</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jinja" data-lang="jinja"><span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> data.ospf <span style="color:#75715e">%}</span>
+router ospf <span style="color:#75715e">{{</span> data.ospf.process <span style="color:#75715e">}}</span>
+    router-id <span style="color:#75715e">{{</span> data.ospf.router_id <span style="color:#75715e">}}</span>
+    passive-interface default
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> area <span style="color:#66d9ef">in</span> data.ospf.areas <span style="color:#75715e">%}</span>
+    area <span style="color:#75715e">{{</span> area <span style="color:#75715e">}}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> int <span style="color:#66d9ef">in</span> data.interfaces <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf <span style="color:#75715e">%}</span>
+interface <span style="color:#75715e">{{</span> int.name <span style="color:#75715e">}}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;back&#34;</span> <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">in</span> int.name <span style="color:#75715e">%}</span>
+    no shutdown
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span><span style="color:#75715e">%}</span>
+    ip address <span style="color:#75715e">{{</span> int.ip <span style="color:#75715e">}}</span>
+    ip ospf <span style="color:#75715e">{{</span> int.ospf.process <span style="color:#75715e">}}</span> area <span style="color:#75715e">{{</span> int.ospf.area <span style="color:#75715e">}}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf.passive <span style="color:#f92672">==</span> <span style="color:#66d9ef">False</span> <span style="color:#75715e">%}</span>
+    no ip ospf passive
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
+<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+copy running-config startup-config
+</code></pre></div><h2 id="the-script">The Script</h2>
+<p>I wont go too deep in breaking down the file as I think it would take a while and I would really recommend you check out Nicks’ course I linked above. If I were to break down the script at a high level, below are the steps that are being performed.</p>
+<ul>
+<li>Import the required libraries.</li>
+<li>Define functions for address management (more on this later).</li>
+<li>Define the main function to load in host variables, jinja environment, and loop over each host.</li>
+<li>Bonus, network backup task (why not?).</li>
+</ul>
+<p><code>ospf_netmiko.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#! /usr/bin/env python</span>
+
+<span style="color:#75715e"># Import requirements</span>
+<span style="color:#f92672">from</span> yaml <span style="color:#f92672">import</span> safe_load
+<span style="color:#f92672">from</span> netmiko <span style="color:#f92672">import</span> Netmiko
+<span style="color:#f92672">from</span> jinja2 <span style="color:#f92672">import</span> Environment, FileSystemLoader
+<span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> IPNetwork
+<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> <span style="color:#66d9ef">print</span> <span style="color:#66d9ef">as</span> pr
+
+<span style="color:#75715e"># functions to be used in jinja templates for IP management</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">address</span>(a):
+    a <span style="color:#f92672">=</span> str(IPNetwork(a)<span style="color:#f92672">.</span>ip)
+    <span style="color:#66d9ef">return</span> a
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mask</span>(b):
+    b <span style="color:#f92672">=</span> str(IPNetwork(b)<span style="color:#f92672">.</span>netmask)
+    <span style="color:#66d9ef">return</span> b
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+
+    <span style="color:#75715e"># Open hosts file as variable for future use</span>
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;hosts.yaml&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> handle:
+        host_root <span style="color:#f92672">=</span> safe_load(handle)
+    pr(host_root)
+
+    <span style="color:#75715e"># Set platform map to match netmiko</span>
+    platform_map <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;ios&#34;</span>: <span style="color:#e6db74">&#34;cisco_ios&#34;</span>, <span style="color:#e6db74">&#34;arista&#34;</span>: <span style="color:#e6db74">&#34;arista_eos&#34;</span>, <span style="color:#e6db74">&#34;aruba&#34;</span>: <span style="color:#e6db74">&#34;hp_procurve&#34;</span>}
+
+    <span style="color:#75715e"># Assigning platform variable to each host</span>
+    <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> host_root[<span style="color:#e6db74">&#34;host_list&#34;</span>]:
+        platform <span style="color:#f92672">=</span> platform_map[host[<span style="color:#e6db74">&#34;platform&#34;</span>]]
+
+        <span style="color:#75715e"># Load in the host specific vars</span>
+        <span style="color:#66d9ef">with</span> open(f<span style="color:#e6db74">&#34;vars/{host[&#39;name&#39;]}.yaml&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> handle:
+            ospf <span style="color:#f92672">=</span> safe_load(handle)
+
+        <span style="color:#75715e"># This portion is essentially configuring our jinja environment</span>
+        j2_env <span style="color:#f92672">=</span> Environment(
+            loader<span style="color:#f92672">=</span>FileSystemLoader(<span style="color:#e6db74">&#34;.&#34;</span>), trim_blocks<span style="color:#f92672">=</span>True, autoescape<span style="color:#f92672">=</span>True
+        )
+        <span style="color:#75715e"># https://www.kite.com/python/answers/how-to-call-a-function-in-a-jinja2-template-in-python</span>
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;address&#34;</span>] <span style="color:#f92672">=</span> address
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;mask&#34;</span>] <span style="color:#f92672">=</span> mask
+
+        template <span style="color:#f92672">=</span> j2_env<span style="color:#f92672">.</span>get_template(f<span style="color:#e6db74">&#34;templates/netmiko/{platform}.j2&#34;</span>)
+        new_ospf_config <span style="color:#f92672">=</span> template<span style="color:#f92672">.</span>render(data<span style="color:#f92672">=</span>ospf)
+        pr(f<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{new_ospf_config}&#34;</span>)
+
+        conn <span style="color:#f92672">=</span> Netmiko(
+            host<span style="color:#f92672">=</span>host[<span style="color:#e6db74">&#34;mgmt&#34;</span>],
+            username<span style="color:#f92672">=</span>host[<span style="color:#e6db74">&#34;username&#34;</span>],
+            password<span style="color:#f92672">=</span>host[<span style="color:#e6db74">&#34;password&#34;</span>],
+            device_type<span style="color:#f92672">=</span>platform,
+        )
+
+        pr(f<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">#### Logged into {conn.find_prompt()}, woohoo! ####&#34;</span>)
+
+        result <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>send_config_set(new_ospf_config<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>))
+
+        <span style="color:#66d9ef">print</span>(result)
+
+        <span style="color:#66d9ef">with</span> open(f<span style="color:#e6db74">&#34;backups/{host[&#39;name&#39;]}.conf&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#66d9ef">as</span> writer:
+            result <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>send_command(<span style="color:#e6db74">&#34;show run&#34;</span>)
+            writer<span style="color:#f92672">.</span>writelines(result)
+
+        conn<span style="color:#f92672">.</span>disconnect()
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><h2 id="bonus-the-ansibilism">Bonus, The Ansibilism</h2>
+<p>Something you will run into when diving into network automation is address management. Hmm or should I say address format conversion. Some network operating systems accept the format of “192.168.1.1/24” for address assignment and others accept “192.168.1.1 255.255.255.255.0”. My background is more in Ansible and I would usually do something like the following.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;192.168.1.1/24&#34;</span>
+<span style="color:#75715e"># Jinja</span>
+interface gig0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+   ip address {{ address <span style="color:#f92672">|</span> ipaddr(<span style="color:#e6db74">&#39;address&#39;</span>) }} {{ address <span style="color:#f92672">|</span> ipaddr(<span style="color:#e6db74">&#39;netmask&#39;</span>) }}
+   no shutdown
+</code></pre></div><p>I was curious if something similar was available when using Jinja in Python. Honestly, I’m not sure and I bet there’s an easier way. If there is please let me know, and tell me “this is the way”. Long story short, this led me to the link included in the script and a bit of time on the python interpreter for testing. My testing went something like the following.</p>
+<p><code>testing</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">In [<span style="color:#ae81ff">1</span>]: <span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+In [<span style="color:#ae81ff">2</span>]: a <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;192.168.1.1/24&#34;</span>
+In [<span style="color:#ae81ff">3</span>]: str(IPNetwork(a)<span style="color:#f92672">.</span>ip)
+Out[<span style="color:#ae81ff">3</span>]: <span style="color:#e6db74">&#39;192.168.1.1&#39;</span>
+In [<span style="color:#ae81ff">4</span>]: str(IPNetwork(a)<span style="color:#f92672">.</span>netmask)
+Out[<span style="color:#ae81ff">4</span>]: <span style="color:#e6db74">&#39;255.255.255.0&#39;</span>
+In [<span style="color:#ae81ff">5</span>]:
+</code></pre></div><p>Now that I had the format, I created two functions, one for the address portion and one for the netmask. Ill show the relevant snippets from all the pieces involved below!</p>
+<p><code>Odds and Ends</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> IPNetwork
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">address</span>(a):
+    a <span style="color:#f92672">=</span> str(IPNetwork(a)<span style="color:#f92672">.</span>ip)
+    <span style="color:#66d9ef">return</span> a
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mask</span>(b):
+    b <span style="color:#f92672">=</span> str(IPNetwork(b)<span style="color:#f92672">.</span>netmask)
+    <span style="color:#66d9ef">return</span> b
+
+<span style="color:#75715e"># https://www.kite.com/python/answers/how-to-call-a-function-in-a-jinja2-template-in-python</span>
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;address&#34;</span>] <span style="color:#f92672">=</span> address
+        j2_env<span style="color:#f92672">.</span>globals[<span style="color:#e6db74">&#34;mask&#34;</span>] <span style="color:#f92672">=</span> mask
+
+<span style="color:#75715e"># From Template</span>
+ip address {{ address(int<span style="color:#f92672">.</span>ip) }} {{ mask(int<span style="color:#f92672">.</span>ip) }}
+</code></pre></div><h1 id="script-output">Script Output</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{
+     <span style="color:#e6db74">&#39;host_list&#39;</span>: [
+         {
+             <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;vIOS&#39;</span>,
+             <span style="color:#e6db74">&#39;platform&#39;</span>: <span style="color:#e6db74">&#39;ios&#39;</span>,
+             <span style="color:#e6db74">&#39;mgmt&#39;</span>: <span style="color:#e6db74">&#39;192.168.10.122&#39;</span>,
+             <span style="color:#e6db74">&#39;username&#39;</span>: <span style="color:#e6db74">&#39;cisco&#39;</span>,
+             <span style="color:#e6db74">&#39;password&#39;</span>: <span style="color:#e6db74">&#39;cisco&#39;</span>
+         },
+         {
+             <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;ArubaCX&#39;</span>,
+             <span style="color:#e6db74">&#39;platform&#39;</span>: <span style="color:#e6db74">&#39;aoscx&#39;</span>,
+             <span style="color:#e6db74">&#39;mgmt&#39;</span>: <span style="color:#e6db74">&#39;192.168.10.142&#39;</span>,
+             <span style="color:#e6db74">&#39;username&#39;</span>: <span style="color:#e6db74">&#39;admin&#39;</span>,
+             <span style="color:#e6db74">&#39;password&#39;</span>: <span style="color:#e6db74">&#39;aruba&#39;</span>
+         },
+         {
+             <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;vEOS&#39;</span>,
+             <span style="color:#e6db74">&#39;platform&#39;</span>: <span style="color:#e6db74">&#39;eos&#39;</span>,
+             <span style="color:#e6db74">&#39;mgmt&#39;</span>: <span style="color:#e6db74">&#39;192.168.10.151&#39;</span>,
+             <span style="color:#e6db74">&#39;username&#39;</span>: <span style="color:#e6db74">&#39;admin&#39;</span>,
+             <span style="color:#e6db74">&#39;password&#39;</span>: <span style="color:#e6db74">&#39;arista&#39;</span>
+         }
+     ]
+ }
+ Configuration to be loaded on vIOS:
+ router ospf <span style="color:#ae81ff">1</span>
+     router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">3.3</span><span style="color:#f92672">.</span><span style="color:#ae81ff">3.3</span>
+     passive<span style="color:#f92672">-</span>interface default
+     no passive<span style="color:#f92672">-</span>interface GigabitEthernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ interface GigabitEthernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+     no shutdown
+     ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.3</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">0</span>
+ interface Loopback0
+     ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">3.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">1</span>
+ do wr
+ Logged into vIOS<span style="color:#75715e">#, woohoo!</span>
+ configure terminal
+ Enter configuration commands, one per line<span style="color:#f92672">.</span>  End <span style="color:#66d9ef">with</span> CNTL<span style="color:#f92672">/</span>Z<span style="color:#f92672">.</span>
+ vIOS(config)<span style="color:#75715e">#router ospf 1</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#    router-id 3.3.3.3</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#    passive-interface default</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#    no passive-interface GigabitEthernet0/0</span>
+ vIOS(config<span style="color:#f92672">-</span>router)<span style="color:#75715e">#interface GigabitEthernet0/0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    no shutdown</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip address 10.0.0.3 255.255.255.0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip ospf 1 area 0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#interface Loopback0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip address 192.168.3.1 255.255.255.0</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#    ip ospf 1 area 1</span>
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#do wr</span>
+ Building configuration<span style="color:#960050;background-color:#1e0010">…</span>
+ [OK]
+ vIOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#end</span>
+ vIOS<span style="color:#75715e">#</span>
+ Configuration to be loaded on ArubaCX:
+ router ospf <span style="color:#ae81ff">1</span>
+     router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">1.1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span>
+     passive<span style="color:#f92672">-</span>interface default
+     area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+     area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+ interface <span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1</span>
+     no shutdown
+     ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+     no ip ospf passive
+ interface loopback <span style="color:#ae81ff">0</span>
+     ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf <span style="color:#ae81ff">1</span> area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+ copy running<span style="color:#f92672">-</span>config startup<span style="color:#f92672">-</span>config
+ Logged into ArubaCX<span style="color:#75715e">#, woohoo!</span>
+ configure terminal
+ ArubaCX(config)<span style="color:#75715e"># router ospf 1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     router-id 1.1.1.1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     passive-interface default</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     area 0.0.0.0</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">#     area 0.0.0.1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>ospf<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e"># interface 1/1/1</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     no shutdown</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip address 10.0.0.1/24</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip ospf 1 area 0.0.0.0</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     no ip ospf passive</span>
+ ArubaCX(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e"># interface loopback 0</span>
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip address 192.168.1.1/24</span>
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e">#     ip ospf 1 area 0.0.0.1</span>
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e"># copy running-config startup-config</span>
+ Copying configuration: []
+ Copying configuration: [<span style="color:#f92672">|</span>]
+ Copying configuration: [<span style="color:#f92672">/</span>]
+ Copying configuration: [<span style="color:#f92672">-</span>]
+ Copying configuration: []
+ Copying configuration: [<span style="color:#f92672">|</span>]
+ Copying configuration: [<span style="color:#f92672">/</span>]
+ Copying configuration: [<span style="color:#f92672">-</span>]
+ Copying configuration: [Success]
+ ArubaCX(config<span style="color:#f92672">-</span>loopback<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span>)<span style="color:#75715e"># end</span>
+ ArubaCX<span style="color:#75715e">#</span>
+ Configuration to be loaded on vEOS:
+ ip routing
+ router ospf <span style="color:#ae81ff">1</span>
+     router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">2.2</span><span style="color:#f92672">.</span><span style="color:#ae81ff">2.2</span>
+     passive<span style="color:#f92672">-</span>interface default
+     no passive<span style="color:#f92672">-</span>interface Ethernet1
+ interface Ethernet1
+     no switchport
+     no shutdown
+     ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ interface Loopback0
+     ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">2.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+     ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+ do wr
+ Logged into vEOS<span style="color:#75715e">#, woohoo!</span>
+ configure terminal
+ vEOS(config)<span style="color:#75715e">#ip routing</span>
+ vEOS(config)<span style="color:#75715e">#router ospf 1</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#    router-id 2.2.2.2</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#    passive-interface default</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#    no passive-interface Ethernet1</span>
+ vEOS(config<span style="color:#f92672">-</span>router<span style="color:#f92672">-</span>ospf)<span style="color:#75715e">#interface Ethernet1</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    no switchport</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    no shutdown</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    ip address 10.0.0.2/24</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#    ip ospf area 0.0.0.0</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Et1)<span style="color:#75715e">#interface Loopback0</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#    ip address 192.168.2.1/24</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#    ip ospf area 0.0.0.1</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#do wr</span>
+ Copy completed successfully<span style="color:#f92672">.</span>
+ vEOS(config<span style="color:#f92672">-</span><span style="color:#66d9ef">if</span><span style="color:#f92672">-</span>Lo0)<span style="color:#75715e">#end</span>
+ vEOS<span style="color:#75715e">#</span>
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you for reading this far. I really do appreciate it. Stay safe and cheers!</p>
+<ul>
+<li><a href="https://www.pluralsight.com/authors/nick-russo">Courses by Nick Russo</a></li>
+<li><a href="https://github.com/JulioPDX/multi-vendor-python">GitHub Repo</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/arista/">Arista</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/aruba/">Aruba</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/network-automation/">Network Automation</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/cisco/">Cisco</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1334 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-04-01 17:00
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">Simple Radius Server in EVE-NG</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/">
+                    <span class="button__text">Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

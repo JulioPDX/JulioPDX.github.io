@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 27 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/network-automation/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/network-automation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Automating Multi Vendor Environments With Netmiko</title>
+      <link>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
+      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
+      <description>Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
+The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.</description>
+    </item>
+    
     <item>
       <title>Network Validation With Nornir &amp; Napalm</title>
       <link>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</link>

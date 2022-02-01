@@ -7,13 +7,85 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 03 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Aruba</title>
       <link>https://juliopdx.github.io/tags/aruba/</link>
-      <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/aruba/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cisco</title>
+      <link>https://juliopdx.github.io/tags/cisco/</link>
+      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/cisco/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>EIGRPv6</title>
+      <link>https://juliopdx.github.io/tags/eigrpv6/</link>
+      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/eigrpv6/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IPv6</title>
+      <link>https://juliopdx.github.io/tags/ipv6/</link>
+      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ipv6/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSPFv3</title>
+      <link>https://juliopdx.github.io/tags/ospfv3/</link>
+      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ospfv3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>EVE-NG</title>
+      <link>https://juliopdx.github.io/tags/eve-ng/</link>
+      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/eve-ng/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RADIUS</title>
+      <link>https://juliopdx.github.io/tags/radius/</link>
+      <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/radius/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Arista</title>
+      <link>https://juliopdx.github.io/tags/arista/</link>
+      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/arista/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Network Automation</title>
+      <link>https://juliopdx.github.io/tags/network-automation/</link>
+      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
       <description></description>
     </item>
     
@@ -23,24 +95,6 @@
       <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/data-center/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>IPv6</title>
-      <link>https://juliopdx.github.io/tags/ipv6/</link>
-      <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/ipv6/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>OSPFv3</title>
-      <link>https://juliopdx.github.io/tags/ospfv3/</link>
-      <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/ospfv3/</guid>
       <description></description>
     </item>
     
@@ -59,15 +113,6 @@
       <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/napalm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Network Automation</title>
-      <link>https://juliopdx.github.io/tags/network-automation/</link>
-      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
       <description></description>
     </item>
     
