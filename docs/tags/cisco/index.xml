@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 03 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 15 Aug 2021 11:12:03 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Basic Network Testing With Nornir and NTC Templates</title>
+      <link>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
+      <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
+      <description>Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&amp;rsquo;ll share with you.</description>
+    </item>
+    
+    <item>
+      <title>Automating MPLS L3VPNs With Nornir</title>
+      <link>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
+      <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
+      <description>Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.</description>
+    </item>
+    
     <item>
       <title>Route Redistribution OSPFv3 and EIGRPv6</title>
       <link>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>

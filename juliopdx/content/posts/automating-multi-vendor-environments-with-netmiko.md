@@ -54,7 +54,7 @@ The jinja file process isn’t too bad. If you know loops, if, and else statemen
 
 `hp_procurve.j2`
 
-```jinja
+```jinja2
 {% if data.ospf %}
 router ospf {{ data.ospf.process }}
     router-id {{ data.ospf.router_id }}

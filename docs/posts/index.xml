@@ -6,8 +6,943 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 03 May 2021 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Sun, 15 Aug 2021 11:12:03 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Basic Network Testing With Nornir and NTC Templates</title>
+            <link>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
+            <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
+            <description>Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&amp;rsquo;ll share with you.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&rsquo;ll share with you.</p>
+<h2 id="the-road-to-network-testing">The Road to Network Testing</h2>
+<p>Initially I wanted to incorporate pytest for this weekend project. It generally made sense and experienced folks working in python use this to test anything from simple functions to extremely large code bases. I ran into a few issues when trying to incorporate pytest. Again, I’m fairly inexperienced in this realm and I’m sure a more experienced person would not run into these issues. The main issue I had with pytest was jobs failing after the first failed assert. Even when explicitly setting the <em>–maxfail</em> option. Overall I thought working with pytest was really fun and I cant wait to dig into it more.</p>
+<p>Phase two of network testing had me working with Nornir and Netmiko to send a command, set <code>use_textfsm=True</code>, and then run a few if statements to check matching configuration. I&rsquo;ll include a portion of what that looked like below.</p>
+<p><code>Nornir and Netmiko</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">result <span style="color:#f92672">=</span> nornir<span style="color:#f92672">.</span>run(
+    name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;GET VRF&#34;</span>,
+    task<span style="color:#f92672">=</span>netmiko_send_command,
+    command_string<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show vrf&#34;</span>,
+    use_textfsm<span style="color:#f92672">=</span>True,
+)
+
+<span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
+    vrf_parsed <span style="color:#f92672">=</span> result[host]<span style="color:#f92672">.</span>result
+    list_of_vrf_values <span style="color:#f92672">=</span> [value <span style="color:#66d9ef">for</span> elem <span style="color:#f92672">in</span> vrf_parsed <span style="color:#66d9ef">for</span> value <span style="color:#f92672">in</span> elem<span style="color:#f92672">.</span>values()]
+
+    <span style="color:#66d9ef">print</span>()
+
+    <span style="color:#66d9ef">for</span> value <span style="color:#f92672">in</span> main_vrfs:
+        <span style="color:#66d9ef">if</span> value <span style="color:#f92672">in</span> list_of_vrf_values:
+            pretty(f<span style="color:#e6db74">&#34;[bold blue]{value} VRF is configured on {host}[/bold blue]&#34;</span>)
+        <span style="color:#66d9ef">else</span>:
+            pretty(f<span style="color:#e6db74">&#34;[bold red]{value} VRF is not configured on {host}[/bold red]&#34;</span>)
+</code></pre></div><p>This approach generally worked but I had an issue in my lab. I’m not sure if it was a Netmiko issue or just my lab being weird and getting connection timeouts. In the end I decided to use Nornir with Scrapli to send the commands. Connections when using Scrapli seemed to just work, great job Carl! Once this was retrieved, I could then use the <em>parse_output</em> function from the <em>ntc_templates</em> library. Feel free to check out the repository with the test script (linked below).</p>
+<h2 id="vrf-validation">VRF Validation</h2>
+<p><code>Imports</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> yaml
+<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> <span style="color:#66d9ef">print</span> <span style="color:#66d9ef">as</span> pretty
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_scrapli.tasks <span style="color:#f92672">import</span> send_command
+<span style="color:#f92672">from</span> ntc_templates.parse <span style="color:#f92672">import</span> parse_output
+</code></pre></div><p>The imports are nothing fancy. Just importing everything we will need for the script.</p>
+<ul>
+<li>os – Set environemt variables during script run</li>
+<li>yaml – Handle interaction with yaml stuffs</li>
+<li>rich – Because rich, thanks Will</li>
+<li>InitNornir- Run all the things for Nornir</li>
+<li>send_command – To send commands 🙂</li>
+<li>parse_output – Great library for turning output into structured data</li>
+</ul>
+<p><code>load yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">main_vrfs <span style="color:#f92672">=</span> []
+
+<span style="color:#75715e"># Create list of VRFs defined in groups.yaml</span>
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;groups.yaml&#34;</span>) <span style="color:#66d9ef">as</span> f:
+    data <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>load(f, Loader<span style="color:#f92672">=</span>yaml<span style="color:#f92672">.</span>FullLoader)[<span style="color:#e6db74">&#34;pe&#34;</span>][<span style="color:#e6db74">&#34;data&#34;</span>][<span style="color:#e6db74">&#34;vrfs&#34;</span>]
+    <span style="color:#66d9ef">for</span> vrf <span style="color:#f92672">in</span> data:
+        main_vrfs<span style="color:#f92672">.</span>append(vrf[<span style="color:#e6db74">&#34;name&#34;</span>])
+</code></pre></div><p>I thought this was pretty slick. We are opening the <em>groups.yaml</em> file seen from the previous post. This file lists all of our VRFs to be configured on the PE devices. Why not reuse it and save some typing? Once that is done we set the VRF portion of the yaml file to a variable called <em>data</em>. After this we loop over all the VRFs and add just the name to our empty list above. Hold that thought as this list will be used later in the script.</p>
+<p><code>test_vrf function intro</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_vrf</span>():
+
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Main VRF test
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    os<span style="color:#f92672">.</span>environ[
+        <span style="color:#e6db74">&#34;NET_TEXTFSM&#34;</span>
+    ] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./venv/lib/python3.9/site-packages/ntc_templates/templates&#34;</span>
+
+    nornir <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config.yaml&#34;</span>)
+
+    result <span style="color:#f92672">=</span> nornir<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;GET VRF&#34;</span>,
+        task<span style="color:#f92672">=</span>send_command,
+        command<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show vrf&#34;</span>,
+    )
+</code></pre></div><p>If any of you have worked with pytest, you can tell by the function naming that I was serious about incorporating it. I will in the future! Most of this has been shown in previous posts but one little difference is that <em>os.environ section</em>. When I was building this, the script couldn’t locate the <em>ntc_templates</em>. Essentially, we are just telling the script where to find the templates. You will probably have to update this for your environment.</p>
+<p><code>For all the hosts</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
+        remote_vrfs <span style="color:#f92672">=</span> []
+        vrf_parsed <span style="color:#f92672">=</span> parse_output(
+            platform<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cisco_ios&#34;</span>, command<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show vrf&#34;</span>, data<span style="color:#f92672">=</span>result[host]<span style="color:#f92672">.</span>result
+        )
+
+        <span style="color:#75715e"># Looping over all parsed VRFs to build new list</span>
+        <span style="color:#66d9ef">for</span> remote_vrf <span style="color:#f92672">in</span> vrf_parsed:
+            remote_vrfs<span style="color:#f92672">.</span>append(remote_vrf[<span style="color:#e6db74">&#34;name&#34;</span>])
+</code></pre></div><p>I really love this about python and programming in general, what you see above is fairly basic and learned pretty early on in programming studies. But the power it can demonstrate is really neat to me. At this point in the script, all hosts have been connected to and information captured. We are using this initial for loop to loop over the data that was gathered from the <em>show vrf</em> command. We create an empty list called <em>remote_vrfs</em>, then run the <em>parse_output</em> function from the <em>ntc_templates</em> library to get data in a structured format. Once that is done we run another for loop to add VRF names gathered from PE routers to our previously empty list. At this point we now have two lists created. One for VRFs we want configured on devices and one from the actual VRFs already configured on the PE routers.</p>
+<p><code>Set Theory</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">        set_diff <span style="color:#f92672">=</span> set(main_vrfs) <span style="color:#f92672">-</span> set(remote_vrfs)
+
+        <span style="color:#75715e"># If a set difference is found, print the nice red output!</span>
+        <span style="color:#66d9ef">if</span> set_diff:
+            pretty(
+                f<span style="color:#e6db74">&#34;[bold red]The following VRFs are not configured on {host}: {set_diff [/bold red]&#34;</span>
+            )
+        <span style="color:#66d9ef">else</span>:
+            pretty(f<span style="color:#e6db74">&#34;[bold blue]All VRF tests passed on router {host}[/bold blue]&#34;</span>)
+</code></pre></div><p>Good old set theory to the rescue. I learned this a while back from a course by… who other than Nick Russo. Discrete mathematics in high school may have helped but that was way too long ago. We take the two lists we have already created, then convert them to sets. From there we just look for the difference between <em>main_vrfs</em> set and the <em>remote_vrfs</em> set. Below is an example on the interpreter of what I hope to accomplish.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> main_vrfs <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;CUSTOMER_777&#34;</span>,<span style="color:#e6db74">&#34;CUSTOMER_789&#34;</span>}
+<span style="color:#f92672">&gt;&gt;&gt;</span> remote_vrfs <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;CUSTOMER_777&#34;</span>,<span style="color:#e6db74">&#34;CUSTOMER_789&#34;</span>,<span style="color:#e6db74">&#34;MGMT&#34;</span>}
+<span style="color:#f92672">&gt;&gt;&gt;</span> main_vrfs <span style="color:#f92672">-</span> remote_vrfs
+set()
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><h2 id="script-output">Script Output</h2>
+<p><img src="/blog/images/vrf_check_working.png" alt="VRF Test Passed"></p>
+<p><img src="/blog/images/vrf_check_not_working.png" alt="VRF Test Failed"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you for staying this long. I hope you enjoyed the post and found something useful. As you can see I have a long way to go with network testing but it really is an important skill. I&rsquo;ll include some links below!</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/auto_mpls_l3vpn">GitHub Repository</a></li>
+<li><a href="https://nornir.readthedocs.io/en/latest/">Nornir</a></li>
+<li><a href="https://github.com/scrapli/nornir_scrapli">Scrapli</a></li>
+<li><a href="https://github.com/networktocode/ntc-templates">NTC Templates</a></li>
+<li><a href="https://www.geeksforgeeks.org/python-set-difference/">Set Theory</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Automating MPLS L3VPNs With Nornir</title>
+            <link>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
+            <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
+            <description>Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/auto_mpls.png" alt="Topology"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment. Configuring the provider edge devices to allow connectivity between customer edge routers.</p>
+<p>In serious news, that was the intro you see in those recipe websites where you just want to see the ingredients and the cooking directions but there’s a whole life story on the dish or how it came about…. well this blog post is similar! Usually when studying for an exam I tend to get tunnel vision and focus on the task at hand. That also had me dropping the love for automation a bit. One of the main points in ENARSI is learning about MPLS and more specifically MPLS L3VPNs. I had such a joy learning more about this topic and running through multiple labs to get used to the technology. I wont go too deep into MPLS in this post since I’m assuming the reader is trying to automate that exact task or is familiar with it already.</p>
+<h2 id="topology-brief">Topology Brief</h2>
+<p>As you can see by the featured image in this post, we have four provider edge (PE) routers and four customer edge (CE) routes. Each PE device connects to one CE device, and all PE routers connect to the provider (P) router, also acting as our BGP route reflector. You might be thinking, why the route reflector? You could run iBGP sessions between all PE devices but down the road that can lead to a lot of overhead. In this case all PE devices only have one internal BGP relationship between the P router and one external BGP peering with the CE routers. This also makes the iBGP configuration on the PE routers very cookie cutter. In this case we are pretending not to have control of the CE devices, so those will already be preconfigured. I will include the configurations on the nodes so you can see what is all preconfigured.</p>
+<h2 id="ce-routers-configuration-example">Ce Routers Configuration Example</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">interface Loopback0
+ ip address 172.16.1.1 255.255.255.0
+!
+interface Ethernet0/0
+ ip address 10.0.11.2 255.255.255.0
+!
+
+router bgp <span style="color:#ae81ff">789</span>
+ bgp log-neighbor-changes
+ network 172.16.1.0 mask 255.255.255.0
+ neighbor 10.0.11.1 remote-as <span style="color:#ae81ff">12345</span>
+ neighbor 10.0.11.1 allowas-in
+</code></pre></div><p>Every CE router looks very similar, one lookback interface to be advertised to the PE router and a small bit of BGP configuration. You could use different autonomous system (AS) numbers between customer routers, in this case I used the same AS for the same customer. In BGP this would introduce a loop since the router will see its own AS in the path. This design option adds the command of <em>allowas-in</em> to our BGP configuration. This feature allows a route to be received even if the routers own AS is in path.</p>
+<h2 id="pe-routers-configuration-example">PE Routers Configuration Example</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Ethernet0/1
+ ip address 10.0.15.1 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+
+router ospf 1
+ router-id 1.1.1.1
+ network 1.1.1.1 0.0.0.0 area 0
+ network 10.0.15.1 0.0.0.0 area 0
+!
+router bgp 12345
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor 5.5.5.5 remote-as 12345
+ neighbor 5.5.5.5 update-source Loopback0
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor 5.5.5.5 activate
+  neighbor 5.5.5.5 send-community extended
+ exit-address-family
+ !
+!
+</code></pre></div><p>Internally we are running OSPF to give MPLS all the paths to work with. Every PE device has essentially the same iBGP configuration towards the P router. If you look closely we are not even bringing up the peering relationship with the IPv4 address family. Only the VPNv4 address family will be used. This is due to the BGP peering only being used to distribute the VPNv4 routes across the PE routers.</p>
+<h2 id="prr-router-configuration-example">P/RR Router Configuration Example</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Loopback0
+ ip address 5.5.5.5 255.255.255.255
+!
+interface Ethernet0/0
+ ip address 10.0.15.5 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+interface Ethernet0/1
+ ip address 10.0.25.5 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+interface Ethernet0/2
+ ip address 10.0.35.5 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+interface Ethernet0/3
+ ip address 10.0.45.5 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+router ospf 1
+ router-id 5.5.5.5
+ network 0.0.0.0 255.255.255.255 area 0
+!
+router bgp 12345
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor iBGP peer-group
+ neighbor iBGP remote-as 12345
+ neighbor iBGP update-source Loopback0
+ neighbor 1.1.1.1 peer-group iBGP
+ neighbor 2.2.2.2 peer-group iBGP
+ neighbor 3.3.3.3 peer-group iBGP
+ neighbor 4.4.4.4 peer-group iBGP
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor iBGP send-community extended
+  neighbor iBGP route-reflector-client
+  neighbor 1.1.1.1 activate
+  neighbor 2.2.2.2 activate
+  neighbor 3.3.3.3 activate
+  neighbor 4.4.4.4 activate
+ exit-address-family
+!
+</code></pre></div><p>The P router configuration does look a bit more involved but in reality its not too bad. In the case of the P router, I just advertised all the things in OSPF for simplicity. As I mentioned earlier with the PE routers, only the VPNv4 peering will be used. I created a peer group to bring down the number of commands required to make this all work.</p>
+<h2 id="introduction-to-nornir">Introduction to Nornir</h2>
+<p>I will break down the structure of the repository I made but I wont go too deep into details. Mainly because there’s a lot of great resources out there to check out (will link at the bottom of the post), and I want to try and keep this post some what short. Nornir is a network automation framework that is written in Python. This allows developers and engineers to build automation and tools with a very powerful programming language. This also allows individuals to easily extend the functionality of the framework to meet their needs.</p>
+<p><code>config.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">inventory</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">SimpleInventory</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">host_file</span>: <span style="color:#e6db74">&#34;hosts.yaml&#34;</span>
+    <span style="color:#f92672">group_file</span>: <span style="color:#e6db74">&#34;groups.yaml&#34;</span>
+<span style="color:#f92672">runner</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">threaded</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
+</code></pre></div><p>The <code>config.yaml</code> file is pretty important in Nornir. In the sample above we are using the <code>SimpleInventory</code> plugin and specifying where the host and group files are located. I am using 10 workers but my lab is fairly small so I could have used less here.</p>
+<p><code>hosts.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">PE1</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.176&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">pe</span>
+  <span style="color:#f92672">data</span>:
+    <span style="color:#f92672">interfaces</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Ethernet0/0</span>
+        <span style="color:#f92672">vrf</span>: <span style="color:#ae81ff">CUSTOMER_789</span>
+        <span style="color:#f92672">ip</span>: <span style="color:#ae81ff">10.0.11.1</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">bgp</span>:
+      <span style="color:#f92672">neighbors</span>:
+        - <span style="color:#f92672">vrf_name</span>: <span style="color:#ae81ff">CUSTOMER_789</span>
+          <span style="color:#f92672">remote_ip</span>: <span style="color:#ae81ff">10.0.11.2</span>
+          <span style="color:#f92672">remote_as</span>: <span style="color:#ae81ff">789</span>
+</code></pre></div><p>I included the setup for our PE1 router, the rest follow a similar structure. Anything host specific I set at the <code>host.yaml</code> file and anything group specific is set at the <code>groups.yaml</code> file you will see shortly. I assign all PE routers to the <code>pe</code> group and set certain interface parameters as well as BGP information that will be used in the future.</p>
+<p><code>groups.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">pe</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ios</span>
+  <span style="color:#f92672">username</span>: <span style="color:#ae81ff">cisco</span>
+  <span style="color:#f92672">password</span>: <span style="color:#ae81ff">cisco</span>
+  <span style="color:#f92672">data</span>:
+    <span style="color:#f92672">vrfs</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">CUSTOMER_789</span>
+        <span style="color:#f92672">rd</span>: <span style="color:#e6db74">&#34;789:1&#34;</span>
+        <span style="color:#f92672">rt_import</span>: <span style="color:#e6db74">&#34;789:1&#34;</span>
+        <span style="color:#f92672">rt_export</span>: <span style="color:#e6db74">&#34;789:1&#34;</span>
+
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">CUSTOMER_777</span>
+        <span style="color:#f92672">rd</span>: <span style="color:#e6db74">&#34;777:1&#34;</span>
+        <span style="color:#f92672">rt_import</span>: <span style="color:#e6db74">&#34;777:1&#34;</span>
+        <span style="color:#f92672">rt_export</span>: <span style="color:#e6db74">&#34;777:1&#34;</span>
+</code></pre></div><p>The groups file is pretty neat, since all of my routers are part of the pe group and have a similar platform as well as authentication parameters, I decided to include all of that information under the group. In this automation example I wanted all VRFs to be included on all PE routers. Therefore I also added the VRF information under the group file vs under the host data.</p>
+<h2 id="breaking-down-script">Breaking Down Script</h2>
+<p><code>l3vpn_deploy.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_scrapli.tasks <span style="color:#f92672">import</span> send_configs
+<span style="color:#f92672">from</span> nornir_jinja2.plugins.tasks <span style="color:#f92672">import</span> template_file
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get
+<span style="color:#f92672">from</span> nornir_utils.plugins.tasks.files <span style="color:#f92672">import</span> write_file
+<span style="color:#f92672">from</span> nornir_utils.plugins.functions <span style="color:#f92672">import</span> print_result
+<span style="color:#f92672">from</span> net_utils <span style="color:#f92672">import</span> address, mask
+</code></pre></div><p>The portion above is essentially importing any tasks or functions we will need to run Nornir. Whether its importing <em>InitNornir</em> or plugins used to connect to devices and send commands. To learn more about plugins that can be used with Nornir please check out the <a href="https://nornir.tech/nornir/plugins/">nornir.tech</a> site.</p>
+<p><code>l3vpn_deploy.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Main that calls l3vpn function
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+
+    nornir <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config.yaml&#34;</span>)
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Nornir initialized with the following hosts:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+    <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
+        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;{host}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+
+    result <span style="color:#f92672">=</span> nornir<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>l3vpn)
+
+    print_result(result)
+</code></pre></div><p>This portion of the script is our <code>main</code> function and essentially kicks off all the other portions of our script to execute. Nornir is initialized with our <code>config.yaml</code> file that includes information about our hosts, groups, and connection parameters. There is a simple print statement at the bottom to let the operator know what inventory was just initialized for this job run. We will call on the <code>l3vpn</code> function that is defined towards the top of the script that I will walk through in a bit.</p>
+<h2 id="creating-the-l3vpns">Creating the L3VPNs</h2>
+<p>We will need the following items on our PE routers to complete our L3VPN build:</p>
+<ul>
+<li>Customer VRFs created with RD and RTs</li>
+<li>Assign VRF to interface facing customer router</li>
+<li>Configure BGP relationship between PE and CE device under new VRF</li>
+</ul>
+<p>Now that we have the main portions required for our build, it was just a matter of converting the manual configurations into simple Jinja templates. I will spare you from reading about every task since they all follow the same pattern; create commands from Jinja template, split commands, send commands to PE routers. Here is a snippet below of what I mean.</p>
+<p><code>l3vpn_deploy.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">l3vpn</span>(task):
+
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Main function built for L3VPN deployment tasks
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{task.host.name}: Creating VRFs Configuration&#34;</span>,
+        task<span style="color:#f92672">=</span>template_file,
+        template<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;vrf.j2&#34;</span>,
+        path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;templates/&#34;</span>,
+        data<span style="color:#f92672">=</span>task<span style="color:#f92672">.</span>host[<span style="color:#e6db74">&#34;vrfs&#34;</span>],
+    )
+    vrf_config <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result
+
+    task2_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{task.host.name}: Configuring VRFs on PE Nodes&#34;</span>,
+        task<span style="color:#f92672">=</span>send_configs,
+        configs<span style="color:#f92672">=</span>vrf_config<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>),
+    )
+</code></pre></div><p>I name the tasks for clarity when seeing the job output. Initially we run a <em>template_file</em> task that will create commands from a template. Then its a matter of pointing it to our specific template and feeding it data. Once that is done I set the output of that task to a variable called <em>vrf_config</em>, this can then be fed into the next task to push the commands to our PE routers.</p>
+<pre><code class="language-jinja2" data-lang="jinja2">{% for vrf in data %}
+vrf definition {{ vrf.name }}
+ rd {{ vrf.rd }}
+ route-target export {{ vrf.rt_export }}
+ route-target import {{ vrf.rt_import }}
+ !
+ address-family ipv4
+ exit-address-family
+{% endfor %}
+</code></pre><p>Example of the VRF Jinja template above. The rest of the items for L3VPNs use the same structure. Feel free to check out the git repository linked below to see the rest. Ill show the output from a few PE and CE routers before and after the changes.</p>
+<pre><code>PE1#show vrf brief
+  Name                             Default RD            Protocols   Interfaces
+  MGMT                             &lt;not set&gt;             ipv4        Et0/3
+PE1#
+PE2#show vrf brief
+  Name                             Default RD            Protocols   Interfaces
+  MGMT                             &lt;not set&gt;             ipv4
+PE2#
+PE3#show vrf brief
+  Name                             Default RD            Protocols   Interfaces
+  MGMT                             &lt;not set&gt;             ipv4
+PE3#
+PE4#show vrf brief
+  Name                             Default RD            Protocols   Interfaces
+  MGMT                             &lt;not set&gt;             ipv4        Et0/3
+PE4#
+##### CE Devices #####
+CE1#show ip bgp  summary | b Neigh
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.11.1       4        12345       0       0        1    0    0 00:10:51 Active
+CE1#show ip bgp | b Network
+     Network          Next Hop            Metric LocPrf Weight Path
+ *&gt;  172.16.1.0/24    0.0.0.0                  0         32768 i
+CE1#
+CE2#show ip bgp summary | b Neigh
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.22.1       4        12345       0       0        1    0    0 00:13:22 Idle
+CE2#show ip bgp | b Network
+     Network          Next Hop            Metric LocPrf Weight Path
+ *&gt;  172.16.2.0/24    0.0.0.0                  0         32768 i
+CE2#
+CE3#show ip bgp summary | b Neigh
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.33.1       4        12345       0       0        1    0    0 never    Active
+CE3#show ip bgp | b Network
+     Network          Next Hop            Metric LocPrf Weight Path
+ *&gt;  172.16.1.0/24    0.0.0.0                  0         32768 i
+CE3#
+CE4#show ip bgp summary | b Neigh
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.44.1       4        12345       0       0        1    0    0 never    Active
+CE4#show ip bgp | b Network
+     Network          Next Hop            Metric LocPrf Weight Path
+ *&gt;  172.16.2.0/24    0.0.0.0                  0         32768 i
+CE4#
+</code></pre><h2 id="script-output">Script Output</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">(venv) [juliopdx<span style="color:#a6e22e">@pbpro</span> auto_mpls_l3vpn]<span style="color:#960050;background-color:#1e0010">$</span> time python l3vpn_deploy<span style="color:#f92672">.</span>py
+Nornir initialized <span style="color:#66d9ef">with</span> the following hosts:
+
+PE1
+
+PE2
+
+PE3
+
+PE4
+
+l3vpn<span style="color:#f92672">***************************************************************************</span>
+<span style="color:#f92672">*</span> PE1 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE1: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE1: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">----</span> PE1: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_789
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+<span style="color:#f92672">----</span> PE1: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_789
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+
+<span style="color:#f92672">----</span> PE1: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE1: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> PE2 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE2: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE2: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">----</span> PE2: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_777
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+<span style="color:#f92672">----</span> PE2: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_777
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+
+<span style="color:#f92672">----</span> PE2: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE2: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> PE3 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE3: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE3: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">----</span> PE3: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_777
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+<span style="color:#f92672">----</span> PE3: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_777
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+
+<span style="color:#f92672">----</span> PE3: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE3: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> PE4 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE4: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE4: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+vrf definition CUSTOMER_789
+ rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+vrf definition CUSTOMER_777
+ rd <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ route<span style="color:#f92672">-</span>target <span style="color:#f92672">import</span> <span style="color:#ae81ff">777</span>:<span style="color:#ae81ff">1</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ address<span style="color:#f92672">-</span>family ipv4
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">----</span> PE4: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_789
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+<span style="color:#f92672">----</span> PE4: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
+ vrf forwarding CUSTOMER_789
+ ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+<span style="color:#960050;background-color:#1e0010">!</span>
+
+
+<span style="color:#f92672">----</span> PE4: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+<span style="color:#f92672">----</span> PE4: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+router bgp <span style="color:#ae81ff">12345</span>
+  address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> activate
+ exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
+
+
+<span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+
+real    <span style="color:#ae81ff">0</span>m9<span style="color:#f92672">.</span><span style="color:#ae81ff">216</span>s
+user    <span style="color:#ae81ff">0</span>m6<span style="color:#f92672">.</span><span style="color:#ae81ff">683</span>s
+sys     <span style="color:#ae81ff">0</span>m1<span style="color:#f92672">.</span><span style="color:#ae81ff">07</span><span style="color:#ae81ff">9</span>s
+(venv) [juliopdx<span style="color:#a6e22e">@pbpro</span> auto_mpls_l3vpn]<span style="color:#960050;background-color:#1e0010">$</span>
+</code></pre></div><h2 id="vrf-creation-validation">VRF Creation Validation</h2>
+<pre><code>PE1#show ip vrf
+  Name                             Default RD            Interfaces
+  CUSTOMER_777                     777:1
+  CUSTOMER_789                     789:1                 Et0/0
+  MGMT                             &lt;not set&gt;             Et0/3
+PE1#
+PE2#show ip vrf
+  Name                             Default RD            Interfaces
+  CUSTOMER_777                     777:1                 Et0/0
+  CUSTOMER_789                     789:1
+  MGMT                             &lt;not set&gt;
+PE2#
+PE3#show ip vrf
+  Name                             Default RD            Interfaces
+  CUSTOMER_777                     777:1                 Et0/0
+  CUSTOMER_789                     789:1
+  MGMT                             &lt;not set&gt;
+PE3#
+PE4#show ip vrf
+  Name                             Default RD            Interfaces
+  CUSTOMER_777                     777:1
+  CUSTOMER_789                     789:1                 Et0/0
+  MGMT                             &lt;not set&gt;             Et0/3
+PE4#
+</code></pre><h2 id="bgp-peers-and-routes-on-ce-routers">BGP Peers and Routes on CE Routers</h2>
+<pre><code>CE1#show ip bgp  summary | b Neigh
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.11.1       4        12345      19      20        3    0    0 00:13:17        1
+CE1#show ip bgp | b Network
+     Network          Next Hop            Metric LocPrf Weight Path
+ *&gt;  172.16.1.0/24    0.0.0.0                  0         32768 i
+ *&gt;  172.16.2.0/24    10.0.11.1                              0 12345 789 i
+CE1#traceroute 172.16.2.1 source 172.16.1.1 probe 1 numeric
+Type escape sequence to abort.
+Tracing the route to 172.16.2.1
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.0.11.1 0 msec
+  2 10.0.15.5 [MPLS: Labels 300/24 Exp 0] 2 msec
+  3 10.0.44.1 [MPLS: Label 24 Exp 0] 2 msec
+  4 10.0.44.2 1 msec
+CE1#
+CE3#show ip bgp summary | b Neigh
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.33.1       4        12345      25      23        3    0    0 00:17:34        1
+CE3#show ip bgp | b Network
+     Network          Next Hop            Metric LocPrf Weight Path
+ *&gt;  172.16.1.0/24    0.0.0.0                  0         32768 i
+ *&gt;  172.16.2.0/24    10.0.33.1                              0 12345 777 i
+CE3#traceroute 172.16.2.1 source 172.16.1.1 probe 1 numeric
+Type escape sequence to abort.
+Tracing the route to 172.16.2.1
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.0.33.1 1 msec
+  2 10.0.35.5 [MPLS: Labels 302/407 Exp 0] 2 msec
+  3 10.0.22.1 [MPLS: Label 407 Exp 0] 2 msec
+  4 10.0.22.2 2 msec
+CE3#
+</code></pre><h2 id="outro-and-links">Outro and Links</h2>
+<p>I think there’s always room for improvement. Even off the top of my head a few additions could be the following:</p>
+<ul>
+<li>Automated testing</li>
+<li>Validation with something like pyATS to validate VRF creation on PE routers</li>
+</ul>
+<p>I hope you found this a bit useful and maybe inspires you to build something you can use in everyday workload. Feel free to check out the links below to a few resources I found very helpful. Thank you again for reading this far, really means a lot.</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/auto_mpls_l3vpn">GitHub Repository</a></li>
+<li><a href="https://nornir.readthedocs.io/en/latest/">Nornir Documentation</a></li>
+<li><a href="https://nornir.tech/nornir/plugins/">Nornir Plugins</a></li>
+<li><a href="https://www.pluralsight.com/courses/automating-networks-python">Automating Networks with Python by Nick Russo</a></li>
+<li><a href="https://saidvandeklundert.net/2020-12-06-nornir/">Nornir Blog Post by Said van de Klundert</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Python Slack Bot for Network Engineers</title>
+            <link>https://juliopdx.github.io/2021/05/24/python-slack-bot-for-network-engineers/</link>
+            <pubDate>Mon, 24 May 2021 10:19:32 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/05/24/python-slack-bot-for-network-engineers/</guid>
+            <description>Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one.</p>
+<h2 id="caveats">Caveats</h2>
+<p>A few caveats I should include. I’m a fairly novice python user, expect to see areas where code can be refactored and even total rewrites that would make the organization better. What I will demonstrate in this post is what made sense to me at this point in time. I hope you enjoy and maybe get inspired to build something you can use to assist you in your daily workflow.</p>
+<h2 id="network-engineering-bot">Network Engineering Bot</h2>
+<p>Below are a few of the goals I had when creating this bot.</p>
+<ul>
+<li>Must be multi-vendor</li>
+<li>Ability to call different (non static) devices</li>
+<li>Bot should react to user messages</li>
+</ul>
+<p>Lets walk through some code and I hope to answer how those goals were met. I’ll try not to repeat information that was already shared in Masons post. The initial code from Masons example has you create a class called CoinBot. It only made sense to me to create a separate class to define our network engineering bot. In this case we will call it NetBot, but you can name your bot whatever you like.</p>
+<p><code>get_network.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> json
+<span style="color:#f92672">from</span> napalm <span style="color:#f92672">import</span> get_network_driver
+<span style="color:#f92672">from</span> yaml <span style="color:#f92672">import</span> safe_load
+<span style="color:#f92672">import</span> urllib3
+
+<span style="color:#75715e"># Disable warnings</span>
+urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>InsecureRequestWarning)
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NetBot</span>:
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Defining a class called NetBot
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+
+    USERNAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;admin&#34;</span>
+    PASSWORD <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;admin&#34;</span>
+    NET_BLOCK <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;section&#34;</span>,
+        <span style="color:#e6db74">&#34;text&#34;</span>: {
+            <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;mrkdwn&#34;</span>,
+            <span style="color:#e6db74">&#34;text&#34;</span>: (
+                <span style="color:#e6db74">&#34;Getting interface information for device 🙂&#34;</span>
+            ),
+        },
+    }
+
+    <span style="color:#66d9ef">def</span> __init__(self, channel, device_name):
+        <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">        constructor for class
+</span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+        self<span style="color:#f92672">.</span>channel <span style="color:#f92672">=</span> channel
+        self<span style="color:#f92672">.</span>device_name <span style="color:#f92672">=</span> device_name
+</code></pre></div><p>A few things to note. The variables you see in all caps are called class attributes/constants. Essentially things in the program that wont change. I kept it simple and created some credentials for authentication as class attributes. In reality this would be an environment variable or pulled from a secure source. The NET_BLOCK class attribute is just there so the bot can respond with some generic message to the user.</p>
+<p>One of the first things that came to mind when building the bot is how will users know how to run the bot? I created the following method to solve that little problem. We are basically reading the readme file in our root directory and then returning all the data required to compose a message in slack. The following is added under our NetBot class from above.</p>
+<p><code>get_network.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_help</span>(self):
+        <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">        Sending all the help
+</span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+        <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;README.md&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> reader:
+            readme <span style="color:#f92672">=</span> reader<span style="color:#f92672">.</span>read()
+        <span style="color:#66d9ef">return</span> {
+            <span style="color:#e6db74">&#34;channels&#34;</span>: self<span style="color:#f92672">.</span>channel,
+            <span style="color:#e6db74">&#34;filename&#34;</span>: <span style="color:#e6db74">&#34;README.md&#34;</span>,
+            <span style="color:#e6db74">&#34;filetype&#34;</span>: <span style="color:#e6db74">&#34;markdown&#34;</span>,
+            <span style="color:#e6db74">&#34;content&#34;</span>: readme,
+        }
+</code></pre></div><p><img src="/blog/images/netbot_help.png" alt="netbot help"></p>
+<h2 id="interacting-with-network-devices">Interacting With Network Devices</h2>
+<p>I mentioned before I wanted this to be multi-vendor. In this case we are going to use the popular NAPALM library!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install napalm
+pip install pyaoscx
+pip install napalm-aruba-cx
+</code></pre></div><p>In theory you can use whatever you are comfortable with; Netmiko, NAPALM, Nornir, or Ansible. As long as the end result returns data in a format we can use to craft a Slack message. For our networking example, we will use NAPALM to retrieve the network interfaces from two devices. One being a Cisco IOL router and the other an Aruba CX switch. Below you will see the two methods used to put this all together. The first is pretty standard syntax to connect to device, run the get_interfaces function, and return as pretty JSON.</p>
+<p>Quick deviation, I almost forgot to mention the inventory. In a grander scale, you would most likely have some dynamic inventory that is cached to the app running or the code actually interacts with your inventory source to pull the correct information. Think Netbox API call to get device information for a device named XYZ. This would then have management IP, platform, and whatever else would be needed to connect using NAPALM. In our case we are using a very simple YAML file with the two hosts mentioned earlier.</p>
+<p><code>hosts.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+---
+<span style="color:#f92672">R1</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R1</span>
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ios</span>
+  <span style="color:#f92672">mgmt</span>: <span style="color:#e6db74">&#34;192.168.10.168&#34;</span>
+<span style="color:#f92672">ArubaCX</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ArubaCX</span>
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">aoscx</span>
+  <span style="color:#f92672">mgmt</span>: <span style="color:#e6db74">&#34;192.168.10.169&#34;</span>
+</code></pre></div><p>As promised, here is the code that interacts with our network devices.</p>
+<p><code>get_network.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_get_facts</span>(self):
+        <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">        Method that will retrieve host facts
+</span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+        <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;hosts.yaml&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> handle:
+            host_root <span style="color:#f92672">=</span> safe_load(handle)
+
+        driver <span style="color:#f92672">=</span> get_network_driver(host_root[f<span style="color:#e6db74">&#34;{self.device_name}&#34;</span>][<span style="color:#e6db74">&#34;platform&#34;</span>])
+        conn <span style="color:#f92672">=</span> driver(
+            hostname<span style="color:#f92672">=</span>host_root[f<span style="color:#e6db74">&#34;{self.device_name}&#34;</span>][<span style="color:#e6db74">&#34;mgmt&#34;</span>],
+            username<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>USERNAME,
+            password<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>PASSWORD,
+        )
+        conn<span style="color:#f92672">.</span>open()
+        facts <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>get_interfaces()
+        my_file <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps(facts, indent<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+        <span style="color:#66d9ef">return</span> my_file
+</code></pre></div><p>The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The _get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.</p>
+<p><code>get_network.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_file_payload</span>(self):
+        <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">        Method used to post files from data gathered on device
+</span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+        <span style="color:#66d9ef">return</span> {
+            <span style="color:#e6db74">&#34;channels&#34;</span>: self<span style="color:#f92672">.</span>channel,
+            <span style="color:#e6db74">&#34;filetype&#34;</span>: <span style="color:#e6db74">&#34;javascript&#34;</span>,
+            <span style="color:#e6db74">&#34;content&#34;</span>: self<span style="color:#f92672">.</span>_get_facts(),
+            <span style="color:#e6db74">&#34;filename&#34;</span>: f<span style="color:#e6db74">&#34;{self.device_name}-interfaces.json&#34;</span>,
+        }
+</code></pre></div><h2 id="running-the-application">Running the Application</h2>
+<p>As mentioned previously, this code is heavily borrowed from Masons post! So much so that I left in the CoinBot learnings because it is an amazing reference and the code comments are great for learners. Ill cut out some of the extra information to just focus on the action, full code is available on my GitHub (linked below).</p>
+<p><code>app.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> logging
+<span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
+<span style="color:#f92672">from</span> slack <span style="color:#f92672">import</span> WebClient
+<span style="color:#f92672">from</span> slackeventsapi <span style="color:#f92672">import</span> SlackEventAdapter
+<span style="color:#f92672">from</span> coinbot <span style="color:#f92672">import</span> CoinBot
+<span style="color:#f92672">from</span> get_network <span style="color:#f92672">import</span> NetBot
+
+<span style="color:#75715e"># Initialize a Flask app to host the events adapter</span>
+app <span style="color:#f92672">=</span> Flask(__name__)
+
+<span style="color:#75715e"># Create an events adapter and register it to an endpoint in the slack app for event ingestion.</span>
+slack_events_adapter <span style="color:#f92672">=</span> SlackEventAdapter(
+    os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;SLACK_EVENTS_TOKEN&#34;</span>), <span style="color:#e6db74">&#34;/slack/events&#34;</span>, app
+)
+
+<span style="color:#75715e"># Initialize a Web API client</span>
+slack_web_client <span style="color:#f92672">=</span> WebClient(token<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;SLACK_TOKEN&#34;</span>))
+
+<span style="color:#75715e"># Define bot ID so it will not respond to itself</span>
+BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#f92672">.</span>api_call(<span style="color:#e6db74">&#34;auth.test&#34;</span>)[<span style="color:#e6db74">&#34;user_id&#34;</span>]
+</code></pre></div><p>Lets break that code down a bit. We will be utilizing Flask to do most of the heavy lifting. The imports mentioned above will import the required Flask, Slack, and NetBot packages. We utilize two environment variables for authentication. The BOT_ID constant is used in code later on to make sure the bot does not respond to itself. The next portions actually perform the execution of all of our code. I will break down one portion to keeps things short and sweet, but most all of them follow the same workflow.</p>
+<p><code>app.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_network_info</span>(channel, device_name):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    run the get_message_payload and get_file_upload method
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    net_bot <span style="color:#f92672">=</span> NetBot(channel, device_name)
+    my_message <span style="color:#f92672">=</span> net_bot<span style="color:#f92672">.</span>get_message_payload()
+    file_output <span style="color:#f92672">=</span> net_bot<span style="color:#f92672">.</span>get_file_payload()
+    slack_web_client<span style="color:#f92672">.</span>chat_postMessage(<span style="color:#f92672">**</span>my_message)
+    slack_web_client<span style="color:#f92672">.</span>files_upload(<span style="color:#f92672">**</span>file_output)
+</code></pre></div><p>We are creating a function called get_network_info that takes in two parameters. When this function is executed, it will instantiate an instance of NetBot, send a generic message, and upload the file created from the get_file_payload method.</p>
+<p>The next portion of the code is used to handle how the bot interacts with messages seen or what is executed when a certain message is seen. From part one of Masons post, we subscribed the bot to events (and we filter on messages). Once we get a message we strip out certain portions that can then be reused to respond in the proper channel, react to a specific message (timestamp), and make sure the bot does not respond to itself.</p>
+<p><code>app.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># When a &#39;message&#39; event is detected by the events adapter, forward that payload</span>
+<span style="color:#75715e"># to this function.</span>
+<span style="color:#a6e22e">@slack_events_adapter.on</span>(<span style="color:#e6db74">&#34;message&#34;</span>)
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">message</span>(payload):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Parse the message event, and if the activation string is in the text,
+</span><span style="color:#e6db74">    simulate something and send result
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+
+    <span style="color:#75715e"># Get various portions of message</span>
+    event <span style="color:#f92672">=</span> payload<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;event&#34;</span>, {})
+    text <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;text&#34;</span>)
+    user_id <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;user&#34;</span>)
+    timestamp <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;ts&#34;</span>)
+    channel_id <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;channel&#34;</span>)
+
+    <span style="color:#75715e"># Making sure the bot doesnt respond to itself</span>
+    <span style="color:#66d9ef">if</span> BOT_ID <span style="color:#f92672">!=</span> user_id:
+</code></pre></div><p>The next piece of code is used to parse the messages that are seen by the bot. If a string matches one of the if clauses, some code will be executed. In this case we are looking for “netbot get network interfaces”. If you noticed in the readme, we are asking users to enter “netbot get network interfaces device=something”. The code will parse this output and strip “device=” to get the final device name. This will then be passed into the get_network_info function and execute the program.</p>
+<p><code>app.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">        <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;netbot get network interfaces&#34;</span> <span style="color:#f92672">in</span> text<span style="color:#f92672">.</span>lower():
+            full_text <span style="color:#f92672">=</span> text<span style="color:#f92672">.</span>split()
+            device <span style="color:#f92672">=</span> full_text[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+            my_device <span style="color:#f92672">=</span> device<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34;device=&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
+            slack_web_client<span style="color:#f92672">.</span>reactions_add(
+                channel<span style="color:#f92672">=</span>channel_id, name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;robot_face&#34;</span>, timestamp<span style="color:#f92672">=</span>timestamp
+            )
+            slack_web_client<span style="color:#f92672">.</span>reactions_add(
+                channel<span style="color:#f92672">=</span>channel_id, name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;rocket&#34;</span>, timestamp<span style="color:#f92672">=</span>timestamp
+            )
+            <span style="color:#66d9ef">return</span> get_network_info(channel_id, device_name<span style="color:#f92672">=</span>my_device)
+</code></pre></div><p>You may have noticed a few commands the are prepend with “slack_web_client.reactions_add”. I wanted a way for the bot to respond to a user inputting a message that triggers the bot. Almost like a confirmation of message received. This can be message specific as I have made it for “netbot help” or “netbot get network interfaces”. Remember just a bit ago how we strip certain information from the message received like channel and timestamp ID? This is used throughout the code but here we are statically setting the types of reactions executed for this match. In the case of “get_network_info” the bot will react with a robot face and rocket.</p>
+<p><img src="/blog/images/get_interfaces.png" alt="Get Interfaces"></p>
+<p>The rest of the code is boilerplate to execute the application and enable logging. No changes from the original post at Digital Ocean. I want to thank Mason for the amazing blog post to kick start this spark for me. Thank you for reading this far, really means a lot! I hope what I’ve written makes a bit of sense and maybe inspires you to create something awesome.</p>
+<h2 id="bugsissues">Bugs/Issues</h2>
+<ul>
+<li>Bot reruns get network interface code even when new message is not sent (not seen when reactions are used).</li>
+<li>When reaction is used multiple runs are not seen but app reports error 500 (already reacted).</li>
+</ul>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-build-a-slackbot-in-python-on-ubuntu-20-04">How To Build a Slackbot in Python on Ubuntu 20.04</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLzMcBGfZo4-kqyzTzJWCV6lyK-ZMYECDc">Python Slack Bot Tutorial Playlist by Tech With Tim</a></li>
+<li><a href="https://github.com/JulioPDX/ne_bot_example">GitHub Repository</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Route Redistribution OSPFv3 and EIGRPv6</title>
@@ -335,29 +1270,29 @@ The course uses an MPLS environment as an example of network automation with Pyt
 </code></pre></div><h2 id="ospf-and-jinja">OSPF and Jinja</h2>
 <p>The jinja file process isn’t too bad. If you know loops, if, and else statements, you’ll be just fine. I’m pretty familiar with Aruba and Cisco but not so much with Arista. Lucky for me Arista is eerily similar to Cisco Syntax. I generally work my way through configuring the devices manually once and then convert the configurations to a template. Below is the Aruba version of the jinja template, each vendor gets its own jinja file.</p>
 <p><code>hp_procurve.j2</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jinja" data-lang="jinja"><span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> data.ospf <span style="color:#75715e">%}</span>
-router ospf <span style="color:#75715e">{{</span> data.ospf.process <span style="color:#75715e">}}</span>
-    router-id <span style="color:#75715e">{{</span> data.ospf.router_id <span style="color:#75715e">}}</span>
+<pre><code class="language-jinja2" data-lang="jinja2">{% if data.ospf %}
+router ospf {{ data.ospf.process }}
+    router-id {{ data.ospf.router_id }}
     passive-interface default
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> area <span style="color:#66d9ef">in</span> data.ospf.areas <span style="color:#75715e">%}</span>
-    area <span style="color:#75715e">{{</span> area <span style="color:#75715e">}}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> int <span style="color:#66d9ef">in</span> data.interfaces <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf <span style="color:#75715e">%}</span>
-interface <span style="color:#75715e">{{</span> int.name <span style="color:#75715e">}}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;back&#34;</span> <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">in</span> int.name <span style="color:#75715e">%}</span>
+{% for area in data.ospf.areas %}
+    area {{ area }}
+{% endfor %}
+{% for int in data.interfaces %}
+{% if int.ospf %}
+interface {{ int.name }}
+{% if &quot;back&quot; not in int.name %}
     no shutdown
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span><span style="color:#75715e">%}</span>
-    ip address <span style="color:#75715e">{{</span> int.ip <span style="color:#75715e">}}</span>
-    ip ospf <span style="color:#75715e">{{</span> int.ospf.process <span style="color:#75715e">}}</span> area <span style="color:#75715e">{{</span> int.ospf.area <span style="color:#75715e">}}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf.passive <span style="color:#f92672">==</span> <span style="color:#66d9ef">False</span> <span style="color:#75715e">%}</span>
+{% endif%}
+    ip address {{ int.ip }}
+    ip ospf {{ int.ospf.process }} area {{ int.ospf.area }}
+{% if int.ospf.passive == False %}
     no ip ospf passive
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
 copy running-config startup-config
-</code></pre></div><h2 id="the-script">The Script</h2>
+</code></pre><h2 id="the-script">The Script</h2>
 <p>I wont go too deep in breaking down the file as I think it would take a while and I would really recommend you check out Nicks’ course I linked above. If I were to break down the script at a high level, below are the steps that are being performed.</p>
 <ul>
 <li>Import the required libraries.</li>

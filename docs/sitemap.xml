@@ -3,12 +3,62 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://juliopdx.github.io/tags/aruba/</loc>
-    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
+    <loc>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</loc>
+    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
   </url>
   
   <url>
     <loc>https://juliopdx.github.io/tags/cisco/</loc>
+    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/</loc>
+    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/network-automation/</loc>
+    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/posts/</loc>
+    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/</loc>
+    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</loc>
+    <lastmod>2021-08-14T10:38:25-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/l3vpn/</loc>
+    <lastmod>2021-08-14T10:38:25-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/mpls/</loc>
+    <lastmod>2021-08-14T10:38:25-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/python/</loc>
+    <lastmod>2021-08-14T10:38:25-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/05/24/python-slack-bot-for-network-engineers/</loc>
+    <lastmod>2021-05-24T10:19:32-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/aruba/</loc>
     <lastmod>2021-05-03T00:00:00+00:00</lastmod>
   </url>
   
@@ -23,27 +73,12 @@
   </url>
   
   <url>
-    <loc>https://juliopdx.github.io/</loc>
-    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.github.io/tags/ospfv3/</loc>
     <lastmod>2021-05-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://juliopdx.github.io/posts/</loc>
-    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</loc>
-    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/</loc>
     <lastmod>2021-05-03T00:00:00+00:00</lastmod>
   </url>
   
@@ -69,11 +104,6 @@
   
   <url>
     <loc>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</loc>
-    <lastmod>2021-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/network-automation/</loc>
     <lastmod>2021-04-02T00:00:00+00:00</lastmod>
   </url>
   
@@ -124,11 +154,6 @@
   
   <url>
     <loc>https://juliopdx.github.io/tags/nornir/</loc>
-    <lastmod>2021-02-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/python/</loc>
     <lastmod>2021-02-27T00:00:00+00:00</lastmod>
   </url>
   

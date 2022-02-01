@@ -212,29 +212,29 @@ The course uses an MPLS environment as an example of network automation with Pyt
 </code></pre></div><h2 id="ospf-and-jinja">OSPF and Jinja</h2>
 <p>The jinja file process isn’t too bad. If you know loops, if, and else statements, you’ll be just fine. I’m pretty familiar with Aruba and Cisco but not so much with Arista. Lucky for me Arista is eerily similar to Cisco Syntax. I generally work my way through configuring the devices manually once and then convert the configurations to a template. Below is the Aruba version of the jinja template, each vendor gets its own jinja file.</p>
 <p><code>hp_procurve.j2</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jinja" data-lang="jinja"><span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> data.ospf <span style="color:#75715e">%}</span>
-router ospf <span style="color:#75715e">{{</span> data.ospf.process <span style="color:#75715e">}}</span>
-    router-id <span style="color:#75715e">{{</span> data.ospf.router_id <span style="color:#75715e">}}</span>
+<pre><code class="language-jinja2" data-lang="jinja2">{% if data.ospf %}
+router ospf {{ data.ospf.process }}
+    router-id {{ data.ospf.router_id }}
     passive-interface default
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> area <span style="color:#66d9ef">in</span> data.ospf.areas <span style="color:#75715e">%}</span>
-    area <span style="color:#75715e">{{</span> area <span style="color:#75715e">}}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">for</span> int <span style="color:#66d9ef">in</span> data.interfaces <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf <span style="color:#75715e">%}</span>
-interface <span style="color:#75715e">{{</span> int.name <span style="color:#75715e">}}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;back&#34;</span> <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">in</span> int.name <span style="color:#75715e">%}</span>
+{% for area in data.ospf.areas %}
+    area {{ area }}
+{% endfor %}
+{% for int in data.interfaces %}
+{% if int.ospf %}
+interface {{ int.name }}
+{% if &quot;back&quot; not in int.name %}
     no shutdown
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span><span style="color:#75715e">%}</span>
-    ip address <span style="color:#75715e">{{</span> int.ip <span style="color:#75715e">}}</span>
-    ip ospf <span style="color:#75715e">{{</span> int.ospf.process <span style="color:#75715e">}}</span> area <span style="color:#75715e">{{</span> int.ospf.area <span style="color:#75715e">}}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">if</span> int.ospf.passive <span style="color:#f92672">==</span> <span style="color:#66d9ef">False</span> <span style="color:#75715e">%}</span>
+{% endif%}
+    ip address {{ int.ip }}
+    ip ospf {{ int.ospf.process }} area {{ int.ospf.area }}
+{% if int.ospf.passive == False %}
     no ip ospf passive
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endfor</span> <span style="color:#75715e">%}</span>
-<span style="color:#75715e">{%</span> <span style="color:#66d9ef">endif</span> <span style="color:#75715e">%}</span>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
 copy running-config startup-config
-</code></pre></div><h2 id="the-script">The Script</h2>
+</code></pre><h2 id="the-script">The Script</h2>
 <p>I wont go too deep in breaking down the file as I think it would take a while and I would really recommend you check out Nicks’ course I linked above. If I were to break down the script at a high level, below are the steps that are being performed.</p>
 <ul>
 <li>Import the required libraries.</li>
