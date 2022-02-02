@@ -7,22 +7,49 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 23 Sep 2021 10:06:16 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Oct 2021 10:41:26 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Cisco</title>
-      <link>https://juliopdx.github.io/tags/cisco/</link>
-      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      <title>Docker</title>
+      <link>https://juliopdx.github.io/tags/docker/</link>
+      <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/cisco/</guid>
+      <guid>https://juliopdx.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Drone</title>
+      <link>https://juliopdx.github.io/tags/drone/</link>
+      <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/drone/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Network Automation</title>
       <link>https://juliopdx.github.io/tags/network-automation/</link>
-      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/network-automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>NGROK</title>
+      <link>https://juliopdx.github.io/tags/ngrok/</link>
+      <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ngrok/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cisco</title>
+      <link>https://juliopdx.github.io/tags/cisco/</link>
+      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/cisco/</guid>
       <description></description>
     </item>
     
@@ -194,6 +221,15 @@
       <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/ansible/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CI/CD</title>
+      <link>https://juliopdx.github.io/tags/ci/cd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ci/cd/</guid>
       <description></description>
     </item>
     

@@ -6,8 +6,176 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Thu, 23 Sep 2021 10:06:16 -0800</lastBuildDate>
+        <lastBuildDate>Wed, 20 Oct 2021 10:41:26 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Building a Network CI/CD Pipeline Part 2</title>
+            <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</link>
+            <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</guid>
+            <description>Introduction Thank you for checking out part two of this series. The last post went through installing docker on an Ubuntu server to begin our journey to building a CI/CD pipeline. In this post it will be all about connecting Drone to our code repository, in this case GitHub. From our reference diagram below, we will be focusing on the connections from GitHub to the Drone runners.
+The Pipeline Server and Runners Now that we have docker installed, we need something to test our code or execute it.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/jonathan-lampel.jpg" alt="Featured Image"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Thank you for checking out part two of this series. The last post went through installing docker on an Ubuntu server to begin our journey to building a CI/CD pipeline. In this post it will be all about connecting Drone to our code repository, in this case GitHub. From our reference diagram below, we will be focusing on the connections from GitHub to the Drone runners.</p>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
+<h2 id="the-pipeline-server-and-runners">The Pipeline Server and Runners</h2>
+<p>Now that we have docker installed, we need something to test our code or execute it. This is one of the main pieces of CI/CD. There are many tools out there that can perform this function. Some of them are Jenkins, Drone, Travis CI, and many more. In this case I went with Drone. Simply because it was new to me and I wanted to play with it. The Drone server interacts with your source control of choice, in my case GitHub. The Drone server and runners can be installed as containers. The runners are actually executing your pipelines. This could be code linting, testing, and deployment of configurations.</p>
+<p>One of the neat things about drone is that each runner is an isolated container environment. For example if we wanted to run a pipeline using a python based app, we could pull down a python image and run that as our execution container. Or maybe we are testing some powershell and needed a windows execution environment, we could pull down that image. Once the runners are done with their job, they are destroyed and leave nothing to cleanup.</p>
+<h2 id="why-ngrok">Why NGROK?</h2>
+<p>From the diagram above you may have seen NGROK and thought, “what the heck is that?”. Since we will be integrating GitHub with Drone, GitHub needs a public URL or address to hit when making webhook calls to the Drone server. This is more than suitable for our testing purposes. NGROK will form a secure tunnel between your node and their service. All requests that hit this URL will then be forwarded to your application or web server for example. Please note NGROK has free and paid versions. The free version is more than what we need for testing.</p>
+<h2 id="installing-ngrok">Installing NGROK</h2>
+<p>Login to Ubuntu Server and run the following commands:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkdir temp <span style="color:#f92672">&amp;&amp;</span> cd temp
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+sudo apt install unzip
+unzip ngrok-stable-linux-amd64.zip
+./ngrok http <span style="color:#ae81ff">80</span>
+</code></pre></div><p>At this point you will see some output similar to below. I didn’t see an option to run NGROK detached, so in the meantime leave this running and connect to the server on another session. Save these URLs as they will be used to build an OAuth application on GitHub.</p>
+<p><img src="/blog/images/ngrok_example.png" alt="NGROK Output"></p>
+<h2 id="creating-github-oauth-application">Creating GitHub OAuth Application</h2>
+<p>Login to GitHub account and go to Settings &gt; Developer Settings &gt; OAuth apps. From there click on the “”New OAuth App” icon.</p>
+<p><img src="/blog/images/oauth.png" alt="OAuth"></p>
+<p>Remember that URL we had to note down a while ago? Go ahead and fill in the info, example below as reference.</p>
+<p><img src="/blog/images/new-fix.png" alt="Registration"></p>
+<p>After clicking on “Register application”, click on “Generate a new client secret”. Write down or save those values somewhere. You will need them when setting up the drone server. Please note, if you restart the NGROK service, a new URL will be generated and you will have to update your OAuth application with that URL.</p>
+<h2 id="installing-drone-server">Installing Drone Server</h2>
+<p>One more credential needs to be created, the shared secret (RPC_SECRET) between the drone server and runners. Execute the command below from the Ubuntu server.</p>
+<p><code>Example from drone.io</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ openssl rand -hex <span style="color:#ae81ff">16</span>
+bea26a2221fd8090ea38720fc445eca6
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker pull drone/drone:2
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --volume<span style="color:#f92672">=</span>/var/lib/drone:/data <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_GITHUB_CLIENT_ID<span style="color:#f92672">={{</span>DRONE_GITHUB_CLIENT_ID<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_GITHUB_CLIENT_SECRET<span style="color:#f92672">={{</span>DRONE_GITHUB_CLIENT_SECRET<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_SECRET<span style="color:#f92672">={{</span>DRONE_RPC_SECRET<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_SERVER_HOST<span style="color:#f92672">={{</span>123456.ngrok.io<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_SERVER_PROTO<span style="color:#f92672">=</span>https <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_USER_CREATE<span style="color:#f92672">=</span>username:<span style="color:#f92672">{{</span>GitHub Username<span style="color:#f92672">}}</span>,admin:true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --publish<span style="color:#f92672">=</span>80:80 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --publish<span style="color:#f92672">=</span>443:443 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --detach<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --name<span style="color:#f92672">=</span>drone <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  drone/drone:2
+</code></pre></div><p>Feel free to set environment variables or just replace the {{}} settings with the values you have gathered so far. If you want a more in depth breakdown of all the variables, please check out the Drone docs!</p>
+<h2 id="installing-drone-runners">Installing Drone Runners</h2>
+<p>The runners are interesting, there’s a few versions of the runners depending on what type of environment you are working with. For example, the exec runner will execute pipelines directly on the host, no isolation provided. Useful if you are in an environment that cant utilize containers. This really didn’t seem like a good idea to me especially as I was testing and destroying things all the time. Drone recommends starting with the docker runner if you are new to Drone and I would echo that. For more info on the Drone runner install, check out their <a href="https://docs.drone.io/runner/docker/installation/linux/">docs</a>!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker pull drone/drone-runner-docker:1
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run --detach <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --volume<span style="color:#f92672">=</span>/var/run/docker.sock:/var/run/docker.sock <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_PROTO<span style="color:#f92672">=</span>https <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_HOST<span style="color:#f92672">={{</span>123456.ngrok.io<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_SECRET<span style="color:#f92672">={{</span>super-duper-secret<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RUNNER_CAPACITY<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RUNNER_NAME<span style="color:#f92672">=</span>my-first-runner <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --publish<span style="color:#f92672">=</span>3000:3000 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --name<span style="color:#f92672">=</span>runner <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  drone/drone-runner-docker:1
+</code></pre></div><p>Please note, I had issues when running the dynamic URL and Chrome, if you run into this issue please test with Firefox.</p>
+<h2 id="welcome-and-activating-a-repository">Welcome and Activating a Repository</h2>
+<p>At this point you should be able to hit your public URL, something like “http://1234567.ngrok.io”. You will be greeted with the Drone welcome page. Feel free to login and authenticate with your GitHub account. Now that you are logged in, you may see something like below.</p>
+<p><img src="/blog/images/non-active.png" alt="Non active"></p>
+<p>No repositories are active and being synced with Drone. If you already have a repository created, feel free to click on it and then click on “ACTIVATE REPOSITORY”. Something like this will then be displayed.</p>
+<p><img src="/blog/images/repo-settings.png" alt="Repo Settings"></p>
+<p>I left my build fairly vanilla but something that would be interesting is cron jobs from the server. Imagine the main or golden config repository is executed everyday at midnight to prevent configuration drift. We will get into the configuration file in a moment. In the meantime head to “Secrets” under organization or under general.</p>
+<p><img src="/blog/images/secrets.png" alt="Secrets"></p>
+<p>Lets say our script needs to connect to our devices using a key or password. We can set secrets here that can then be utilized by our build environments. In my lab I will be using Arista devices with simple username and password for authentication. The scripts will then look for an environment variable of “MY_PASS”. Go ahead and save changes once you are happy with them. You probably noticed there is a setting for “Configuration” and it is currently set to <em>.drone.yml</em>. Stayed tuned on the next episode of Dragon Ball… wait a minute that’s not this program. Seriously, on the next part I will go over creating a <em>.drone.yml</em> file and creating our very own docker container image!</p>
+<ul>
+<li><a href="https://docs.drone.io/">Drone Docs</a></li>
+<li><a href="hhttps://ngrok.com/docs">NGROK Docs</a></li>
+<li><a href="https://unsplash.com/photos/L9wrEGJjRdo">Featured image by Jonathan Lampel</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Building a Network CI/CD Pipeline Part 1</title>
+            <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</link>
+            <pubDate>Wed, 20 Oct 2021 10:26:36 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</guid>
+            <description>Introduction Hello all and thank you for joining me on another blog post! In this post or series of posts I hope to walk you through my journey on building a network CI/CD pipeline. This pipeline is not perfect and I’m sure there’s much more efficient ways to produce the same outcomes. I did make the choice to leave out a few things as the technologies involved and complexity kept growing.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/selim.jpg" alt="Featured Image"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello all and thank you for joining me on another blog post! In this post or series of posts I hope to walk you through my journey on building a network CI/CD pipeline. This pipeline is not perfect and I’m sure there’s much more efficient ways to produce the same outcomes. I did make the choice to leave out a few things as the technologies involved and complexity kept growing. For example, I did not go deep into infrastructure as code with this example but I will link a great series from a fellow network engineer at the bottom of this post.</p>
+<p>I tried to make this deployment as simple as possible and a few of the technologies are very new to me. I say this because I feel a lot of us get lost in the sauce when so many new technologies are mentioned or even displayed in one architecture diagram. I hope to minimize some of that restraint and break the pieces down as much as possible.</p>
+<h2 id="what-is-cicd">What is CI/CD?</h2>
+<p>Some of you might be wondering what CI/CD is or even why we should care? CI/CD is a software development concept where software is created, tested and eventually released in a continuous manner. The pieces involved for different applications may differ but I hope to show you some of the main concepts.</p>
+<p>How does this relate to network engineering? Lets say you didn’t have a CI/CD pipeline and you wanted to make a change on the production network. The steps would be something like the following:</p>
+<ul>
+<li>User requests change to the network</li>
+<li>Change control ticket is created detailing change and test plan</li>
+<li>Login to test environment if there is one and test the change</li>
+<li>Login to device(s) one by one and implement change</li>
+<li>Validate expected outcomes after change on device(s)</li>
+</ul>
+<p>This process is fairly slow and has a lot of touch points. For example, the testing plan by different engineers may differ or a missed validation could lead to a network outage or an unexpected behavior from the change. Using a CI/CD pipeline we hope to automate a lot of these steps to ensure the change is correct and safe to implement on our network. This isn’t to say that a pipeline will eliminate all errors, far from that. This will allow us to continually improve our testing and the network over time to make it easier to manage and implement changes quickly and safely.</p>
+<h2 id="pieces-to-the-puzzle">Pieces to the Puzzle</h2>
+<p>Below are some of the technologies we will be breaking down over this series of posts:</p>
+<ul>
+<li>GitHub</li>
+<li>Docker</li>
+<li>Drone(pipeline server and runners)</li>
+<li>NGROK</li>
+<li>Batfish</li>
+<li>Nornir/NAPALM</li>
+<li>Suzieq</li>
+</ul>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Please note, the local code development can be done on any laptop or PC of choice. The docker pieces can be done on a local machine as well but I chose to stand up a simple Ubuntu 20.04 virtual machine with 4 CPUs and 8G of RAM.</p>
+<h3 id="github">GitHub</h3>
+<p>If you are following along or just getting started then I would highly recommend creating a GitHub account. This is a great place to share and collaborate with other creators in a wide variety of spaces. If you are studying a programming language or going down the path of NetDevOps, you will definitely want some version control.</p>
+<h3 id="docker">Docker</h3>
+<p>I’ll be honest, I’m fairly new to docker and containers as a whole. Imagine a docker container being one of those Lunchables you ate as a kid. Everything you need is inside of that container. No external dependencies are involved. As mentioned before I created an Ubuntu VM for this deployment to run docker and any containers. The first step was getting docker installed. Credit to the team at Digital Ocean for the great write up on installing docker, check it out <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">here</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository <span style="color:#e6db74">&#34;deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable&#34;</span>
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
+</code></pre></div><h3 id="using-docker-without-sudo">Using Docker without Sudo</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo usermod -aG docker <span style="color:#e6db74">${</span>USER<span style="color:#e6db74">}</span>
+su - <span style="color:#e6db74">${</span>USER<span style="color:#e6db74">}</span>
+</code></pre></div><h3 id="useful-docker-commands">Useful Docker Commands</h3>
+<p><code>View a list of running containers</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ docker ps
+CONTAINER ID   IMAGE                         COMMAND                  STATUS         NAMES
+ed76314f72f7   drone/drone-runner-docker:1   <span style="color:#e6db74">&#34;/bin/drone-runner-d…&#34;</span>   Up <span style="color:#ae81ff">2</span> minutes   runner
+500785d2e6d4   drone/drone:2                 <span style="color:#e6db74">&#34;/bin/drone-server&#34;</span>      Up <span style="color:#ae81ff">3</span> minutes   drone
+2df0b3ee02fb   batfish/batfish               <span style="color:#e6db74">&#34;java -XX:-UseCompre…&#34;</span>   Up <span style="color:#ae81ff">8</span> days      batfish
+</code></pre></div><p><code>Stop or start containers “docker stop/start &lt;container name&gt;</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ docker stop runner
+runner
+juliopdx@drone:~$ docker start runner
+runner
+juliopdx@drone:~$
+</code></pre></div><p>If you want to explore more Docker commands, check out the <a href="https://docs.docker.com/engine/reference/commandline/docker/">official documentation</a>!</p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>I’ll end this one here. Stay tuned for the next post, setting up the Drone server and runners!</p>
+<ul>
+<li><a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Infrastructure as code series by NWMichl</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">Installing Docker on Ubuntu 20.04 by Digital Ocean</a></li>
+<li><a href="https://unsplash.com/photos/Grg6bwZuBMs">Featured image by @selimarda</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>How to Generate Cisco Lifecycle Documentation With Python and APIs</title>

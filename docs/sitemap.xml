@@ -3,6 +3,51 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/docker/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/drone/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/network-automation/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ngrok/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/posts/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/</loc>
+    <lastmod>2021-10-20T10:41:26-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</loc>
+    <lastmod>2021-10-20T10:26:36-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://juliopdx.github.io/tags/cisco/</loc>
     <lastmod>2021-09-23T10:06:16-08:00</lastmod>
   </url>
@@ -13,27 +58,7 @@
   </url>
   
   <url>
-    <loc>https://juliopdx.github.io/</loc>
-    <lastmod>2021-09-23T10:06:16-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/network-automation/</loc>
-    <lastmod>2021-09-23T10:06:16-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/posts/</loc>
-    <lastmod>2021-09-23T10:06:16-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.github.io/tags/python/</loc>
-    <lastmod>2021-09-23T10:06:16-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/</loc>
     <lastmod>2021-09-23T10:06:16-08:00</lastmod>
   </url>
   
@@ -214,6 +239,10 @@
   
   <url>
     <loc>https://juliopdx.github.io/blog/</loc>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ci/cd/</loc>
   </url>
   
   <url>

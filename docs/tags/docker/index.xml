@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on JulioPDX</title>
+    <link>https://juliopdx.github.io/tags/docker/</link>
+    <description>Recent content in Docker on JulioPDX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Wed, 20 Oct 2021 10:41:26 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a Network CI/CD Pipeline Part 2</title>
+      <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</link>
+      <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</guid>
+      <description>Introduction Thank you for checking out part two of this series. The last post went through installing docker on an Ubuntu server to begin our journey to building a CI/CD pipeline. In this post it will be all about connecting Drone to our code repository, in this case GitHub. From our reference diagram below, we will be focusing on the connections from GitHub to the Drone runners.
+The Pipeline Server and Runners Now that we have docker installed, we need something to test our code or execute it.</description>
+    </item>
+    
+    <item>
+      <title>Building a Network CI/CD Pipeline Part 1</title>
+      <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</link>
+      <pubDate>Wed, 20 Oct 2021 10:26:36 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</guid>
+      <description>Introduction Hello all and thank you for joining me on another blog post! In this post or series of posts I hope to walk you through my journey on building a network CI/CD pipeline. This pipeline is not perfect and I’m sure there’s much more efficient ways to produce the same outcomes. I did make the choice to leave out a few things as the technologies involved and complexity kept growing.</description>
+    </item>
+    
+  </channel>
+</rss>
