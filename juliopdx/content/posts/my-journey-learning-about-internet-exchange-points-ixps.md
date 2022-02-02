@@ -68,7 +68,7 @@ Each ISP has two edge routers and one router internal to the ISP autonomous syst
 
 `ISP-A-3 OSPFv3 Configuration`
 
-```
+```text
 interface Loopback0
  ip address 1.1.1.1 255.255.255.0
  ipv6 address 2001:DB8:111::1/48
@@ -119,7 +119,7 @@ IPv4 addressing is the same across all ISPs in the topology as well as the link 
 
 `ISP-A-3 iBGP Configuration`
 
-```
+```text
 router bgp 111
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
@@ -155,7 +155,7 @@ This configuration looks a bit long but lets break it down. We disable the defau
 
 `ISP-A-1 iBGP Configuration`
 
-```
+```text
 router bgp 111
  neighbor 2001:DB8:1::3 remote-as 111
  neighbor 2001:DB8:1::3 update-source Loopback0
@@ -181,7 +181,7 @@ I’ll spare you from the configuration on ISP-A-2, it is so close to being a co
 
 `Inbound Prefix Lists and Route Maps`
 
-```
+```text
 !
 ip prefix-list INBOUND seq 5 permit 1.1.1.0/24
 !
@@ -199,7 +199,7 @@ route-map iBGP_IPv6_IN permit 10
 
 `ISP-A-1 eBGP Configuration`
 
-```
+```text
 router bgp 111
  bgp router-id 10.0.0.21
  bgp log-neighbor-changes
@@ -253,7 +253,7 @@ I'll admit the eBGP configuration is a bit more busy. Here we have peer groups f
 
 `Outbound Prefix Lists and Route Maps`
 
-```
+```text
 !
 ip prefix-list OUTBOUND seq 5 permit 1.1.1.0/24
 !
@@ -323,7 +323,7 @@ Our route collectors are Cumulus Linux VMs running a neat BGP setup. I’m not e
 
 `RS1 BGP Configuration`
 
-```
+```text
 router bgp 777
   no bgp default ipv4-unicast
   neighbor IXP peer-group
@@ -359,7 +359,7 @@ Lets check some neighbors and routes!
 
 `ISP-A-3 OSPFv3 Neighbors`
 
-```
+```text
 ISP-A-3#show ospfv3 neighbor
 
           OSPFv3 1 address-family ipv4 (router-id 0.0.0.3)
@@ -377,7 +377,7 @@ Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
 
 `ISP-A-3 BGP Neighbors`
 
-```
+```text
 ISP-A-3#show bgp ipv4 unicast summary | b Nei
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 192.168.1.1     4          111    1439    1429       14    0    0 21:30:04        3
@@ -391,7 +391,7 @@ ISP-A-3#
 
 `ISP-A-3 BGP Networks`
 
-```
+```text
 ISP-A-3#show bgp ipv4 unicast | b Net
      Network          Next Hop            Metric LocPrf Weight Path
  *>  1.1.1.0/24       0.0.0.0                  0         32768 i
@@ -419,7 +419,7 @@ ISP-A-3#
 
 `RS1 BGP Neighbors`
 
-```
+```text
 cumulus@RS1:mgmt:~$ net show bgp summary
 show bgp ipv4 unicast summary
 =============================
@@ -467,7 +467,7 @@ cumulus@cumulus:mgmt:~$
 
 `RS1 BGP Routes`
 
-```
+```text
 cumulus@cumulus:mgmt:~$  net show bgp
 show bgp ipv4 unicast
 =====================

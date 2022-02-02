@@ -286,7 +286,7 @@ vrf definition {{ vrf.name }}
 
 Example of the VRF Jinja template above. The rest of the items for L3VPNs use the same structure. Feel free to check out the git repository linked below to see the rest. Ill show the output from a few PE and CE routers before and after the changes.
 
-```
+```text
 PE1#show vrf brief
   Name                             Default RD            Protocols   Interfaces
   MGMT                             <not set>             ipv4        Et0/3
@@ -614,7 +614,7 @@ sys     0m1.079s
 
 ## VRF Creation Validation
 
-```
+```text
 PE1#show ip vrf
   Name                             Default RD            Interfaces
   CUSTOMER_777                     777:1
@@ -643,7 +643,7 @@ PE4#
 
 ## BGP Peers and Routes on CE Routers
 
-```
+```text
 CE1#show ip bgp  summary | b Neigh
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 10.0.11.1       4        12345      19      20        3    0    0 00:13:17        1

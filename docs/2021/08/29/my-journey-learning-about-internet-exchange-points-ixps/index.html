@@ -269,7 +269,7 @@
 <p>Each ISP has two edge routers and one router internal to the ISP autonomous system. Each ISP is running OSPFv3 to redistribute internal routes and addresses on loopback interfaces for BGP peering. The internal router, in this case ISP-A-3, acts as a route reflector. A-1 and A-2 do not directly peer with each other using BGP. They are neighbors using OSPFv3 IPv4 and IPv6 address families.</p>
 <h2 id="ospfv3-configuration">OSPFv3 Configuration</h2>
 <p><code>ISP-A-3 OSPFv3 Configuration</code></p>
-<pre><code>interface Loopback0
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Loopback0
  ip address 1.1.1.1 255.255.255.0
  ipv6 address 2001:DB8:111::1/48
 !
@@ -311,10 +311,10 @@ router ospfv3 1
   passive-interface Loopback1
  exit-address-family
 !
-</code></pre><p>IPv4 addressing is the same across all ISPs in the topology as well as the link local addressing. We enable OSPFv3 under both address families and set loopbacks to passive in OSPFv3. I enabled BFD on pretty much any link I could to speed up failure detection, especially with BGP peers.</p>
+</code></pre></div><p>IPv4 addressing is the same across all ISPs in the topology as well as the link local addressing. We enable OSPFv3 under both address families and set loopbacks to passive in OSPFv3. I enabled BFD on pretty much any link I could to speed up failure detection, especially with BGP peers.</p>
 <h2 id="ibgp-configuration">iBGP Configuration</h2>
 <p><code>ISP-A-3 iBGP Configuration</code></p>
-<pre><code>router bgp 111
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 111
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
  neighbor iBGP peer-group
@@ -343,9 +343,9 @@ router ospfv3 1
   neighbor 2001:DB8:1::1 activate
   neighbor 2001:DB8:1::2 activate
  exit-address-family
-</code></pre><p>This configuration looks a bit long but lets break it down. We disable the default BGP for IPv4 setup. We will be using both address families for neighbor relationships. There is a peer group for IPv4 neighbors and IPv6 neighbors to cut down on commands. Especially if more neighbors were involved. After that we will advertise the routes we need and set the peers in the peer groups to be route reflector clients.</p>
+</code></pre></div><p>This configuration looks a bit long but lets break it down. We disable the default BGP for IPv4 setup. We will be using both address families for neighbor relationships. There is a peer group for IPv4 neighbors and IPv6 neighbors to cut down on commands. Especially if more neighbors were involved. After that we will advertise the routes we need and set the peers in the peer groups to be route reflector clients.</p>
 <p><code>ISP-A-1 iBGP Configuration</code></p>
-<pre><code>router bgp 111
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 111
  neighbor 2001:DB8:1::3 remote-as 111
  neighbor 2001:DB8:1::3 update-source Loopback0
  neighbor 2001:DB8:1::3 fall-over bfd
@@ -364,9 +364,9 @@ router ospfv3 1
   neighbor 2001:DB8:1::3 next-hop-self
   neighbor 2001:DB8:1::3 route-map iBGP_IPv6_IN in
  exit-address-family
-</code></pre><p>I’ll spare you from the configuration on ISP-A-2, it is so close to being a copy of ISP-A-1. Not much new here, just enabling the neighbor relationship with ISP-A-3. Something new is the route-map being applied inbound. One of the resources I used mentioned the ISP border routers at the IXP should, for the most part, not carry the full internet routing table. Lets say for example, ISPA wanted to advertise only networks 1.1.1.0/24 and 2001:db8:111::/48 at this IXP. I accomplished this by filtering all incoming updates from our iBGP neighbor to only accept those prefixes. See prefix lists and route maps below.</p>
+</code></pre></div><p>I’ll spare you from the configuration on ISP-A-2, it is so close to being a copy of ISP-A-1. Not much new here, just enabling the neighbor relationship with ISP-A-3. Something new is the route-map being applied inbound. One of the resources I used mentioned the ISP border routers at the IXP should, for the most part, not carry the full internet routing table. Lets say for example, ISPA wanted to advertise only networks 1.1.1.0/24 and 2001:db8:111::/48 at this IXP. I accomplished this by filtering all incoming updates from our iBGP neighbor to only accept those prefixes. See prefix lists and route maps below.</p>
 <p><code>Inbound Prefix Lists and Route Maps</code></p>
-<pre><code>!
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
 ip prefix-list INBOUND seq 5 permit 1.1.1.0/24
 !
 ipv6 prefix-list INBOUND_v6 seq 5 permit 2001:DB8:111::/48
@@ -377,9 +377,9 @@ route-map iBGP_IPv4_IN permit 10
 route-map iBGP_IPv6_IN permit 10
  match ipv6 address prefix-list INBOUND_v6
 !
-</code></pre><h2 id="ebgp-configuration">eBGP Configuration</h2>
+</code></pre></div><h2 id="ebgp-configuration">eBGP Configuration</h2>
 <p><code>ISP-A-1 eBGP Configuration</code></p>
-<pre><code>router bgp 111
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 111
  bgp router-id 10.0.0.21
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
@@ -426,9 +426,9 @@ route-map iBGP_IPv6_IN permit 10
   neighbor 2001:DB8::444:1 activate
  exit-address-family
 !
-</code></pre><p>I&rsquo;ll admit the eBGP configuration is a bit more busy. Here we have peer groups for both IPv4 (IXP) and IPv6 (IXPv6). Sending community attributes for potential traffic engineering or policies. Something that I should mention for more official implementation, authentication between BGP peers would be great as well as filtering per neighbor. For example, if we were to peer with 10.0.0.22 and expect to receive the 2.2.2.0/24 network. We could add a filter to only accept that network inbound from 10.0.0.22. I created a simple filter to only filter the routes we are sending to our eBGP neighbors. Example is below.</p>
+</code></pre></div><p>I&rsquo;ll admit the eBGP configuration is a bit more busy. Here we have peer groups for both IPv4 (IXP) and IPv6 (IXPv6). Sending community attributes for potential traffic engineering or policies. Something that I should mention for more official implementation, authentication between BGP peers would be great as well as filtering per neighbor. For example, if we were to peer with 10.0.0.22 and expect to receive the 2.2.2.0/24 network. We could add a filter to only accept that network inbound from 10.0.0.22. I created a simple filter to only filter the routes we are sending to our eBGP neighbors. Example is below.</p>
 <p><code>Outbound Prefix Lists and Route Maps</code></p>
-<pre><code>!
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
 ip prefix-list OUTBOUND seq 5 permit 1.1.1.0/24
 !
 ipv6 prefix-list OUTBOUND_v6 seq 5 permit 2001:DB8:111::/48
@@ -438,7 +438,7 @@ route-map IXP_IPv4_OUT permit 10
 route-map IXP_IPv6_OUT permit 10
  match ipv6 address prefix-list OUTBOUND_v6
 !
-</code></pre><h2 id="ixp-switching">IXP Switching</h2>
+</code></pre></div><h2 id="ixp-switching">IXP Switching</h2>
 <p>I did not go deep in the reading for IXP hardware. My best thought would be a pretty decent switch with speeds up to 400G at this point. I’m sure there are a lot of factors that go into these decisions. Check out the IXP wish list from euro-ix linked at the end.</p>
 <p>I’m going to turn our attention to the actual switch configuration. This is again only a sliver of what should be configured on the switch. Below is what I came up with in this lab scenario.</p>
 <p><code>IXP Switchport Configuration</code></p>
@@ -482,7 +482,7 @@ interface Ethernet1/0
 <p>The services mentioned above are only a handful of what an IXP can provide. I’m going to focus on one in particular, the Route Collector. An IXP can have a policy for each participant that they must peer with a local route collector. The collector has a simple function, receive all the routes, and distribute none. You may have noticed two nodes in the topology named RS1 and RS2. The name may be misleading as it can stand for route server, but for our purposes just think of them as a route collector. If you are wondering, route servers can make BGP configuration a bit more simple for ISPs at an IXP since they only have to peer with the route server vs each individual participant. This has a possible negative of the ISP losing a bit of policy control with BGP.</p>
 <p>Our route collectors are Cumulus Linux VMs running a neat BGP setup. I’m not entirely sure on the correct way to setup the route collector but this made sense to me. Since the route collector cannot forward any routes that are learned, we need to create a policy. The most simple thing that came to mind was to create a general deny all route map and apply it to our peer group. Check it out below. I’ll focus on RS1 as RS2 has a very very similar config. So much so that I basically ran “net show configuration commands”, copied the output, updated about two addresses, and then pasted them over to RS2.</p>
 <p><code>RS1 BGP Configuration</code></p>
-<pre><code>router bgp 777
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 777
   no bgp default ipv4-unicast
   neighbor IXP peer-group
   neighbor IXP remote-as external
@@ -507,11 +507,11 @@ interface Ethernet1/0
     neighbor IXPv6 send-community both
 
 route-map RS_DENY deny 1
-</code></pre><p>Okay so the config was small enough I just included the whole thing. At the bottom you can see my generic deny route map. Check out those bgp listen commands, I think its the coolest thing. In my little IXP world, I didn’t want to keep manually adding all the BGP peers to the route collector. So the route collector is listening for any peer requests that come from our peering LAN. Probably not the most secure, I would recommend reading up on the best way to set that up.</p>
+</code></pre></div><p>Okay so the config was small enough I just included the whole thing. At the bottom you can see my generic deny route map. Check out those bgp listen commands, I think its the coolest thing. In my little IXP world, I didn’t want to keep manually adding all the BGP peers to the route collector. So the route collector is listening for any peer requests that come from our peering LAN. Probably not the most secure, I would recommend reading up on the best way to set that up.</p>
 <h2 id="validate">Validate</h2>
 <p>Lets check some neighbors and routes!</p>
 <p><code>ISP-A-3 OSPFv3 Neighbors</code></p>
-<pre><code>ISP-A-3#show ospfv3 neighbor
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ISP-A-3#show ospfv3 neighbor
 
           OSPFv3 1 address-family ipv4 (router-id 0.0.0.3)
 
@@ -524,8 +524,8 @@ Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
 Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
 0.0.0.2           1   FULL/BDR        00:00:34    5               Ethernet0/1
 0.0.0.1           1   FULL/BDR        00:00:33    5               Ethernet0/0
-</code></pre><p><code>ISP-A-3 BGP Neighbors</code></p>
-<pre><code>ISP-A-3#show bgp ipv4 unicast summary | b Nei
+</code></pre></div><p><code>ISP-A-3 BGP Neighbors</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ISP-A-3#show bgp ipv4 unicast summary | b Nei
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 192.168.1.1     4          111    1439    1429       14    0    0 21:30:04        3
 192.168.1.2     4          111    1370    1373       14    0    0 20:36:57        3
@@ -534,8 +534,8 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 2001:DB8:1::1   4          111    1474    1424       43    0    0 21:11:37        3
 2001:DB8:1::2   4          111    1486    1440       43    0    0 21:11:36        3
 ISP-A-3#
-</code></pre><p><code>ISP-A-3 BGP Networks</code></p>
-<pre><code>ISP-A-3#show bgp ipv4 unicast | b Net
+</code></pre></div><p><code>ISP-A-3 BGP Networks</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ISP-A-3#show bgp ipv4 unicast | b Net
      Network          Next Hop            Metric LocPrf Weight Path
  *&gt;  1.1.1.0/24       0.0.0.0                  0         32768 i
  * i 2.2.2.0/24       192.168.1.2              0    100      0 222 i
@@ -558,8 +558,8 @@ ISP-A-3#show bgp ipv6 unicast | b Net
                        2001:DB8:1::2            0    100      0 444 i
  *&gt;i                  2001:DB8:1::1            0    100      0 444 i
 ISP-A-3#
-</code></pre><p><code>RS1 BGP Neighbors</code></p>
-<pre><code>cumulus@RS1:mgmt:~$ net show bgp summary
+</code></pre></div><p><code>RS1 BGP Neighbors</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cumulus@RS1:mgmt:~$ net show bgp summary
 show bgp ipv4 unicast summary
 =============================
 BGP router identifier 10.0.0.1, local AS number 777 vrf-id 0
@@ -602,15 +602,15 @@ show bgp l2vpn evpn summary
 ===========================
 % No BGP neighbors found
 cumulus@cumulus:mgmt:~$
-</code></pre><p><code>RS1 BGP Routes</code></p>
-<pre><code>cumulus@cumulus:mgmt:~$  net show bgp
+</code></pre></div><p><code>RS1 BGP Routes</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cumulus@cumulus:mgmt:~$  net show bgp
 show bgp ipv4 unicast
 =====================
 BGP table version is 72, local router ID is 10.0.0.1, vrf id 0
 Default local pref 100, local AS 777
 Status codes:  s suppressed, d damped, h history, * valid, &gt; best, = multipath,
                i internal, r RIB-failure, S Stale, R Removed
-Nexthop codes: @NNN nexthop's vrf id, &lt; announce-nh-self
+Nexthop codes: @NNN nexthop&#39;s vrf id, &lt; announce-nh-self
 Origin codes:  i - IGP, e - EGP, ? - incomplete
 
    Network          Next Hop            Metric LocPrf Weight Path
@@ -628,7 +628,7 @@ BGP table version is 49, local router ID is 10.0.0.1, vrf id 0
 Default local pref 100, local AS 777
 Status codes:  s suppressed, d damped, h history, * valid, &gt; best, = multipath,
                i internal, r RIB-failure, S Stale, R Removed
-Nexthop codes: @NNN nexthop's vrf id, &lt; announce-nh-self
+Nexthop codes: @NNN nexthop&#39;s vrf id, &lt; announce-nh-self
 Origin codes:  i - IGP, e - EGP, ? - incomplete
 
    Network          Next Hop            Metric LocPrf Weight Path
@@ -647,7 +647,7 @@ Origin codes:  i - IGP, e - EGP, ? - incomplete
 
 Displayed  4 routes and 4 total paths
 cumulus@cumulus:mgmt:~$
-</code></pre><h2 id="outro-and-links">Outro and Links</h2>
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you again for checking out this post, I really appreciate it. Please send over any tips or just ping me if something I mentioned is way out into left field. If you are curious about IXPs, please check out the links below! I will include all configurations for the devices in the topology on my GitHub (linked below). Thank you to all the IXP operators around the world!</p>
 <ul>
 <li><a href="https://www.pacnog.org/pacnog6/IXP/IXP-design.pdf">PACNOG – Internet Exchange Point Design</a></li>
