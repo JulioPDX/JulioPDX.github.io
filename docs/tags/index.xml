@@ -7,13 +7,58 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 15 Aug 2021 11:12:03 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 29 Aug 2021 18:04:42 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>BGP</title>
+      <link>https://juliopdx.github.io/tags/bgp/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/bgp/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Cisco</title>
       <link>https://juliopdx.github.io/tags/cisco/</link>
-      <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/cisco/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cumulus</title>
+      <link>https://juliopdx.github.io/tags/cumulus/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/cumulus/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IPv6</title>
+      <link>https://juliopdx.github.io/tags/ipv6/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ipv6/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IXP</title>
+      <link>https://juliopdx.github.io/tags/ixp/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ixp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSPFv3</title>
+      <link>https://juliopdx.github.io/tags/ospfv3/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ospfv3/</guid>
       <description></description>
     </item>
     
@@ -68,24 +113,6 @@
       <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/eigrpv6/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>IPv6</title>
-      <link>https://juliopdx.github.io/tags/ipv6/</link>
-      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/ipv6/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>OSPFv3</title>
-      <link>https://juliopdx.github.io/tags/ospfv3/</link>
-      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/ospfv3/</guid>
       <description></description>
     </item>
     

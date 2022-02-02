@@ -3,32 +3,62 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://juliopdx.github.io/tags/bgp/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/cisco/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/cumulus/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ipv6/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ixp/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/ospfv3/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/posts/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.github.io/tags/</loc>
+    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</loc>
     <lastmod>2021-08-15T11:12:03-08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://juliopdx.github.io/tags/cisco/</loc>
-    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/</loc>
-    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.github.io/tags/network-automation/</loc>
-    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/posts/</loc>
-    <lastmod>2021-08-15T11:12:03-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/</loc>
     <lastmod>2021-08-15T11:12:03-08:00</lastmod>
   </url>
   
@@ -64,16 +94,6 @@
   
   <url>
     <loc>https://juliopdx.github.io/tags/eigrpv6/</loc>
-    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/ipv6/</loc>
-    <lastmod>2021-05-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.github.io/tags/ospfv3/</loc>
     <lastmod>2021-05-03T00:00:00+00:00</lastmod>
   </url>
   

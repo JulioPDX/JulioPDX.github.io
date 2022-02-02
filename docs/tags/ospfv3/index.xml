@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 03 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/ospfv3/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 29 Aug 2021 18:04:42 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/ospfv3/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Journey Learning About Internet Exchange Points (IXPs)</title>
+      <link>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</guid>
+      <description>Introduction Hello all and thank you for checking out one of my blog posts. Really means a lot! Have you ever heard IXP mentioned in network engineering speak and thought, what the heck is that? I definitely have, and in my day to day I don’t usually interact with an IXP at all. So here I am a curious individual, wanting to learn the things. I figured, what the heck, now is as good a time as any to deep dive some IXP knowledge.</description>
+    </item>
+    
     <item>
       <title>Route Redistribution OSPFv3 and EIGRPv6</title>
       <link>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>

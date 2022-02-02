@@ -184,10 +184,10 @@ Back to our “no ipv6 nd suppress-ra” command. From my testing it seems that 
 
 `Packet Information`
 
-|Packet #|Type|Description|
-|----|----|-----|
-|8|Router Solicitation (RS)|Linux1 using its link local address (fe80:5200:ff:fe07:0) to reach the All-routers address (ff02::2)|
-|9|Router Advertisement (RA)|leaf01 using its link local address (fe80:beef:cafe::1) to reach the All-nodes address (ff02::1)|
+| Packet # |           Type            |                                             Description                                              |
+| :------: | :-----------------------: | :--------------------------------------------------------------------------------------------------: |
+|    8     | Router Solicitation (RS)  | Linux1 using its link local address (fe80:5200:ff:fe07:0) to reach the All-routers address (ff02::2) |
+|    9     | Router Advertisement (RA) |   leaf01 using its link local address (fe80:beef:cafe::1) to reach the All-nodes address (ff02::1)   |
 
 Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe:a::/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.
 
