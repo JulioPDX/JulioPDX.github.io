@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs." />
+<meta name="keywords" content=", Python, Nornir, FastAPI, Cisco, Aruba, Arista, Network Automation" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/" />
+
+
+    <title>
+        
+            Integrating Nornir With FastAPI :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Integrating Nornir With FastAPI">
+<meta itemprop="description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.">
+<meta itemprop="datePublished" content="2021-09-01T18:52:28-08:00" />
+<meta itemprop="dateModified" content="2021-09-01T18:52:28-08:00" />
+<meta itemprop="wordCount" content="909">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="Python,Nornir,FastAPI,Cisco,Aruba,Arista,Network Automation," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="Integrating Nornir With FastAPI"/>
+<meta name="twitter:description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs."/>
+
+
+
+
+    <meta property="og:title" content="Integrating Nornir With FastAPI" />
+<meta property="og:description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2021-09-01T18:52:28-08:00" />
+<meta property="article:modified_time" content="2021-09-01T18:52:28-08:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-09-01 18:52:28 -0800 -0800" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        5 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/">Integrating Nornir With FastAPI</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#objective">Objective</a></li>
+    <li><a href="#topology">Topology</a></li>
+    <li><a href="#script-breakdown">Script Breakdown</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>I recently saw a fellow engineer share an amazing article on <a href="https://realpython.com/fastapi-python-web-apis/">Real Python</a>. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</p>
+<p>When learning something new I try and incorporate it to something that interest me. A decent amount of the time it relates to network engineering. Another example could be learning how to interact with a <a href="https://pokeapi.co/">Pokemon API</a>. I wanted to see if I could possibly integrate Nornir with FastAPI.</p>
+<h2 id="objective">Objective</h2>
+<p>My initial thinking for this experiment was to use Nornir and NAPALM to connect to devices and retrieve information. If this could then be linked to separate URLs, that would make for a pretty slick way of interacting with networking devices. I really thought I would be making some script that was much much longer than what I actually implemented.</p>
+<p>I wont go too deep into Nornir or FastAPI. The Real Python article linked is an amazing resource as well as the FastAPI documentation. I’ve written about Nornir before, and if you are curious about the structure, feel free to check out one of my previous <a href="https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/">posts</a>.</p>
+<h2 id="topology">Topology</h2>
+<p><img src="/blog/images/eve_topo_multi.png" alt="EVE Topo Multi"></p>
+<p>The topology consists of three networking nodes from three popular vendors. I tried to include a variety to show how automation can remove some thought when trying to return data from devices. Whether its vendor A or vendor B, at the end of the day we want the information required for the task at hand.</p>
+<h2 id="script-breakdown">Script Breakdown</h2>
+<p><code>All the Imports</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> fastapi <span style="color:#f92672">import</span> FastAPI
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get
+<span style="color:#f92672">from</span> yaml <span style="color:#f92672">import</span> safe_load
+<span style="color:#f92672">import</span> urllib3
+</code></pre></div><ul>
+<li>FastAPI – Used to create a class instance of FastAPI.</li>
+<li>InitNornir – Similar to FastAPI above, in this case Nornir will be initialized with a config file.</li>
+<li>napalm_get – Heavily used to retrieve all the information in our API calls.</li>
+<li>safe_load – Will be used to load hosts.yaml file (specific API call).</li>
+<li>urllib3 – At the moment this will simply be disabling insecure warnings in the terminal output.</li>
+</ul>
+<p><code>Inits</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>InsecureRequestWarning)
+
+nr <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config/config.yaml&#34;</span>)
+
+app <span style="color:#f92672">=</span> FastAPI()
+
+
+<span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
+async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">root</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Says hi!&#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;Hello JulioPDX&#34;</span>}
+</code></pre></div><p>As mentioned previously, we will be disabling the insecure warnings for our lab. We are initializing Nornir with the nr variable and FastAPI to the app variable. Something new is the ‘@app.get(“/”)’ on line eight. From the article this is known as a decorator in python and it relates to the function definition immediately below it. You will see this pattern further in this writing. For this example, if we run the app pointing to “/” it should return “Hello JulioPDX”. Lets start the app!</p>
+<p><code>Starting the App</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>juliopdx@pbpro net_auto_fastapi<span style="color:#f92672">]</span>$ uvicorn play:app --reload
+INFO:     Will watch <span style="color:#66d9ef">for</span> changes in these directories: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;/home/juliopdx/git/net_auto_fastapi&#39;</span><span style="color:#f92672">]</span>
+INFO:     Uvicorn running on http://127.0.0.1:8000 <span style="color:#f92672">(</span>Press CTRL+C to quit<span style="color:#f92672">)</span>
+INFO:     Started reloader process <span style="color:#f92672">[</span>99179<span style="color:#f92672">]</span> using watchgod
+INFO:     Started server process <span style="color:#f92672">[</span>99184<span style="color:#f92672">]</span>
+INFO:     Waiting <span style="color:#66d9ef">for</span> application startup.
+INFO:     Application startup complete.
+</code></pre></div><p>Sticking close to the learning so far, uvicorn is used as our server to run the app. The reload option will restart the service anytime a change is made to our play.py file and saved. Lets check out the path mentioned in earlier code.</p>
+<p><img src="/blog/images/fastapi_hello.png" alt="Looking good!"></p>
+<p>Now that I have my local environment to the point of the original article, I wanted to start with something simple to test my knowledge. Could there be a way to let users know what all devices will be loaded and available in Nornir? Check out the code below.</p>
+<p><code>Get All the Things</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/devices&#34;</span>)
+async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_devices</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Returns a list of devices loaded from our hosts file&#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;./config/hosts.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+        devices <span style="color:#f92672">=</span> safe_load(file)
+    <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#34;devices&#34;</span>: devices}
+</code></pre></div><p>This is pretty neat, its a simple python operation to open a file and set the contents to a variable. Incorporating the output into FastAPI was incredibly easy. This will also show a user what devices they can work with at a simple URL or endpoint. Something else to note is that the credentials are not exposed to the user, only the portions within the hosts.yaml file.</p>
+<p><img src="/blog/images/fastapi_devices.png" alt="Devices"></p>
+<p>This next portion was the most interesting to me. NAPALM has a concept called getters. Basically these functions will go and grab different pieces of information from a device. I initially thought I would have to write a function for every getter. Luckily for me and you viewers watching at home, we can use path parameters when defining these endpoints! For example, if I wanted to interact with the ArubaCX device and the facts getter, I would need to provide two parameters to the endpoint. This allows the operator to just enter the URL with the correct device name and getter, all in one function definition!</p>
+<p><code>All the Getters</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/devices/{hostname}/napalm_get/{getter}&#34;</span>)
+async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_config</span>(hostname: str, getter: str):
+    <span style="color:#e6db74">&#34;&#34;&#34;Function used to interact with NAPALM and devices&#34;&#34;&#34;</span>
+    rtr <span style="color:#f92672">=</span> nr<span style="color:#f92672">.</span>filter(name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{hostname}&#34;</span>)
+    <span style="color:#66d9ef">return</span> rtr<span style="color:#f92672">.</span>run(name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Get {hostname} {getter}&#34;</span>, task<span style="color:#f92672">=</span>napalm_get, getters<span style="color:#f92672">=</span>[f<span style="color:#e6db74">&#34;{getter}&#34;</span>])
+</code></pre></div><table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="/blog/images/napalm_arista_arp.png" alt="NAPALM Arista ARP"></td>
+<td style="text-align:center"><img src="/blog/images/napalm_arista_facts.png" alt="NAPALM Arista Facts"></td>
+</tr>
+<tr>
+<td style="text-align:center"><img src="/blog/images/napalm_aruba_lldp.png" alt="NAPALM Aruba LLDP"></td>
+<td style="text-align:center"><img src="/blog/images/napalm_aruba_facts.png" alt="NAPALM Aruba Facts"></td>
+</tr>
+<tr>
+<td style="text-align:center"><img src="/blog/images/napalm_cisco_interfaces.png" alt="NAPALM Cisco Interfaces"></td>
+<td style="text-align:center"><img src="/blog/images/napalm_cisco_facts.png" alt="NAPALM Cisco Facts"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you for reading this far, really means a lot. So much of this can be improved and I’m excited to keep learning about python and FastAPI. Please check out the links below for more information.</p>
+<ul>
+<li><a href="https://realpython.com/fastapi-python-web-apis/">Real Python - Using FastAPI to Build Python Web APIs</a></li>
+<li><a href="https://nornir.readthedocs.io/en/latest/">Nornir Documentation</a></li>
+<li><a href="https://napalm.readthedocs.io/en/latest/support/#getters-support-matrix">NAPALM Getters</a></li>
+<li><a href="https://github.com/JulioPDX/net_auto_fastapi">Repository for code</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/python/">Python</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/nornir/">Nornir</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/fastapi/">FastAPI</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/cisco/">Cisco</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/aruba/">Aruba</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/arista/">Arista</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/network-automation/">Network Automation</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        909 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-09-01 19:52
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/">
+                    <span class="button__text">My Journey Learning About Internet Exchange Points (IXPs)</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

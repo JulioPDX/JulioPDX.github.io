@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 29 Aug 2021 18:04:42 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Integrating Nornir With FastAPI</title>
+      <link>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</guid>
+      <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
+    </item>
+    
     <item>
       <title>My Journey Learning About Internet Exchange Points (IXPs)</title>
       <link>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</link>

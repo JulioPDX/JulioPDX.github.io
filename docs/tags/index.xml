@@ -7,22 +7,76 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 29 Aug 2021 18:04:42 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>BGP</title>
-      <link>https://juliopdx.github.io/tags/bgp/</link>
-      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      <title>Arista</title>
+      <link>https://juliopdx.github.io/tags/arista/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/bgp/</guid>
+      <guid>https://juliopdx.github.io/tags/arista/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Aruba</title>
+      <link>https://juliopdx.github.io/tags/aruba/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/aruba/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cisco</title>
       <link>https://juliopdx.github.io/tags/cisco/</link>
-      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/cisco/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FastAPI</title>
+      <link>https://juliopdx.github.io/tags/fastapi/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/fastapi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Network Automation</title>
+      <link>https://juliopdx.github.io/tags/network-automation/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nornir</title>
+      <link>https://juliopdx.github.io/tags/nornir/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/nornir/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://juliopdx.github.io/tags/python/</link>
+      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>BGP</title>
+      <link>https://juliopdx.github.io/tags/bgp/</link>
+      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/bgp/</guid>
       <description></description>
     </item>
     
@@ -63,15 +117,6 @@
     </item>
     
     <item>
-      <title>Network Automation</title>
-      <link>https://juliopdx.github.io/tags/network-automation/</link>
-      <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>L3VPN</title>
       <link>https://juliopdx.github.io/tags/l3vpn/</link>
       <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
@@ -86,24 +131,6 @@
       <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/mpls/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Python</title>
-      <link>https://juliopdx.github.io/tags/python/</link>
-      <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/python/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Aruba</title>
-      <link>https://juliopdx.github.io/tags/aruba/</link>
-      <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/aruba/</guid>
       <description></description>
     </item>
     
@@ -135,15 +162,6 @@
     </item>
     
     <item>
-      <title>Arista</title>
-      <link>https://juliopdx.github.io/tags/arista/</link>
-      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/arista/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Data Center</title>
       <link>https://juliopdx.github.io/tags/data-center/</link>
       <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
@@ -167,15 +185,6 @@
       <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/napalm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Nornir</title>
-      <link>https://juliopdx.github.io/tags/nornir/</link>
-      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/nornir/</guid>
       <description></description>
     </item>
     

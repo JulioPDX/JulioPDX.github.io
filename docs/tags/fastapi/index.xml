@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Nornir on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/nornir/</link>
-    <description>Recent content in Nornir on JulioPDX</description>
+    <title>FastAPI on JulioPDX</title>
+    <link>https://juliopdx.github.io/tags/fastapi/</link>
+    <description>Recent content in FastAPI on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/nornir/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/fastapi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Integrating Nornir With FastAPI</title>
       <link>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</link>
@@ -15,15 +15,6 @@
       
       <guid>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</guid>
       <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
-    </item>
-    
-    <item>
-      <title>Network Validation With Nornir &amp; Napalm</title>
-      <link>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</link>
-      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</guid>
-      <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
     </item>
     
   </channel>
