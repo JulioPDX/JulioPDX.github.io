@@ -274,7 +274,7 @@ I’m going to turn our attention to the actual switch configuration. This is ag
 
 `IXP Switchport Configuration`
 
-```
+```text
 !
 interface Ethernet0/0
  description To ISP-A-1

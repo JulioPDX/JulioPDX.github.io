@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?" />
+<meta name="keywords" content=", Docker, DockerHub, Drone" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/" />
+
+
+    <title>
+        
+            Building a Network CI/CD Pipeline Part 3 :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Building a Network CI/CD Pipeline Part 3">
+<meta itemprop="description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?">
+<meta itemprop="datePublished" content="2021-10-20T11:05:49-08:00" />
+<meta itemprop="dateModified" content="2021-10-20T11:05:49-08:00" />
+<meta itemprop="wordCount" content="1066">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="Docker,DockerHub,Drone," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="Building a Network CI/CD Pipeline Part 3"/>
+<meta name="twitter:description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?"/>
+
+
+
+
+    <meta property="og:title" content="Building a Network CI/CD Pipeline Part 3" />
+<meta property="og:description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2021-10-20T11:05:49-08:00" />
+<meta property="article:modified_time" content="2021-10-20T11:05:49-08:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-10-20 11:05:49 -0800 -0800" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        6 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#droneyml-or-droneyaml-or--something">.drone.yml or .drone.yaml or .. something?</a></li>
+    <li><a href="#the-problem-with-requirements">The Problem With Requirements</a></li>
+    <li><a href="#creating-a-docker-container-image-optional">Creating a Docker Container Image (Optional)</a></li>
+    <li><a href="#dockerfile">Dockerfile</a></li>
+    <li><a href="#build-container-and-publish">Build Container and Publish</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <p><img src="/blog/images/ian-taylor.jpg" alt="Containers"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the <em>.drone.yml</em> file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?</p>
+<h2 id="droneyml-or-droneyaml-or--something">.drone.yml or .drone.yaml or .. something?</h2>
+<p>Pretty much all CI systems use some kind of configuration file, essentially the steps you want performed on your pipeline run. They all have their own flavor, but essentially walk the same line. My only previous experience was with Azure Devops pipelines. The <em>.drone.yml</em> file should be placed at the root of your directory structure of the project. Below is one of the first versions of the configuration file in my repository.</p>
+<p><code>Initial .drone.yml file</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">pipeline</span>
+<span style="color:#f92672">type</span>: <span style="color:#ae81ff">docker</span>
+<span style="color:#f92672">name</span>: <span style="color:#ae81ff">Testing Python CI/CD</span>
+
+
+<span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Install and deploy</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">python</span>
+  <span style="color:#f92672">environment</span>:
+    <span style="color:#f92672">MY_PASS</span>:
+      <span style="color:#f92672">from_secret</span>: <span style="color:#ae81ff">MY_PASS</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">pip3 install -r requirements.txt</span>
+  - <span style="color:#ae81ff">python3 bat.py</span>
+
+<span style="color:#f92672">trigger</span>:
+  <span style="color:#f92672">branch</span>:
+    <span style="color:#f92672">exclude</span>:
+    - <span style="color:#ae81ff">main</span>
+    - <span style="color:#ae81ff">master</span>
+</code></pre></div><p>Lines 1-3 go over the highest level settings of the pipeline. We are using a docker type, since we installed the docker runners. If you are using something like exec, you would have to place that there and install exec runners as well. Lines 6-14 describe the step or steps performed. My simple example is running one step and executing two commands. The image being used is a python Docker image from Docker hub. Once that is pulled down, the commands will execute on the container. The first will install some requirements from my code base and the second will execute the script bat.py. The script itself is just performing a simple connection to devices in my lab. We are utilizing the secret we set earlier in the repository settings here in the script.</p>
+<h2 id="the-problem-with-requirements">The Problem With Requirements</h2>
+<p>If your environment has very little or no external dependencies, you may not run into this problem. As I got the pipeline working and starting adding more to the code base, this also added more requirements that needed to be installed during the pipeline run. The server created that is hosting these docker containers is not very powerful. That could be the cause of some of these delays. Check out a pipeline run below(a bit exaggerated but you get the point).</p>
+<p><img src="/blog/images/long-install.png" alt="Long install"></p>
+<p>17 minutes!!! Yikes! I think software development has a concept of feedback loops. Where we would like to know if something passed or failed relatively quickly. Over time this would be crazy, imagine waiting that long to find out you had a small code syntax error, I guess it would make for a good time to get a coffee. This then led me down the path of creating a Docker container image.</p>
+<h2 id="creating-a-docker-container-image-optional">Creating a Docker Container Image (Optional)</h2>
+<p>So whats the big deal with this container image? For one, I’ve never even come close to thinking of making one. I’m trying to show you, the reader ,that if there is some technology you don’t know or aren’t comfortable with, with a little time and persistence you can make really cool things happen. I wanted to see if there was some way to make a lightweight python container and then just add on my requirements. I did what any sane person would do… I hit up my friend Google.</p>
+<p>Google then led me to this incredible write up by Samuel James, check it out <a href="https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/">here</a>. We already had Docker installed on our Ubuntu server so that wasn’t required. I did have to create a Docker Hub account and run “docker login”. Once logged in I proceeded with creating the Dockerfile.</p>
+<h2 id="dockerfile">Dockerfile</h2>
+<p>The Dockerfile essentially describes how you want to build your image. Check out my example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.9.7-slim</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Install dependencies:</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> requirements.txt .<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> pip install -r requirements.txt<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>That’s about it… no, I’m kidding. The FROM statement is telling docker if we want to base our image from any other image. For this example we are using the python 3.9.7-slim variant. After that I have a requirements.txt file locally that will be copied to the container. Then RUN will execute that command on the container, which will install our dependencies.</p>
+<p><code>requirements.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">netmiko
+rich
+black
+pybatfish
+napalm
+pytest
+nornir
+nornir-utils
+nornir-napalm
+</code></pre></div><h2 id="build-container-and-publish">Build Container and Publish</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker build -t juliopdx/netauto .
+docker push juliopdx/netauto:latest
+</code></pre></div><p>Now that we have a new container image we can use this in our <em>.drone.yml</em> file. If you are really curious check out the docker hub page <a href="https://hub.docker.com/r/juliopdx/netauto">here</a>. Isn’t it pretty? Check out the updated configuration file below.</p>
+<p><code>.drone.yml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">pipeline</span>
+<span style="color:#f92672">type</span>: <span style="color:#ae81ff">docker</span>
+<span style="color:#f92672">name</span>: <span style="color:#ae81ff">Testing Python CI/CD</span>
+
+
+<span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Black Code Format Check</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">juliopdx/netauto</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">black . --check</span>
+
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Precheck OSPF and BGP</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">juliopdx/netauto</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">pytest test.py --disable-pytest-warnings -s</span>
+
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy Configurations</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">juliopdx/netauto</span>
+  <span style="color:#f92672">environment</span>:
+    <span style="color:#f92672">MY_PASS</span>:
+      <span style="color:#f92672">from_secret</span>: <span style="color:#ae81ff">MY_PASS</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">python build.py</span>
+  <span style="color:#f92672">when</span>:
+    <span style="color:#f92672">branch</span>:
+    - <span style="color:#ae81ff">master</span>
+    - <span style="color:#ae81ff">main</span>
+
+<span style="color:#f92672">trigger</span>:
+  <span style="color:#f92672">event</span>:
+    <span style="color:#f92672">exclude</span>:
+    - <span style="color:#ae81ff">pull_request</span>
+</code></pre></div><p>Lines 1-3 are essentially the same. I updated the steps as well. The first step just makes sure we are adhering to black formatting standards. If there is a file to change the pipeline will fail. The second step runs a few Batfish checks on OSPF and BGP, more on that in a later post. The last step will actually deploy configurations to our test network, but only if it is a main or master branch. The trigger at the bottom is just used to exclude pull requests. Every step pulls down the exact same image (I believe only pulling it down once), to my knowledge each step is actually executed individually. So requirements installed in one step would not exist in another. Okay okay, but what about the pipeline deployment time? Please see below.</p>
+<p><img src="/blog/images/deploy.png" alt="Deploy"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Isn’t that the most beautiful thing ever? A whole 19 seconds &lt;3. Seriously thank you all for reading this far. Next up I think we will go over adding Batfish to the equation. Stayed tuned for the next episode…</p>
+<ul>
+<li><a href="https://docs.drone.io/pipeline/docker/syntax/">.drone.yml Configuration Options</a></li>
+<li><a href="https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/">Docker Build: A Beginner’s Guide to Building Docker Images by Samuel James</a></li>
+<li><a href="https://unsplash.com/photos/jOqJbvo1P9g">Featured image by Ian Taylor</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/docker/">Docker</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/dockerhub/">DockerHub</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/drone/">Drone</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1066 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-10-20 12:05
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/">
+                    <span class="button__text">Building a Network CI/CD Pipeline Part 2</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

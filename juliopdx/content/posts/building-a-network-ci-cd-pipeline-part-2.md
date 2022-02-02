@@ -133,7 +133,7 @@ I left my build fairly vanilla but something that would be interesting is cron j
 Lets say our script needs to connect to our devices using a key or password. We can set secrets here that can then be utilized by our build environments. In my lab I will be using Arista devices with simple username and password for authentication. The scripts will then look for an environment variable of “MY_PASS”. Go ahead and save changes once you are happy with them. You probably noticed there is a setting for “Configuration” and it is currently set to *.drone.yml*. Stayed tuned on the next episode of Dragon Ball… wait a minute that’s not this program. Seriously, on the next part I will go over creating a *.drone.yml* file and creating our very own docker container image!
 
 - [Drone Docs](https://docs.drone.io/)
-- [NGROK Docs](hhttps://ngrok.com/docs)
+- [NGROK Docs](https://ngrok.com/docs)
 - [Featured image by Jonathan Lampel](https://unsplash.com/photos/L9wrEGJjRdo)
 - [Building a Network CI/CD Pipeline Part 1](https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/)
 - [Building a Network CI/CD Pipeline Part 3](https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-3/)
