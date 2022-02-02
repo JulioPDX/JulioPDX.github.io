@@ -7,7 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 20 Oct 2021 11:05:49 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 31 Oct 2021 11:26:48 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Batfish</title>
+      <link>https://juliopdx.github.io/tags/batfish/</link>
+      <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/batfish/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>NAPALM</title>
+      <link>https://juliopdx.github.io/tags/napalm/</link>
+      <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/napalm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nornir</title>
+      <link>https://juliopdx.github.io/tags/nornir/</link>
+      <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/nornir/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Docker</title>
       <link>https://juliopdx.github.io/tags/docker/</link>
@@ -95,15 +122,6 @@
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/fastapi/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Nornir</title>
-      <link>https://juliopdx.github.io/tags/nornir/</link>
-      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/nornir/</guid>
       <description></description>
     </item>
     
@@ -212,15 +230,6 @@
       <pubDate>Mon, 08 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/running/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>NAPALM</title>
-      <link>https://juliopdx.github.io/tags/napalm/</link>
-      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/napalm/</guid>
       <description></description>
     </item>
     

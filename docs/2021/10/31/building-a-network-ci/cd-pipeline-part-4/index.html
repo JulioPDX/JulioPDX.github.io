@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files." />
+<meta name="keywords" content=", CI/CD, Batfish, NAPALM, Nornir" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/" />
+
+
+    <title>
+        
+            Building a Network CI/CD Pipeline Part 4 :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Building a Network CI/CD Pipeline Part 4">
+<meta itemprop="description" content="Introduction Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files.">
+<meta itemprop="datePublished" content="2021-10-31T11:26:48-08:00" />
+<meta itemprop="dateModified" content="2021-10-31T11:26:48-08:00" />
+<meta itemprop="wordCount" content="1797">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="CI/CD,Batfish,NAPALM,Nornir," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="Building a Network CI/CD Pipeline Part 4"/>
+<meta name="twitter:description" content="Introduction Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files."/>
+
+
+
+
+    <meta property="og:title" content="Building a Network CI/CD Pipeline Part 4" />
+<meta property="og:description" content="Introduction Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2021-10-31T11:26:48-08:00" />
+<meta property="article:modified_time" content="2021-10-31T11:26:48-08:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-10-31 11:26:48 -0800 -0800" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        9 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#black-code-style">Black Code Style</a></li>
+    <li><a href="#validating-changes-with-batfish">Validating Changes With Batfish</a></li>
+    <li><a href="#batfish-assertion-helpers">Batfish Assertion Helpers</a></li>
+    <li><a href="#test-for-duplicate-router-ids">Test for Duplicate Router IDs</a></li>
+    <li><a href="#test-for-incompatible-bgp-sessions">Test for Incompatible BGP Sessions</a></li>
+    <li><a href="#test-for-ospf-network-mismatches">Test for OSPF Network Mismatches</a></li>
+    <li><a href="#validating-configuration-with-napalm-dry-run">Validating Configuration With NAPALM Dry Run</a></li>
+    <li><a href="#napalm-dry-run-with-error">NAPALM Dry Run With Error</a></li>
+    <li><a href="#napalm-dry-run-with-valid-configuration">NAPALM Dry Run With Valid Configuration</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <p><img src="/blog/images/masaaki-komori.jpg" alt="Fish"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files.</p>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
+<h2 id="black-code-style">Black Code Style</h2>
+<p>When adding steps to this pipeline I have concentrated on easy wins and easy tools to add to the chain. One of the slickest of them being Black. Black is a code formatter based on the Python <a href="https://www.python.org/dev/peps/pep-0008/">PEP 8</a> standard. You can see the steps in the pipeline file below.</p>
+<p><code>.drone.yml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Black Code Format Check</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">juliopdx/netauto</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">black . --check</span>
+</code></pre></div><p>Black will traverse all Python files in our directory and fail if any changes are required. The “–check” option will trigger the failure in our pipeline. Below is an example of what a failure would look like. I added a new file to our repository with a long list variable.</p>
+<p><code>my_list.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">my_list <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;something1&#34;</span>, <span style="color:#e6db74">&#34;something2&#34;</span>, <span style="color:#e6db74">&#34;something3&#34;</span>, <span style="color:#e6db74">&#34;something4&#34;</span>, <span style="color:#e6db74">&#34;something5&#34;</span>, <span style="color:#e6db74">&#34;something6&#34;</span>]
+</code></pre></div><p>I will commit and push this up to our dev branch.</p>
+<p><img src="/blog/images/pipe_fail.png" alt="Pipe Fail"></p>
+<p>The Black format check has failed and listed what files would need to be updated. This is very useful to maintain some set standards for yourself or the team on the code style you choose to follow. Below is an example of a success, in this case I have updated that new Python file. Another option to add in this step is something like <a href="https://pylint.org/">Pylint</a>. At this time I have not added this to the pipeline but I encourage the reader to check it out. Pylint will go as far as giving the code a score and provide improvement options.</p>
+<p><code>my_list.py updated</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">my_list <span style="color:#f92672">=</span> [
+    <span style="color:#e6db74">&#34;something1&#34;</span>,
+    <span style="color:#e6db74">&#34;something2&#34;</span>,
+    <span style="color:#e6db74">&#34;something3&#34;</span>,
+    <span style="color:#e6db74">&#34;something4&#34;</span>,
+    <span style="color:#e6db74">&#34;something5&#34;</span>,
+    <span style="color:#e6db74">&#34;something6&#34;</span>,
+]
+</code></pre></div><p><img src="/blog/images/black_fixed.png" alt="Black Fixed"></p>
+<h2 id="validating-changes-with-batfish">Validating Changes With Batfish</h2>
+<p>Batfish dubs itself as “an open source network configuration analysis tool”. Batfish can validate pre-deployment checks by modeling the network from a source of configurations. This could vary from mismatched BGP neighbor settings, OSPF mismatches, and many more. I’ll walk through installing the Batfish service and run through some examples of what it can find!</p>
+<p>Lets get Batfish up and running. Thankfully this can be done by running the latest docker container. This is building on what we have already created from previous articles!</p>
+<p><code>Batfish Docker Run</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run --name batfish <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    -v batfish-data:/data  <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    -p 9997:9997 -p 9996:9996 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    -d batfish/batfish
+</code></pre></div><p>Great, now that the service is running we need to create a configuration snapshot. Think of this as our production network or the changes we would like to push to our production network. This could be one site or the whole enterprise. Be mindful, you may need more horsepower if you are testing against a large network. In our case we have a very simple four node topology running OSPF and BGP between R1 and R4. To get the configuration snapshot up and running I created a simple backup script to store the files in the correct location.</p>
+<p><code>Directory Structure</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ tree snapshots/
+snapshots/
+└── configs
+    ├── pdx-rtr-eos-01.txt
+    ├── pdx-rtr-eos-02.txt
+    ├── pdx-rtr-eos-03.txt
+    └── pdx-rtr-eos-04.txt
+</code></pre></div><h2 id="batfish-assertion-helpers">Batfish Assertion Helpers</h2>
+<p>While exploring Batfish, I ran into their <a href="https://batfish.readthedocs.io/en/latest/asserts.html">assertion helpers</a> page. There is some gold in that page and I highly recommend you check it out. I used these heavily in this test deployment to see what errors Batfish would find in the configuration. Pretty much all of these require the same bit of information (a snapshot is required). I’ll walk through the script and one of the assert functions, the rest follow the same path.</p>
+<p>Below are some of the standard pybatfish imports followed by a decent amount of the assert helpers. Importing Rich because it’s awesome and I like colors.</p>
+<p><code>Imports</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> pybatfish.client.commands <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+<span style="color:#f92672">from</span> pybatfish.question <span style="color:#f92672">import</span> load_questions
+<span style="color:#f92672">from</span> pybatfish.client.asserts <span style="color:#f92672">import</span> (
+    assert_no_duplicate_router_ids,
+    assert_no_incompatible_bgp_sessions,
+    assert_no_incompatible_ospf_sessions,
+    assert_no_unestablished_bgp_sessions,
+    assert_no_undefined_references,
+)
+<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> <span style="color:#66d9ef">print</span> <span style="color:#66d9ef">as</span> rprint
+</code></pre></div><p>Below is the function used to test if we have duplicate router IDs. It requires one argument of snap or snapshot.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_duplicate_rtr_ids</span>(snap):
+    <span style="color:#e6db74">&#34;&#34;&#34;Testing for duplicate router IDs&#34;&#34;&#34;</span>
+    assert_no_duplicate_router_ids(
+        snapshot<span style="color:#f92672">=</span>snap,
+        protocols<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;ospf&#34;</span>, <span style="color:#e6db74">&#34;bgp&#34;</span>},
+    )
+</code></pre></div><p>This function will look at BGP and OSPF within our snapshot to see if duplicate router IDs are set. I omitted a few Rich prints because they are not pertinent to the functionality of the function. Below if the main function that calls all of our assert helpers. A lot of this is created from samples in the Batfish documentation. For example, we name our snapshot and point it to the correct directory. We also point the script to the correct IP that is running the service.</p>
+<p><code>Main Function</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;init all the things&#34;&#34;&#34;</span>
+    NETWORK_NAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;PDX_NET&#34;</span>
+    SNAPSHOT_NAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;snapshot00&#34;</span>
+    SNAPSHOT_DIR <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./snapshots&#34;</span>
+    bf_session<span style="color:#f92672">.</span>host <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;192.168.10.184&#34;</span>
+    bf_set_network(NETWORK_NAME)
+    init_snap <span style="color:#f92672">=</span> bf_init_snapshot(SNAPSHOT_DIR, name<span style="color:#f92672">=</span>SNAPSHOT_NAME, overwrite<span style="color:#f92672">=</span>True)
+    load_questions()
+    test_duplicate_rtr_ids(init_snap)
+    test_bgp_compatibility(init_snap)
+    test_ospf_compatibility(init_snap)
+    test_bgp_unestablished(init_snap)
+    test_undefined_references(init_snap)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><h2 id="test-for-duplicate-router-ids">Test for Duplicate Router IDs</h2>
+<p>All of our routers have RIDs set as 10.0.0.x, x being the router number. Lets change the router ID under OSPF for R1 to be 10.0.0.2, this is done under the snapshot directory configuration file for R1. For an infrastructure as code build these would be created from YAML files or some source of truth and maybe some jinja sprinkled in there. This change would be a duplicate of R2 and we should see the pipeline fail.</p>
+<p><code>R1 OSPF Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router ospf 1
+   router-id 10.0.0.2
+   passive-interface Ethernet2
+   passive-interface Loopback1
+   max-lsa 12000
+</code></pre></div><p>We will commit and push this to our dev branch, the pipeline output is below. In the bottom right you can barely see the duplicate router IDs error and towards the bottom of the output it will list the devices that are in error. In this case both R1 and R2 have router IDs set to “10.0.0.2”.</p>
+<p><img src="/blog/images/rid_error.png" alt="RID Error"></p>
+<h2 id="test-for-incompatible-bgp-sessions">Test for Incompatible BGP Sessions</h2>
+<p>Lets add another error. In this case R1 and R4 are running multihop EBGP. R1 has an autonomous system (AS) of 65001 and R4 has an AS of 65004. Lets just say someone misconfigured BGP and set R1 to have a neighbor of 65003 vs 65004. As we can see R1 is set to have a neighbor with R4 using AS 65003 but R4 is configured with AS 65004. You may have noticed towards the top of the pipeline that no duplicate router IDs were found in this run.</p>
+<p><code>R1 Bad BGP</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 65001
+   router-id 10.0.0.1
+   neighbor 10.0.0.4 remote-as 65003
+   neighbor 10.0.0.4 update-source Loopback1
+   neighbor 10.0.0.4 ebgp-multihop 3
+</code></pre></div><p><img src="/blog/images/bgp_error.png" alt="BGP Error"></p>
+<h2 id="test-for-ospf-network-mismatches">Test for OSPF Network Mismatches</h2>
+<p>Okay this is the last example we will use but I think you all get the idea. All OSPF neighbors have interfaces configured with point to point interfaces. Lets remove the R1 to R2 point to point interface configuration in our snapshot. This should result in a network type mismatch error.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Ethernet1
+   no switchport
+   ip address 10.0.12.1/24
+ - ip ospf network point-to-point
+   ip ospf area 0.0.0.0
+</code></pre></div><p><img src="/blog/images/ospf_error.png" alt="OSPF Error"></p>
+<p>At this point we have prevented a few configuration errors from entering the network. Please note, this is only scratching the surface on what can be done with Batfish. Please check out their documentation and code examples on more ideas to test your network. Links at the end of this post.</p>
+<h2 id="validating-configuration-with-napalm-dry-run">Validating Configuration With NAPALM Dry Run</h2>
+<p>Batfish is great and it can catch a lot of errors or misconfigurations. What if there is something that can’t be caught by Batfish as a configuration error. How would we validate what we are sending is even a valid configuration in general? In this case I leveraged Nornir with NAPALM. NAPALM has a “napalm_configure” task that will attempt to send a complete configuration file to a network device. If it is not valid, it should report an error. Remember that we are in the precheck stage and don’t want any actual changes to hit our network devices. Below is a snippet on what I came up with to keep the code small but also functional between precheck deployments and actual deployments.</p>
+<p><code>build.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> argparse
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
+<span style="color:#f92672">from</span> nornir_utils.plugins.functions <span style="color:#f92672">import</span> print_result
+<span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> nornir_set_creds
+
+
+parser <span style="color:#f92672">=</span> argparse<span style="color:#f92672">.</span>ArgumentParser()
+parser<span style="color:#f92672">.</span>add_argument(
+    <span style="color:#e6db74">&#34;--dry_run&#34;</span>, dest<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dry&#34;</span>, action<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;store_true&#34;</span>, help<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Will not run on devices&#34;</span>
+)
+parser<span style="color:#f92672">.</span>add_argument(
+    <span style="color:#e6db74">&#34;--no_dry_run&#34;</span>, dest<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dry&#34;</span>, action<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;store_false&#34;</span>, help<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Will run on devices&#34;</span>
+)
+parser<span style="color:#f92672">.</span>set_defaults(dry<span style="color:#f92672">=</span>True)
+args <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span>parse_args()
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_network</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;Configures network with NAPALM&#34;&#34;&#34;</span>
+    task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host.name}!&#34;</span>,
+        task<span style="color:#f92672">=</span>napalm_configure,
+        filename<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;./snapshots/configs/{task.host.name}.txt&#34;</span>,
+        dry_run<span style="color:#f92672">=</span>args<span style="color:#f92672">.</span>dry,
+        replace<span style="color:#f92672">=</span>True,
+    )
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    nornir_set_creds(norn)
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
+    print_result(result)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><p>The top portions of the script import anything required to interact with Nornir and NAPALM. We then use “argparse” to create an argument with the script that will set a variable to True or False. This can then be used during the “napalm_configure” task to either run in dry mode or actually implement changes. Below is how the precheck looks like in the “.drone.yml” file.</p>
+<p><code>Configuration Precheck</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Precheck Configuration Diff</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">juliopdx/netauto</span>
+  <span style="color:#f92672">environment</span>:
+    <span style="color:#f92672">MY_SECRET</span>:
+      <span style="color:#f92672">from_secret</span>: <span style="color:#ae81ff">MY_SECRET</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">python build.py --dry_run</span>
+</code></pre></div><h2 id="napalm-dry-run-with-error">NAPALM Dry Run With Error</h2>
+<p>Below is an example of adding something to the configuration that will definitely not work and how it looks like in the pipeline.</p>
+<p><code>Error Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 65001
+   router-id 10.0.0.1
+   neighbor 10.0.0.4 remote-as 65004
+   neighbor 10.0.0.4 update-source Loopback1
+   neighbor 10.0.0.4 ebgp-multihop 3
+!
+something super fake
+   welcome to the world of tomorrow
+   its over 9000
+   router-id infinity
+!
+router ospf 1
+   router-id 10.0.0.1
+   passive-interface Ethernet2
+   passive-interface Loopback1
+   max-lsa 12000
+!
+</code></pre></div><p><img src="/blog/images/invalid_config.png" alt="Invalid Config"></p>
+<h2 id="napalm-dry-run-with-valid-configuration">NAPALM Dry Run With Valid Configuration</h2>
+<p>Below is a standard change, adding a simple description to an interface. Included pipeline output as well.</p>
+<p><code>Valid Configuration</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
+interface Ethernet1
+   description Welcome to the world of tomorrow!
+   no switchport
+   ip address 10.0.12.1/24
+   ip ospf network point-to-point
+   ip ospf area 0.0.0.0
+!
+</code></pre></div><p><img src="/blog/images/valid_config.png" alt="Valid Configuration"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Whats included in this post is just a subset of options that are available in prechecks. We could add ACL, input validation, Pylint, routing tests, and more. I hope what’s included here sparks some ideas or gives you something to add to your CI/CD workflow. I think in the next post we will go over the tool used to actually deploy configurations once they have passed our prechecks. In our case Nornir, but this could be Ansible, Scrapli, or some other solution.</p>
+<ul>
+<li><a href="https://unsplash.com/photos/vXid97obEy8">Featured Image by Masaaki Komori</a></li>
+<li><a href="https://black.readthedocs.io/en/stable/">Black Code Formatting</a></li>
+<li><a href="https://pybatfish.readthedocs.io/en/latest/">Batfish and pybatfish</a></li>
+<li><a href="https://github.com/nornir-automation/nornir_napalm">Nornir NAPALM</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/ci/cd/">CI/CD</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/batfish/">Batfish</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/napalm/">NAPALM</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/nornir/">Nornir</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1797 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-10-31 12:26
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/">
+                    <span class="button__text">Building a Network CI/CD Pipeline Part 3</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

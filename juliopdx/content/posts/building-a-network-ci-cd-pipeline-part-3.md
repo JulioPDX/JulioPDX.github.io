@@ -5,6 +5,7 @@ draft: false
 toc: true
 images:
 tags:
+  - CI/CD
   - Docker
   - DockerHub
   - Drone
