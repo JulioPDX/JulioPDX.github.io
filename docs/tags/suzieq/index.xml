@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Suzieq on JulioPDX</title>
+    <link>https://juliopdx.github.io/tags/suzieq/</link>
+    <description>Recent content in Suzieq on JulioPDX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Fri, 12 Nov 2021 12:26:21 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/suzieq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a Network CI/CD Pipeline Part 6</title>
+      <link>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</link>
+      <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</guid>
+      <description>Introduction Hello all and thank you for tuning in to the last part of the network CI/CD series. It really means a lot and I hope you have learned a bit along the way. In this post we will focus on testing after a change is made, more specifically, we will be looking at Suzieq. If you stick around until the end, we will look at maintaining a “golden state” of configuration using cron and a message from Rocky.</description>
+    </item>
+    
+  </channel>
+</rss>

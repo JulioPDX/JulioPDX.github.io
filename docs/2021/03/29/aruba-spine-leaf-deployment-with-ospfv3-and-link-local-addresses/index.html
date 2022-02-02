@@ -269,7 +269,7 @@
      ipv6 ospfv3 1 area 0.0.0.0
  interface vlan 10
      ipv6 address link-local fe80:beef:cafe::1/64
-     ipv6 address 2001:db8:cafe🅰️:1/64
+     ipv6 address 2001:db8:cafe:a::1/64
      no ipv6 nd suppress-ra
      ipv6 ospfv3 1 area 0.0.0.0
  !
@@ -319,7 +319,7 @@
 <p>Since we are using link local addresses, they have a scope that is… local to the link. The routing protocols will not propagate this as reachable networks, this in turn will reduce the total size of our routing tables. This has a great benefit of saving memory and speeding up convergence times. For comparison, check out the routing table on leaf01 when using GUA addresses and only using link local.</p>
 <p><code>Using GUA /127 addresses</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
-  2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+  2001:db8:cafe:a::/64 (i) area:0.0.0.0
        directly attached to interface vlan10, cost 100 distance 110
   2001:db8:cafe:14::/64 (i) area:0.0.0.0
        via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
@@ -367,7 +367,7 @@
        via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
 </code></pre></div><p><code>Only link local addresses</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01#   show ipv6 ospfv3 routes | b 2001
- 2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+ 2001:db8:cafe:a::/64 (i) area:0.0.0.0
       directly attached to interface vlan10, cost 100 distance 110
  2001:db8:cafe:14::/64 (i) area:0.0.0.0
       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
@@ -399,7 +399,7 @@
       via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
 </code></pre></div><p><code>Trace from leaf01 and linux04</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# traceroute6 2001:db8:cafe:28:5200:ff:fe0a:0
- traceroute to 2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0) from 2001:db8:cafe🅰️:1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
+ traceroute to 2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0) from 2001:db8:cafe:a::1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
   1  2001:db8:cafe:ffff::1 (2001:db8:cafe:ffff::1)  4.712 ms  70.151 ms  24.438 ms
   2  2001:db8:cafe:28::1 (2001:db8:cafe:28::1)  18.437 ms  58.055 ms  17.812 ms
   3  2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0)  12.547 ms  53.539 ms  17.951 ms

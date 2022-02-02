@@ -7,7 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 23 Sep 2021 10:06:16 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 12 Nov 2021 12:26:21 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a Network CI/CD Pipeline Part 6</title>
+      <link>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</link>
+      <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</guid>
+      <description>Introduction Hello all and thank you for tuning in to the last part of the network CI/CD series. It really means a lot and I hope you have learned a bit along the way. In this post we will focus on testing after a change is made, more specifically, we will be looking at Suzieq. If you stick around until the end, we will look at maintaining a “golden state” of configuration using cron and a message from Rocky.</description>
+    </item>
+    
+    <item>
+      <title>Building a Network CI/CD Pipeline Part 5</title>
+      <link>https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</link>
+      <pubDate>Mon, 08 Nov 2021 11:58:46 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</guid>
+      <description>Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective.</description>
+    </item>
+    
+    <item>
+      <title>Building a Network CI/CD Pipeline Part 4</title>
+      <link>https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</link>
+      <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</guid>
+      <description>Introduction Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files.</description>
+    </item>
+    
     <item>
       <title>How to Generate Cisco Lifecycle Documentation With Python and APIs</title>
       <link>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>

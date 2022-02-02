@@ -4,7 +4,7 @@ languageCode = "en-us"
 theme        = "hello-friend-ng"
 paginate     = 10
 publishDir   = "../docs"
-enableEmoji  = true
+enableEmoji  = false
 
 [permalinks]
   posts = '/:year/:month/:day/:title/'

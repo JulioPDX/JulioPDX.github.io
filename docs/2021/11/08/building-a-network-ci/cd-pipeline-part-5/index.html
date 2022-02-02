@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective." />
+<meta name="keywords" content=", CI/CD, Network Automation, Python" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/" />
+
+
+    <title>
+        
+            Building a Network CI/CD Pipeline Part 5 :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Building a Network CI/CD Pipeline Part 5">
+<meta itemprop="description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective.">
+<meta itemprop="datePublished" content="2021-11-08T11:58:46-08:00" />
+<meta itemprop="dateModified" content="2021-11-08T11:58:46-08:00" />
+<meta itemprop="wordCount" content="1520">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="CI/CD,Network Automation,Python," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="Building a Network CI/CD Pipeline Part 5"/>
+<meta name="twitter:description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective."/>
+
+
+
+
+    <meta property="og:title" content="Building a Network CI/CD Pipeline Part 5" />
+<meta property="og:description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2021-11-08T11:58:46-08:00" />
+<meta property="article:modified_time" content="2021-11-08T11:58:46-08:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-11-08 11:58:46 -0800 PST" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        8 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#nornir">Nornir</a>
+      <ul>
+        <li><a href="#init-nornir">Init Nornir</a></li>
+        <li><a href="#deploy-configurations">Deploy Configurations</a></li>
+        <li><a href="#side-note-on-infrastructure-as-code">Side Note on Infrastructure as Code</a></li>
+      </ul>
+    </li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <p><img src="/blog/images/david-clode.jpg" alt="Featured Image"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective. Please note, the steps that are performed by Nornir can also be performed by something like Ansible.</p>
+<h2 id="nornir">Nornir</h2>
+<p>My previous automation experience revolved heavily around Ansible for interacting with APIs or network nodes. I really like both tools and I feel each has their space in the network automation world. Where Ansible uses yaml for writing playbooks or steps to be executed on nodes, interacting with Nornir stays within the python ecosystem. This lends itself well to using an IDE like Visual Studio Code and all the other tools available within python (linting, debugging, tab completion).</p>
+<h3 id="init-nornir">Init Nornir</h3>
+<p>Lets get started with initializing Nornir and setting some of the configuration. A link to all the code used in this post will be at the end. Below we are importing the “InitNornir” function as well as a local function that is used to handle device credentials.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> nornir_set_creds
+</code></pre></div><p>Below is the main function that is used to initialize Nornir and kick off any tasks that are defined within our deployment script.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    nornir_set_creds(norn)
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
+    print_result(result)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><p>At this point we are initializing Nornir with a file located at “configs/config.yaml”, lets take a look at that directory.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ tree configs/
+configs/
+├── config.yaml
+├── groups.yaml
+└── hosts.yaml
+</code></pre></div><p>This makes me chuckle a bit, I just mentioned that Nornir is pretty much all python and Ansible uses yaml for developing playbooks. Yet here we are making yaml files. Jokes aside, yaml is really good at being human readable and building configuration files. Lets take a look at the “config.yaml” file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">inventory</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">SimpleInventory</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">host_file</span>: <span style="color:#e6db74">&#34;./configs/hosts.yaml&#34;</span>
+    <span style="color:#f92672">group_file</span>: <span style="color:#e6db74">&#34;./configs/groups.yaml&#34;</span>
+<span style="color:#f92672">runner</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">threaded</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
+</code></pre></div><p>This file can be used to set all kinds of settings. I’ve tried to keep it fairly simple, we are using the “SimpleInventory” plugin. This can read in our hosts and groups file that I will go over in a bit. Other inventroy plugins (Ansible, Netbox, table_inventory) can also be used, check more out <a href="https://nornir.tech/nornir/plugins/">here</a>. The second half of the file is utilizing the built-in threaded runner. Nornir will spin up threads to allow task executions to multiple devices vs executed one by one. Next up lets check out the “groups.yaml” file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">eos</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">eos</span>
+</code></pre></div><p>As you can see I have barely used this file. If we were running multiple vendors or maybe devices located at different sites, they could be assigned different configuration options that would be added within this groups file. Below is an example of that concept in case my explanation is a bit terrible.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">eos</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">eos</span>
+<span style="color:#f92672">cisco_ios</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ios</span>
+<span style="color:#f92672">branch</span>:
+  <span style="color:#f92672">dns</span>:
+  - <span style="color:#ae81ff">8.8.8.8</span>
+  - <span style="color:#ae81ff">1.1.1.1</span>
+<span style="color:#f92672">dc</span>:
+  <span style="color:#f92672">dns</span>:
+  - <span style="color:#ae81ff">10.0.0.125</span>
+  - <span style="color:#ae81ff">10.0.0.126</span>
+</code></pre></div><p>Last but not least the “hosts.yaml” file. For small deployments I can see how maintaining this file wouldn’t be the worst thing in the world. For scale, I would use something like Netbox to build your inventory file. All nodes in this case are assigned to the “eos” group and will inherit “eos” as the platform.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">pdx-rtr-eos-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.121</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+
+<span style="color:#f92672">pdx-rtr-eos-02</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.122</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+
+<span style="color:#f92672">pdx-rtr-eos-03</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.123</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+
+<span style="color:#f92672">pdx-rtr-eos-04</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.124</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+</code></pre></div><h3 id="deploy-configurations">Deploy Configurations</h3>
+<p>Earlier I showed you the main function which is calling on a certain task to be executed. Below is the main function again.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    nornir_set_creds(norn)
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
+    print_result(result)
+</code></pre></div><p>The main function will call the “deploy_network” function, which will be executed against our network devices in the inventory. Below is the “deploy_network” function.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_network</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;Configures network with NAPALM&#34;&#34;&#34;</span>
+    task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host.name}!&#34;</span>,
+        task<span style="color:#f92672">=</span>napalm_configure,
+        filename<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;./snapshots/configs/{task.host.name}.txt&#34;</span>,
+        dry_run<span style="color:#f92672">=</span>args<span style="color:#f92672">.</span>dry,
+        replace<span style="color:#f92672">=</span>True,
+    )
+</code></pre></div><p>We are adding one more import to our script. The “napalm_configure” function is part of the nornir_napalm library. Under the hood it will use NAPALM to connect and configure network devices. The plugin options are pretty extensive depending on what your use case is (deploying entire config or just a subset). This function will look at the file name that matches our device hostname. It will then attempt to push the entire configuration to the device.</p>
+<h3 id="side-note-on-infrastructure-as-code">Side Note on Infrastructure as Code</h3>
+<p>For this example we have the device configurations located under the snapshots directory. The entire configuration can be viewed and modified. For a IaC approach, you might develop some yaml or json data that can then be passed into a jinja template to define a configuration file. This file can then be used to configure your entire device. The data files could contain interface settings, routing information, services, pretty much anything that is part of the configuration. Check out this great blog series by NWMichl on <a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Network Infrastructure as Code</a>.</p>
+<h2 id="workflow">Workflow</h2>
+<p>Lets take a look at our reference architecture below to get an idea of the workflow we will run through to make a change to our network.</p>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
+<p>At the bottom of our diagram we have a simple OSPF and BGP network with four Arista devices. We have a task for our junior network engineer to add interface descriptions to all interfaces connected to networking nodes. Since this is a really safe change with no impact to the network, besides maybe confusing some operators if they are incorrect. This seems like a great learning opportunity for the junior engineer.</p>
+<p>The engineer starts by cloning the teams repository from GitHub.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/JulioPDX/ci_cd_dev.git
+</code></pre></div><p>Great, now the repository is local to our development environment. We would most likely have some standards to not allow direct commits to the main branch. All changes must be made to a separate branch and then merged by pull request to main. Main in this case will signal our production configuration state. Next up the junior engineer will create a dev branch named “add_interface_desc”.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git checkout -b add_interface_desc
+Switched to a new branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span>
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
+On branch add_interface_desc
+nothing to commit, working tree clean
+</code></pre></div><p>Now the engineer is on the new branch and can modify the configuration files in the snapshots directory. Lets look at what files have been modified.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
+On branch add_interface_desc
+Changes not staged <span style="color:#66d9ef">for</span> commit:
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style="color:#f92672">)</span>
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git restore &lt;file&gt;...&#34;</span> to discard changes in working directory<span style="color:#f92672">)</span>
+        modified:   snapshots/configs/pdx-rtr-eos-01.txt
+        modified:   snapshots/configs/pdx-rtr-eos-02.txt
+        modified:   snapshots/configs/pdx-rtr-eos-03.txt
+        modified:   snapshots/configs/pdx-rtr-eos-04.txt
+
+no changes added to commit <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add&#34;</span> and/or <span style="color:#e6db74">&#34;git commit -a&#34;</span><span style="color:#f92672">)</span>
+</code></pre></div><p>Great, now lets push those changes up to the remote repository.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git add .
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git commit -m <span style="color:#e6db74">&#34;Adding interface descriptions&#34;</span>
+<span style="color:#f92672">[</span>add_interface_desc 9b8d899<span style="color:#f92672">]</span> Adding interface descriptions
+ <span style="color:#ae81ff">4</span> files changed, <span style="color:#ae81ff">6</span> insertions<span style="color:#f92672">(</span>+<span style="color:#f92672">)</span>
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git push -u origin add_interface_desc
+Enumerating objects: 15, <span style="color:#66d9ef">done</span>.
+Counting objects: 100% <span style="color:#f92672">(</span>15/15<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+Delta compression using up to <span style="color:#ae81ff">8</span> threads
+Compressing objects: 100% <span style="color:#f92672">(</span>7/7<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+Writing objects: 100% <span style="color:#f92672">(</span>8/8<span style="color:#f92672">)</span>, <span style="color:#ae81ff">781</span> bytes | 390.00 KiB/s, <span style="color:#66d9ef">done</span>.
+Total <span style="color:#ae81ff">8</span> <span style="color:#f92672">(</span>delta 5<span style="color:#f92672">)</span>, reused <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, pack-reused <span style="color:#ae81ff">0</span>
+remote: Resolving deltas: 100% <span style="color:#f92672">(</span>5/5<span style="color:#f92672">)</span>, completed with <span style="color:#ae81ff">5</span> local objects.
+remote:
+remote: Create a pull request <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> on GitHub by visiting:
+remote:      https://github.com/JulioPDX/ci_cd_dev/pull/new/add_interface_desc
+remote:
+To https://github.com/JulioPDX/ci_cd_dev.git
+ * <span style="color:#f92672">[</span>new branch<span style="color:#f92672">]</span>      add_interface_desc -&gt; add_interface_desc
+Branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> set up to track remote branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> from <span style="color:#e6db74">&#39;origin&#39;</span>.
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$
+</code></pre></div><p>From our previous work this should have kicked off a pipeline run without making any actual changes to the nodes.</p>
+<p><img src="/blog/images/branch_run.png" alt="Branch Run"></p>
+<p><img src="/blog/images/pre_change.png" alt="Pre Change"></p>
+<p>At this point every precheck stage has passed in the pipeline and we can see what the changes would be. We can now create a pull request and merge these changes into our main branch.</p>
+<p><img src="/blog/images/compare_pull.png" alt="Compare Pull"></p>
+<p><img src="/blog/images/open_pr.png" alt="Open PR"></p>
+<p><img src="/blog/images/check_passed.png" alt="Check Passed"></p>
+<p>Above we can see the branch has a passing build. The reviewer or senior engineer can now merge the pull request. After that is done another pipeline run should execute but this time the changes will be applied to our network.</p>
+<p><img src="/blog/images/prod_run.png" alt="Prod Run"></p>
+<p>Now there is a new stage in the pipeline…deploy configurations! Lets take a look at one of the devices and see if the change was indeed applied.</p>
+<p><img src="/blog/images/SCRT_view.png" alt="Config View"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>The change we made was really trivial but its a good way to show the new process in the world of CI/CD. Thanks again for checking out this post. I think we have one more to go in the series. The last one will go over using Suzieq for network observability and post change testing.</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/ci_cd_dev">GitHub Repository</a></li>
+<li><a href="https://unsplash.com/photos/o8C6UFpqC4s">Featured image by David Clode</a></li>
+<li><a href="https://nornir.readthedocs.io/en/latest/">Nornir</a></li>
+<li><a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Infrastructure as Code Blog Series by NWMichl</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/ci/cd/">CI/CD</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/network-automation/">Network Automation</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/python/">Python</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1520 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-11-08 11:58
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">Building a Network CI/CD Pipeline Part 6</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/">
+                    <span class="button__text">Building a Network CI/CD Pipeline Part 4</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

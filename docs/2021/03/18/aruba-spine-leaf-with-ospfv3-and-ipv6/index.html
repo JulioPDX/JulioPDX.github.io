@@ -290,7 +290,7 @@ interface loopback 0
      ipv6 ospfv3 1 area 0.0.0.0
 interface vlan 10
      ipv6 address link-local fe80:beef:cafe::1/64
-     ipv6 address 2001:db8:cafe🅰️:1/64
+     ipv6 address 2001:db8:cafe:a::1/64
      no ipv6 nd suppress-ra
      ipv6 ospfv3 1 area 0.0.0.0
 !
@@ -299,7 +299,7 @@ router ospfv3 1
      passive-interface default
      area 0.0.0.0
 </code></pre></div><p>Looks fairly similar right? Lets just focus on the new stuff. I added VLAN 10 on leaf01, VLAN 20 on leaf02, and so on. After that I just assigned the host interface to the appropriate VLAN. Here is where things get fun. In hex you get the range of 1-15. A-F make up what we know as 10-15. Remember our whole network is 2001:db8:cafe::/48. I decided to use the next available prefix that matched the VLAN number.</p>
-<p>For example if the VLAN is 10, that would give us 2001:db8:cafe🅰️:/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16s place, so that adds up to 16, and the 4 is in the 1s place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.</p>
+<p>For example if the VLAN is 10, that would give us 2001:db8:cafe:a::/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16s place, so that adds up to 16, and the 4 is in the 1s place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.</p>
 <h2 id="hosts">Hosts</h2>
 <p>You may have wondered, what does the “no ipv6 nd suppress-ra” command do? This is a great time to talk about hosts or end devices. Usually these systems will have static addresses for management and tracking. I left the Linux hosts as default so they could use the built in processes with IPv6 to acquire an address. Back to the /64 prefix size. We have just split the 128 bit address in half. 64 are for the prefix/subnet and what’s left are for hosts, called an interface ID in IPv6.</p>
 <p>In IPv6 hosts can use a process called SLAAC (stateless address autoconfiguration). I wont go deep into details but essentially the host sends router solicitation (RS) messages and the router responds with router advertisement (RA) messages. The host uses the information in the RA message, with the prefix to determine how to go about getting an interface ID.</p>
@@ -329,11 +329,11 @@ router ospfv3 1
 </tr>
 </tbody>
 </table>
-<p>Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe🅰️:/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.</p>
+<p>Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe:a::/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.</p>
 <p>What’s a good network engineering article without some routes and pings!</p>
 <p><code>OSPFv3 Routes at leaf01</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
- 2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+ 2001:db8:cafe:a::/64 (i) area:0.0.0.0
       directly attached to interface vlan10, cost 100 distance 110
  2001:db8:cafe:14::/64 (i) area:0.0.0.0
       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110

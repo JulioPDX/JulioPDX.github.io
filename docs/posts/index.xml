@@ -6,8 +6,493 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sun, 31 Oct 2021 11:26:48 -0800</lastBuildDate>
+        <lastBuildDate>Fri, 12 Nov 2021 12:26:21 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Building a Network CI/CD Pipeline Part 6</title>
+            <link>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</link>
+            <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</guid>
+            <description>Introduction Hello all and thank you for tuning in to the last part of the network CI/CD series. It really means a lot and I hope you have learned a bit along the way. In this post we will focus on testing after a change is made, more specifically, we will be looking at Suzieq. If you stick around until the end, we will look at maintaining a “golden state” of configuration using cron and a message from Rocky.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/frederick-marschall.jpg" alt="Featured Image"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello all and thank you for tuning in to the last part of the network CI/CD series. It really means a lot and I hope you have learned a bit along the way. In this post we will focus on testing after a change is made, more specifically, we will be looking at Suzieq. If you stick around until the end, we will look at maintaining a “golden state” of configuration using cron and a message from Rocky.</p>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
+<h2 id="what-is-suzieq">What is Suzieq?</h2>
+<p>Suzieq allows operators and network engineers the ability to gather data about their network using an agentless model. This data is then stored in a data format known as Parquet. Once this multi-vendor data is normalized, we can begin to ask the network a numerous amount of questions. This could be things from MTU mismatches, OSPF neighbor relationship state, and many more.</p>
+<h2 id="batfish-and-suzieq">Batfish and Suzieq</h2>
+<p>At this point you may be wondering if this is similar to Batfish. Batfish uses a “snapshot” of the network or a view of a change we are proposing to the network. Batfish will then build a model around this snapshot to infer if any issues are present with the configuration. There are no actual connections performed to network devices using Batfish. Suzieq on the other hand uses a Poller to continuously connect to our devices and gather network state. This data can then be used to run checks or see how our network is configured and performing. I think Batfish lends itself really well to performing precheck validation. Suzieq can perform precheck validation but for this example we will focus on post change testing. I will link a great write up by the maintainers of these respective tools at the end of this blog.</p>
+<h2 id="getting-suzieq-up-and-running">Getting Suzieq Up and Running</h2>
+<p>We wont stray far from actions that have been performed on previous posts… that’s right, more docker! Using the docker instance of Suzieq really provides the fastest way to get going. I’ll start at the root of our Ubuntu server that is running our docker containers.</p>
+<p><code>Docker Container</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ docker ps
+CONTAINER ID   IMAGE                         COMMAND                  NAMES
+e5d807183f32   drone/drone-runner-docker:1   <span style="color:#e6db74">&#34;/bin/drone-runner-d…&#34;</span>   runner
+89b442422f25   drone/drone:2                 <span style="color:#e6db74">&#34;/bin/drone-server&#34;</span>      drone
+2df0b3ee02fb   batfish/batfish               <span style="color:#e6db74">&#34;java -XX:-UseCompre…&#34;</span>   batfish
+juliopdx@drone:~$
+</code></pre></div><h3 id="building-the-inventory-file">Building the Inventory File</h3>
+<p>At the moment Suzieq supports a built in yaml format as well as using a standard yaml Ansible inventory. For this scenario I kept things simple and used the built in format. Please note, there is word from the developers to add more dynamic inventory plugins, using Netbox for example. Below is the inventory I created for this deployment, more examples can be found in the Suzieq documentation.</p>
+<p><code>inv.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">hosts</span>:
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.121 username=suzie password=suzie</span>
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.122 username=suzie password=suzie</span>
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.123 username=suzie password=suzie</span>
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.124 username=suzie password=suzie</span>
+</code></pre></div><h3 id="installing-the-docker-containerpoller">Installing the Docker Container/Poller</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run -d --restart always -itd <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-v /home/juliopdx/suz/parquet-out:/suzieq/parquet <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-v /home/juliopdx/inv.yaml:/suzieq/inv.yaml <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>--name sq-poller netenglabs/suzieq:latest
+</code></pre></div><p>The command above is doing a few things. It will create a link to a local “/suz/parquet-out” directory and copy the “inv.yaml” file we created over to the docker container.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ docker ps
+CONTAINER ID   IMAGE                         COMMAND                  NAMES
+a091d6fe3b07   netenglabs/suzieq:latest      <span style="color:#e6db74">&#34;/bin/bash&#34;</span>              sq-poller
+e5d807183f32   drone/drone-runner-docker:1   <span style="color:#e6db74">&#34;/bin/drone-runner-d…&#34;</span>   runner
+89b442422f25   drone/drone:2                 <span style="color:#e6db74">&#34;/bin/drone-server&#34;</span>      drone
+2df0b3ee02fb   batfish/batfish               <span style="color:#e6db74">&#34;java -XX:-UseCompre…&#34;</span>   batfish
+juliopdx@drone:~$
+</code></pre></div><p>Now we will attach to the container and get the service running. To disconnect from the Poller and leave the service running, type “CTRL + p, CTRL + q”</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ docker attach sq-poller
+root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k
+</code></pre></div><h3 id="side-note-the-suzieq-cli">Side Note, The Suzieq CLI</h3>
+<p>In my case I will be interacting with Suzieq using their Python library and the Poller, but you can interact with Suzieq using a CLI or GUI as well. For the moment, the Poller has most likely gathered some data about our network. Lets stop the Poller(CTRL + c) and connect to the CLI!</p>
+<p><img src="/blog/images/suziecli.png" alt="Suzie CLI"></p>
+<p>From the CLI we can quickly explore a ton of information about our network and run some asserts to see if our routing protocols are working as expected. As an example below are some working routing neighbor relationships and an example when one is down(I added a duplicate router ID).</p>
+<p><code>Assert Pass</code></p>
+<p><img src="/blog/images/routing-assert.png" alt="Assert Pass"></p>
+<p><code>Assert Fail</code></p>
+<p><img src="/blog/images/routingassertfailed.png" alt="Assert Fail"></p>
+<p>I think you get the idea. The Suzieq CLI is a quick way to explore not only the capabilities of Suzieq but also your network. At this point lets exit the CLI, restart the Poller, and exit from the container(CTRL + p, CTRL + q).</p>
+<p><img src="/blog/images/exitpoller.png" alt="Exit Poller"></p>
+<h3 id="directory-permissions">Directory Permissions</h3>
+<p>You may not run into this but in my case I ran into an issue where I had to give more permissions to the directory on my host machine running the containers.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo chmod -R a+rwx suz/
+</code></pre></div><h2 id="the-challenge-getting-the-data-to-the-pipeline-runner">The Challenge: Getting the Data to the Pipeline Runner</h2>
+<p>The Poller collects a wide range of data from our network devices, to get an idea of what is being collected, check out the tree breakdown below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ tree -d -L <span style="color:#ae81ff">3</span> suz
+suz
+└── parquet-out
+    ├── arpnd
+    │   └── sqvers<span style="color:#f92672">=</span>1.0
+    ├── bgp
+    │   └── sqvers<span style="color:#f92672">=</span>2.0
+    ├── coalesced
+    │   ├── arpnd
+    │   ├── bgp
+    │   ├── devconfig
+    │   ├── device
+    │   ├── ifCounters
+    │   ├── interfaces
+    │   ├── lldp
+    │   ├── ospfIf
+    │   ├── ospfNbr
+    │   ├── routes
+    │   ├── sqCoalescer
+    │   ├── sqPoller
+    │   ├── time
+    │   └── vlan
+    ├── devconfig
+    │   └── sqvers<span style="color:#f92672">=</span>1.0
+    ├── device
+    │   └── sqvers<span style="color:#f92672">=</span>2.0
+    ├── ifCounters
+    │   └── sqvers<span style="color:#f92672">=</span>1.0
+    ├── interfaces
+    │   └── sqvers<span style="color:#f92672">=</span>3.0
+    ├── lldp
+    │   └── sqvers<span style="color:#f92672">=</span>1.0
+    ├── ospfIf
+    │   └── sqvers<span style="color:#f92672">=</span>1.0
+    ├── ospfNbr
+    │   └── sqvers<span style="color:#f92672">=</span>2.0
+    ├── routes
+    │   └── sqvers<span style="color:#f92672">=</span>2.0
+    ├── sqPoller
+    │   └── sqvers<span style="color:#f92672">=</span>2.0
+    ├── time
+    │   └── sqvers<span style="color:#f92672">=</span>2.0
+    └── vlan
+        └── sqvers<span style="color:#f92672">=</span>2.0
+
+<span style="color:#ae81ff">42</span> directories
+juliopdx@drone:~$
+</code></pre></div><p>Here is where things got interesting. In our pipeline, every run stands up a fresh docker container to execute our steps. How can we expose this data to the container to run our Python test scripts against? With a bit of research I came to find this <a href="https://discourse.drone.io/t/how-to-mount-a-device/3536">golden nugget</a>. So it is possible! But there’s another caveat, it must be from trusted repositories. This led me to recreating the drone server and runners, but this time giving my GitHub user account admin privileges. I have updated the previous blog to reflect this change. Below is the same example in the previous blog post.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --volume<span style="color:#f92672">=</span>/var/lib/drone:/data <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_GITHUB_CLIENT_ID<span style="color:#f92672">=</span>your-id <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_GITHUB_CLIENT_SECRET<span style="color:#f92672">=</span>super-duper-secret <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_SECRET<span style="color:#f92672">=</span>super-duper-secret <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_SERVER_HOST<span style="color:#f92672">=</span>drone.company.com <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_SERVER_PROTO<span style="color:#f92672">=</span>http <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_USER_CREATE<span style="color:#f92672">=</span>username:<span style="color:#f92672">{{</span>GitHub-Username<span style="color:#f92672">}}</span>,admin:true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --publish<span style="color:#f92672">=</span>80:80 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --publish<span style="color:#f92672">=</span>443:443 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --detach<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --name<span style="color:#f92672">=</span>drone <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  drone/drone:2
+</code></pre></div><p>After that was done it was just a matter of flipping a flag under the repository settings.</p>
+<p><img src="/blog/images/trusted-repo.png" alt="Trusted Repo"></p>
+<h3 id="droneyml-updates">.drone.yml Updates</h3>
+<p>Now that everything is set correctly, we have to update our pipeline file to include the Suzieq steps and mount the host directory to the runner. Below is an example. Lines 14-17 are naming a volume and then giving it a path that is on our Ubuntu host. Lines 10-12 attach that volume to the runner at a specified path.</p>
+<p><code>.drone.yml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Suzieq Check</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">python:3.8</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">pip install suzieq rich</span>
+  - <span style="color:#ae81ff">python test_suzieq.py</span>
+  <span style="color:#f92672">when</span>:
+    <span style="color:#f92672">branch</span>:
+    - <span style="color:#ae81ff">master</span>
+    - <span style="color:#ae81ff">main</span>
+  <span style="color:#f92672">volumes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">suzieq</span>
+    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/tmp/suz</span>
+
+<span style="color:#f92672">volumes</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">suzieq</span>
+  <span style="color:#f92672">host</span>:
+    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/home/juliopdx/suz</span>
+</code></pre></div><h2 id="suzieq-and-python">Suzieq and Python</h2>
+<p>The final piece was actually getting a Python script to interact with the mounted data. If you are using Python, Suzieq will look at either <code>./suzieq-cfg.yml</code> or <code>~/.suzieq/suzieq-cfg.yml</code> for a configuration file. There is a lot that can be modified here but the most important I think is where the parquet data is stored. Below is my configuration file for reference.</p>
+<p><code>suzieq-cfg.yml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">data-directory</span>: <span style="color:#ae81ff">/tmp/suz/parquet-out</span>
+<span style="color:#f92672">temp-directory</span>: <span style="color:#ae81ff">/tmp/suzieq</span>
+<span style="color:#f92672">logging-level</span>: <span style="color:#ae81ff">WARNING</span>
+
+<span style="color:#f92672">analyzer</span>:
+  <span style="color:#75715e"># By default, the timezone is set to the local timezone. Uncomment</span>
+  <span style="color:#75715e"># this line if you want the analyzer (CLI/GUI/REST) to display the time</span>
+  <span style="color:#75715e"># in a different timezone than the local time. The timestamp stored in</span>
+  <span style="color:#75715e"># the database is always in UTC.</span>
+  <span style="color:#f92672">timezone</span>: <span style="color:#ae81ff">America/Los_Angeles</span>
+</code></pre></div><h3 id="suzieq-python-examples">Suzieq Python Examples</h3>
+<p>Lets start with a few examples in the Python interpreter.</p>
+<p><code>Import required libraries</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>suzie-venv<span style="color:#f92672">)</span> juliopdx@drone:~$ python
+Python 3.8.10 <span style="color:#f92672">(</span>default, Sep <span style="color:#ae81ff">28</span> 2021, 16:10:42<span style="color:#f92672">)</span>
+<span style="color:#f92672">[</span>GCC 9.3.0<span style="color:#f92672">]</span> on linux
+Type <span style="color:#e6db74">&#34;help&#34;</span>, <span style="color:#e6db74">&#34;copyright&#34;</span>, <span style="color:#e6db74">&#34;credits&#34;</span> or <span style="color:#e6db74">&#34;license&#34;</span> <span style="color:#66d9ef">for</span> more information.
+&gt;&gt;&gt; import pandas as pd
+&gt;&gt;&gt; from suzieq.sqobjects import get_sqobject
+</code></pre></div><p>Next we will get a sqobject from the data that has been gathered from the Poller. In this case we are grabbing the latest interfaces data.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> int_tbl <span style="color:#f92672">=</span> get_sqobject(<span style="color:#e6db74">&#34;interfaces&#34;</span>)
+<span style="color:#f92672">&gt;&gt;&gt;</span> int_tbl()<span style="color:#f92672">.</span>get() <span style="color:#75715e">#data omitted for brevity</span>
+   namespace        hostname       ifname state adminState      type    mtu
+<span style="color:#ae81ff">0</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>         MGMT    up         up       vrf   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">1</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet5    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">2</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet4    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">3</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet7    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">4</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet6    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">5</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet3    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">6</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet8    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">7</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>  Management1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">8</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">9</span>        eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>    Ethernet2    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">10</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet6    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">11</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>         MGMT    up         up       vrf   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">12</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet5    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">13</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet4    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">14</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet7    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">15</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">16</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet2    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">17</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Loopback1    up         up  loopback  <span style="color:#ae81ff">65535</span>
+<span style="color:#ae81ff">18</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet8    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">19</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>  Management1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">20</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>    Ethernet3    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">21</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>         MGMT    up         up       vrf   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">22</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet5    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">23</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet7    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">24</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet6    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">25</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet4    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">26</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet3    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">27</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet2    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">28</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet8    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">29</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>  Management1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">30</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>    Ethernet1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">31</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet5    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">32</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>  Management1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">33</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet8    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">34</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Loopback1    up         up  loopback  <span style="color:#ae81ff">65535</span>
+<span style="color:#ae81ff">35</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet2    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">36</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet3    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">37</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet1    up         up  ethernet   <span style="color:#ae81ff">1500</span>
+<span style="color:#ae81ff">38</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet6    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">39</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet7    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">40</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>    Ethernet4    up         up  ethernet   <span style="color:#ae81ff">9214</span>
+<span style="color:#ae81ff">41</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>         MGMT    up         up       vrf   <span style="color:#ae81ff">1500</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>You can also filter on data when making these calls. Maybe we only care about certain interfaces from a particular host?</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> int_tbl()<span style="color:#f92672">.</span>get(hostname<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;pdx-rtr-eos-01&#34;</span>], ifname<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Ethernet1&#34;</span>, <span style="color:#e6db74">&#34;Ethernet2&#34;</span>])
+  namespace        hostname     ifname state adminState      type   mtu  ipAddressList
+<span style="color:#ae81ff">0</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>  Ethernet2    up         up  ethernet  <span style="color:#ae81ff">1500</span>  [<span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>]
+<span style="color:#ae81ff">1</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>  Ethernet1    up         up  ethernet  <span style="color:#ae81ff">1500</span>  [<span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">12.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>]
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>Maybe we want to see what device owns a particular route?</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> routes_tbl <span style="color:#f92672">=</span> get_sqobject(<span style="color:#e6db74">&#34;routes&#34;</span>)
+<span style="color:#f92672">&gt;&gt;&gt;</span> routes_tbl()<span style="color:#f92672">.</span>get(prefix<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;10.0.0.1&#34;</span>], protocol<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;connected&#34;</span>)
+  namespace        hostname      vrf       prefix nexthopIps         oifs   protocol
+<span style="color:#ae81ff">0</span>       eos  pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>  default  <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>         []  [Loopback1]  connected
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>What I’ve shown you above and what is included in the pipeline post check is just a small subset of what Suzieq can do. Below is a very basic script that will pull data from the parquet directory, depending on a pass or fail, different messages will be printed. If any failures are seen, a counter will run and exit the program with a code of 1. This will signal the pipeline to register the run as a failure. I’ll include a few snapshots of running this in the terminal, the rich library makes even the failures look pretty.</p>
+<p><code>test_suzie.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> sys
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">from</span> suzieq.sqobjects <span style="color:#f92672">import</span> get_sqobject
+<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> <span style="color:#66d9ef">print</span>
+
+
+<span style="color:#75715e"># OSPF Testing</span>
+ospf_tbl <span style="color:#f92672">=</span> get_sqobject(<span style="color:#e6db74">&#34;ospf&#34;</span>)
+ospf_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(ospf_tbl()<span style="color:#f92672">.</span>aver())
+ospf_fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">for</span> index, row <span style="color:#f92672">in</span> ospf_df<span style="color:#f92672">.</span>iterrows():
+    <span style="color:#66d9ef">if</span> row[<span style="color:#e6db74">&#34;assert&#34;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;pass&#34;</span>:
+        <span style="color:#66d9ef">print</span>(
+            f<span style="color:#e6db74">&#34;:triangular_flag_on_post: OSPF, {row[&#39;hostname&#39;]} {row[&#39;ifname&#39;]} {row[&#39;assertReason&#39;]} :triangular_flag_on_post:&#34;</span>
+        )
+        ospf_fail <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+
+<span style="color:#75715e"># BGP testing</span>
+bgp_tbl <span style="color:#f92672">=</span> get_sqobject(<span style="color:#e6db74">&#34;bgp&#34;</span>)
+bgp_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(bgp_tbl()<span style="color:#f92672">.</span>get())
+bgp_fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">for</span> index, row <span style="color:#f92672">in</span> bgp_df<span style="color:#f92672">.</span>iterrows():
+    <span style="color:#66d9ef">if</span> row[<span style="color:#e6db74">&#34;state&#34;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;Established&#34;</span>:
+        <span style="color:#66d9ef">print</span>(
+            f<span style="color:#e6db74">&#34;:triangular_flag_on_post: {row[&#39;hostname&#39;]}(AS {row[&#39;asn&#39;]}) to {row[&#39;peer&#39;]}(AS {row[&#39;peerAsn&#39;]}) is in {row[&#39;state&#39;]} state :triangular_flag_on_post:&#34;</span>
+        )
+        bgp_fail <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+
+<span style="color:#66d9ef">if</span> bgp_fail <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;:white_heavy_check_mark: All BGP checks passed :white_heavy_check_mark:&#34;</span>)
+<span style="color:#66d9ef">if</span> ospf_fail <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;:white_heavy_check_mark: All OSPF checks passed :white_heavy_check_mark:&#34;</span>)
+<span style="color:#66d9ef">if</span> bgp_fail <span style="color:#f92672">or</span> ospf_fail <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
+    sys<span style="color:#f92672">.</span>exit(<span style="color:#ae81ff">1</span>)
+</code></pre></div><p>Below is an example of me adding a duplicate router ID on pdx-rtr-eos-01.</p>
+<p><img src="/blog/images/fail_suzie.png" alt="Fail Suzieq"></p>
+<p>Now lets fix that issue and see if we can see the transitions on the network. OSPF neighbors should come back and BGP soon after.</p>
+<p><img src="/blog/images/pass-suzie.png" alt="Pass Suzieq"></p>
+<p><img src="/blog/images/suzie-bgp.png" alt="Suzie BGP"></p>
+<h2 id="suzieq-pipeline-run">Suzieq Pipeline Run</h2>
+<p>Below is an example pipeline run after a pull request was submitted and approved. I’ll show you the last step which is new to us in this series. To my knowledge Suzieq is only tested against Python 3.7 and 3.8. Th docker container I created is based on 3.9.7. Drone makes this fairly trivial, as I can just reference another docker image and install the two dependencies we have; Suzieq and Rich.</p>
+<p><code>.drone.yml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Suzieq Check</span>
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">python:3.8</span>
+  <span style="color:#f92672">commands</span>:
+  - <span style="color:#ae81ff">pip install suzieq rich</span>
+  - <span style="color:#ae81ff">python test_suzieq.py</span>
+</code></pre></div><p><img src="/blog/images/cicd-pass.png" alt="CI/CD Pass"></p>
+<h2 id="bonus-maintain-state-with-cron">BONUS! Maintain State With Cron</h2>
+<p>Rapid fire here. Lets just say we had a rogue engineer making all kinds of changes outside of the pipeline. How could we remediate this? Drone and I’m sure other CI tools have a cron feature. Essentially, we can execute pipeline runs at set intervals. Since the main branch is our “production” state. We can set up a cron job to run every day, week, or hour??? I’m going to make some random changes to all four routers and see how the pipeline corrects them. I will set the cron job to run every hour so we don&rsquo;t have to wait a day.. or a week.</p>
+<p><img src="/blog/images/cron-job.png" alt="Cron Config"></p>
+<p><img src="/blog/images/cron-run.png" alt="Cron Run"></p>
+<p><img src="/blog/images/cron-config.png" alt="Cron Config"></p>
+<p>As you can see above, all the bogus VLANs and loopbacks have been removed from the configuration.</p>
+<h2 id="be-like-rocky">Be Like Rocky</h2>
+<blockquote>
+<p>You, me, or nobody is gonna hit as hard as life. But it ain’t how hard you hit; it’s about how hard you can get hit, and keep moving forward.</p>
+</blockquote>
+<p><img src="/blog/images/try-and-try-again.png" alt="Try and Try Again"></p>
+<p>I love that Rocky quote. I’m highlighting my failures here to show you that you can do it. When learning something new you may be scratching your head or lost in the sauce. Keep going and when you hit that magical moment, its really really fun.</p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far. This blog series was an absolute treat to write. I hope something along the way has sparked your interest! Please note, what I’ve shown in these posts is just a subset of what these tools can do. Feel free to explore and make it better!</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/ci_cd_dev">GitHub Repository</a></li>
+<li><a href="https://unsplash.com/photos/bL8MDg0p_nI">Featured Image by Frederick Marschall</a></li>
+<li><a href="https://suzieq.readthedocs.io/en/latest/">Suzieq Documentation</a></li>
+<li><a href="https://elegantnetwork.github.io/posts/closing-the-loop-testing/">Closing the Loop on Testing Network Changes by Ratul Mahajan and Dinesh Dutt</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Building a Network CI/CD Pipeline Part 5</title>
+            <link>https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</link>
+            <pubDate>Mon, 08 Nov 2021 11:58:46 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</guid>
+            <description>Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/david-clode.jpg" alt="Featured Image"></p>
+<h2 id="introduction">Introduction</h2>
+<p>Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective. Please note, the steps that are performed by Nornir can also be performed by something like Ansible.</p>
+<h2 id="nornir">Nornir</h2>
+<p>My previous automation experience revolved heavily around Ansible for interacting with APIs or network nodes. I really like both tools and I feel each has their space in the network automation world. Where Ansible uses yaml for writing playbooks or steps to be executed on nodes, interacting with Nornir stays within the python ecosystem. This lends itself well to using an IDE like Visual Studio Code and all the other tools available within python (linting, debugging, tab completion).</p>
+<h3 id="init-nornir">Init Nornir</h3>
+<p>Lets get started with initializing Nornir and setting some of the configuration. A link to all the code used in this post will be at the end. Below we are importing the “InitNornir” function as well as a local function that is used to handle device credentials.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> nornir_set_creds
+</code></pre></div><p>Below is the main function that is used to initialize Nornir and kick off any tasks that are defined within our deployment script.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    nornir_set_creds(norn)
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
+    print_result(result)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><p>At this point we are initializing Nornir with a file located at “configs/config.yaml”, lets take a look at that directory.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ tree configs/
+configs/
+├── config.yaml
+├── groups.yaml
+└── hosts.yaml
+</code></pre></div><p>This makes me chuckle a bit, I just mentioned that Nornir is pretty much all python and Ansible uses yaml for developing playbooks. Yet here we are making yaml files. Jokes aside, yaml is really good at being human readable and building configuration files. Lets take a look at the “config.yaml” file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">inventory</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">SimpleInventory</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">host_file</span>: <span style="color:#e6db74">&#34;./configs/hosts.yaml&#34;</span>
+    <span style="color:#f92672">group_file</span>: <span style="color:#e6db74">&#34;./configs/groups.yaml&#34;</span>
+<span style="color:#f92672">runner</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">threaded</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
+</code></pre></div><p>This file can be used to set all kinds of settings. I’ve tried to keep it fairly simple, we are using the “SimpleInventory” plugin. This can read in our hosts and groups file that I will go over in a bit. Other inventroy plugins (Ansible, Netbox, table_inventory) can also be used, check more out <a href="https://nornir.tech/nornir/plugins/">here</a>. The second half of the file is utilizing the built-in threaded runner. Nornir will spin up threads to allow task executions to multiple devices vs executed one by one. Next up lets check out the “groups.yaml” file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">eos</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">eos</span>
+</code></pre></div><p>As you can see I have barely used this file. If we were running multiple vendors or maybe devices located at different sites, they could be assigned different configuration options that would be added within this groups file. Below is an example of that concept in case my explanation is a bit terrible.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">eos</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">eos</span>
+<span style="color:#f92672">cisco_ios</span>:
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ios</span>
+<span style="color:#f92672">branch</span>:
+  <span style="color:#f92672">dns</span>:
+  - <span style="color:#ae81ff">8.8.8.8</span>
+  - <span style="color:#ae81ff">1.1.1.1</span>
+<span style="color:#f92672">dc</span>:
+  <span style="color:#f92672">dns</span>:
+  - <span style="color:#ae81ff">10.0.0.125</span>
+  - <span style="color:#ae81ff">10.0.0.126</span>
+</code></pre></div><p>Last but not least the “hosts.yaml” file. For small deployments I can see how maintaining this file wouldn’t be the worst thing in the world. For scale, I would use something like Netbox to build your inventory file. All nodes in this case are assigned to the “eos” group and will inherit “eos” as the platform.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">pdx-rtr-eos-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.121</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+
+<span style="color:#f92672">pdx-rtr-eos-02</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.122</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+
+<span style="color:#f92672">pdx-rtr-eos-03</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.123</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+
+<span style="color:#f92672">pdx-rtr-eos-04</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.124</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">eos</span>
+</code></pre></div><h3 id="deploy-configurations">Deploy Configurations</h3>
+<p>Earlier I showed you the main function which is calling on a certain task to be executed. Below is the main function again.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    nornir_set_creds(norn)
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
+    print_result(result)
+</code></pre></div><p>The main function will call the “deploy_network” function, which will be executed against our network devices in the inventory. Below is the “deploy_network” function.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_network</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;Configures network with NAPALM&#34;&#34;&#34;</span>
+    task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host.name}!&#34;</span>,
+        task<span style="color:#f92672">=</span>napalm_configure,
+        filename<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;./snapshots/configs/{task.host.name}.txt&#34;</span>,
+        dry_run<span style="color:#f92672">=</span>args<span style="color:#f92672">.</span>dry,
+        replace<span style="color:#f92672">=</span>True,
+    )
+</code></pre></div><p>We are adding one more import to our script. The “napalm_configure” function is part of the nornir_napalm library. Under the hood it will use NAPALM to connect and configure network devices. The plugin options are pretty extensive depending on what your use case is (deploying entire config or just a subset). This function will look at the file name that matches our device hostname. It will then attempt to push the entire configuration to the device.</p>
+<h3 id="side-note-on-infrastructure-as-code">Side Note on Infrastructure as Code</h3>
+<p>For this example we have the device configurations located under the snapshots directory. The entire configuration can be viewed and modified. For a IaC approach, you might develop some yaml or json data that can then be passed into a jinja template to define a configuration file. This file can then be used to configure your entire device. The data files could contain interface settings, routing information, services, pretty much anything that is part of the configuration. Check out this great blog series by NWMichl on <a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Network Infrastructure as Code</a>.</p>
+<h2 id="workflow">Workflow</h2>
+<p>Lets take a look at our reference architecture below to get an idea of the workflow we will run through to make a change to our network.</p>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
+<p>At the bottom of our diagram we have a simple OSPF and BGP network with four Arista devices. We have a task for our junior network engineer to add interface descriptions to all interfaces connected to networking nodes. Since this is a really safe change with no impact to the network, besides maybe confusing some operators if they are incorrect. This seems like a great learning opportunity for the junior engineer.</p>
+<p>The engineer starts by cloning the teams repository from GitHub.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/JulioPDX/ci_cd_dev.git
+</code></pre></div><p>Great, now the repository is local to our development environment. We would most likely have some standards to not allow direct commits to the main branch. All changes must be made to a separate branch and then merged by pull request to main. Main in this case will signal our production configuration state. Next up the junior engineer will create a dev branch named “add_interface_desc”.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git checkout -b add_interface_desc
+Switched to a new branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span>
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
+On branch add_interface_desc
+nothing to commit, working tree clean
+</code></pre></div><p>Now the engineer is on the new branch and can modify the configuration files in the snapshots directory. Lets look at what files have been modified.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
+On branch add_interface_desc
+Changes not staged <span style="color:#66d9ef">for</span> commit:
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style="color:#f92672">)</span>
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git restore &lt;file&gt;...&#34;</span> to discard changes in working directory<span style="color:#f92672">)</span>
+        modified:   snapshots/configs/pdx-rtr-eos-01.txt
+        modified:   snapshots/configs/pdx-rtr-eos-02.txt
+        modified:   snapshots/configs/pdx-rtr-eos-03.txt
+        modified:   snapshots/configs/pdx-rtr-eos-04.txt
+
+no changes added to commit <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add&#34;</span> and/or <span style="color:#e6db74">&#34;git commit -a&#34;</span><span style="color:#f92672">)</span>
+</code></pre></div><p>Great, now lets push those changes up to the remote repository.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git add .
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git commit -m <span style="color:#e6db74">&#34;Adding interface descriptions&#34;</span>
+<span style="color:#f92672">[</span>add_interface_desc 9b8d899<span style="color:#f92672">]</span> Adding interface descriptions
+ <span style="color:#ae81ff">4</span> files changed, <span style="color:#ae81ff">6</span> insertions<span style="color:#f92672">(</span>+<span style="color:#f92672">)</span>
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git push -u origin add_interface_desc
+Enumerating objects: 15, <span style="color:#66d9ef">done</span>.
+Counting objects: 100% <span style="color:#f92672">(</span>15/15<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+Delta compression using up to <span style="color:#ae81ff">8</span> threads
+Compressing objects: 100% <span style="color:#f92672">(</span>7/7<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+Writing objects: 100% <span style="color:#f92672">(</span>8/8<span style="color:#f92672">)</span>, <span style="color:#ae81ff">781</span> bytes | 390.00 KiB/s, <span style="color:#66d9ef">done</span>.
+Total <span style="color:#ae81ff">8</span> <span style="color:#f92672">(</span>delta 5<span style="color:#f92672">)</span>, reused <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, pack-reused <span style="color:#ae81ff">0</span>
+remote: Resolving deltas: 100% <span style="color:#f92672">(</span>5/5<span style="color:#f92672">)</span>, completed with <span style="color:#ae81ff">5</span> local objects.
+remote:
+remote: Create a pull request <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> on GitHub by visiting:
+remote:      https://github.com/JulioPDX/ci_cd_dev/pull/new/add_interface_desc
+remote:
+To https://github.com/JulioPDX/ci_cd_dev.git
+ * <span style="color:#f92672">[</span>new branch<span style="color:#f92672">]</span>      add_interface_desc -&gt; add_interface_desc
+Branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> set up to track remote branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> from <span style="color:#e6db74">&#39;origin&#39;</span>.
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$
+</code></pre></div><p>From our previous work this should have kicked off a pipeline run without making any actual changes to the nodes.</p>
+<p><img src="/blog/images/branch_run.png" alt="Branch Run"></p>
+<p><img src="/blog/images/pre_change.png" alt="Pre Change"></p>
+<p>At this point every precheck stage has passed in the pipeline and we can see what the changes would be. We can now create a pull request and merge these changes into our main branch.</p>
+<p><img src="/blog/images/compare_pull.png" alt="Compare Pull"></p>
+<p><img src="/blog/images/open_pr.png" alt="Open PR"></p>
+<p><img src="/blog/images/check_passed.png" alt="Check Passed"></p>
+<p>Above we can see the branch has a passing build. The reviewer or senior engineer can now merge the pull request. After that is done another pipeline run should execute but this time the changes will be applied to our network.</p>
+<p><img src="/blog/images/prod_run.png" alt="Prod Run"></p>
+<p>Now there is a new stage in the pipeline…deploy configurations! Lets take a look at one of the devices and see if the change was indeed applied.</p>
+<p><img src="/blog/images/SCRT_view.png" alt="Config View"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>The change we made was really trivial but its a good way to show the new process in the world of CI/CD. Thanks again for checking out this post. I think we have one more to go in the series. The last one will go over using Suzieq for network observability and post change testing.</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/ci_cd_dev">GitHub Repository</a></li>
+<li><a href="https://unsplash.com/photos/o8C6UFpqC4s">Featured image by David Clode</a></li>
+<li><a href="https://nornir.readthedocs.io/en/latest/">Nornir</a></li>
+<li><a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Infrastructure as Code Blog Series by NWMichl</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Building a Network CI/CD Pipeline Part 4</title>
@@ -2272,7 +2757,7 @@ urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="
         <span style="color:#e6db74">&#34;text&#34;</span>: {
             <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;mrkdwn&#34;</span>,
             <span style="color:#e6db74">&#34;text&#34;</span>: (
-                <span style="color:#e6db74">&#34;Getting interface information for device 🙂&#34;</span>
+                <span style="color:#e6db74">&#34;Getting interface information for device :slightly_smiling_face:&#34;</span>
             ),
         },
     }
@@ -3140,7 +3625,7 @@ ip address {{ address(int<span style="color:#f92672">.</span>ip) }} {{ mask(int<
      ipv6 ospfv3 1 area 0.0.0.0
  interface vlan 10
      ipv6 address link-local fe80:beef:cafe::1/64
-     ipv6 address 2001:db8:cafe🅰️:1/64
+     ipv6 address 2001:db8:cafe:a::1/64
      no ipv6 nd suppress-ra
      ipv6 ospfv3 1 area 0.0.0.0
  !
@@ -3190,7 +3675,7 @@ ip address {{ address(int<span style="color:#f92672">.</span>ip) }} {{ mask(int<
 <p>Since we are using link local addresses, they have a scope that is… local to the link. The routing protocols will not propagate this as reachable networks, this in turn will reduce the total size of our routing tables. This has a great benefit of saving memory and speeding up convergence times. For comparison, check out the routing table on leaf01 when using GUA addresses and only using link local.</p>
 <p><code>Using GUA /127 addresses</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
-  2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+  2001:db8:cafe:a::/64 (i) area:0.0.0.0
        directly attached to interface vlan10, cost 100 distance 110
   2001:db8:cafe:14::/64 (i) area:0.0.0.0
        via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
@@ -3238,7 +3723,7 @@ ip address {{ address(int<span style="color:#f92672">.</span>ip) }} {{ mask(int<
        via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
 </code></pre></div><p><code>Only link local addresses</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01#   show ipv6 ospfv3 routes | b 2001
- 2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+ 2001:db8:cafe:a::/64 (i) area:0.0.0.0
       directly attached to interface vlan10, cost 100 distance 110
  2001:db8:cafe:14::/64 (i) area:0.0.0.0
       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110
@@ -3270,7 +3755,7 @@ ip address {{ address(int<span style="color:#f92672">.</span>ip) }} {{ mask(int<
       via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
 </code></pre></div><p><code>Trace from leaf01 and linux04</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# traceroute6 2001:db8:cafe:28:5200:ff:fe0a:0
- traceroute to 2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0) from 2001:db8:cafe🅰️:1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
+ traceroute to 2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0) from 2001:db8:cafe:a::1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
   1  2001:db8:cafe:ffff::1 (2001:db8:cafe:ffff::1)  4.712 ms  70.151 ms  24.438 ms
   2  2001:db8:cafe:28::1 (2001:db8:cafe:28::1)  18.437 ms  58.055 ms  17.812 ms
   3  2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0)  12.547 ms  53.539 ms  17.951 ms
@@ -3406,7 +3891,7 @@ interface loopback 0
      ipv6 ospfv3 1 area 0.0.0.0
 interface vlan 10
      ipv6 address link-local fe80:beef:cafe::1/64
-     ipv6 address 2001:db8:cafe🅰️:1/64
+     ipv6 address 2001:db8:cafe:a::1/64
      no ipv6 nd suppress-ra
      ipv6 ospfv3 1 area 0.0.0.0
 !
@@ -3415,7 +3900,7 @@ router ospfv3 1
      passive-interface default
      area 0.0.0.0
 </code></pre></div><p>Looks fairly similar right? Lets just focus on the new stuff. I added VLAN 10 on leaf01, VLAN 20 on leaf02, and so on. After that I just assigned the host interface to the appropriate VLAN. Here is where things get fun. In hex you get the range of 1-15. A-F make up what we know as 10-15. Remember our whole network is 2001:db8:cafe::/48. I decided to use the next available prefix that matched the VLAN number.</p>
-<p>For example if the VLAN is 10, that would give us 2001:db8:cafe🅰️:/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16s place, so that adds up to 16, and the 4 is in the 1s place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.</p>
+<p>For example if the VLAN is 10, that would give us 2001:db8:cafe:a::/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16s place, so that adds up to 16, and the 4 is in the 1s place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.</p>
 <h2 id="hosts">Hosts</h2>
 <p>You may have wondered, what does the “no ipv6 nd suppress-ra” command do? This is a great time to talk about hosts or end devices. Usually these systems will have static addresses for management and tracking. I left the Linux hosts as default so they could use the built in processes with IPv6 to acquire an address. Back to the /64 prefix size. We have just split the 128 bit address in half. 64 are for the prefix/subnet and what’s left are for hosts, called an interface ID in IPv6.</p>
 <p>In IPv6 hosts can use a process called SLAAC (stateless address autoconfiguration). I wont go deep into details but essentially the host sends router solicitation (RS) messages and the router responds with router advertisement (RA) messages. The host uses the information in the RA message, with the prefix to determine how to go about getting an interface ID.</p>
@@ -3445,11 +3930,11 @@ router ospfv3 1
 </tr>
 </tbody>
 </table>
-<p>Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe🅰️:/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.</p>
+<p>Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe:a::/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.</p>
 <p>What’s a good network engineering article without some routes and pings!</p>
 <p><code>OSPFv3 Routes at leaf01</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
- 2001:db8:cafe🅰️:/64 (i) area:0.0.0.0
+ 2001:db8:cafe:a::/64 (i) area:0.0.0.0
       directly attached to interface vlan10, cost 100 distance 110
  2001:db8:cafe:14::/64 (i) area:0.0.0.0
       via fe80:face:cafe::1 interface 1/1/1, cost 300 distance 110

@@ -9,6 +9,8 @@ tags:
   - Batfish
   - NAPALM
   - Nornir
+  - Network Automation
+  - Python
 ---
 
 ![Fish](/blog/images/masaaki-komori.jpg)
