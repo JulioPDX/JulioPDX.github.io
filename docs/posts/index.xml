@@ -6,8 +6,295 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 12 Nov 2021 12:26:21 -0800</lastBuildDate>
+        <lastBuildDate>Mon, 22 Nov 2021 13:18:29 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>My Journey Learning About the Palo Alto Networks Python SDK</title>
+            <link>https://juliopdx.github.io/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</link>
+            <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</guid>
+            <description>Introduction Hello and thank you for checking out another blog post. This one will be all about Python and Palo Alto Networks (PAN). I was recently going through a PAN Firewall course on Pluralsight by Craig Stansbury. Craig does an excellent job of walking learners through the process of administering and securing a PAN firewall. I wanted to take this opportunity to double dip and try to wrap my head around the PAN pan-os-python library.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for checking out another blog post. This one will be all about Python and Palo Alto Networks (PAN). I was recently going through a PAN Firewall course on Pluralsight by Craig Stansbury. Craig does an excellent job of walking learners through the process of administering and securing a PAN firewall. I wanted to take this opportunity to double dip and try to wrap my head around the PAN pan-os-python library. This blog wont go into details of the course but it will go through the process of configuring the firewall using the PAN Python SDK.</p>
+<h2 id="object-oriented-programming-oop">Object-Oriented Programming (OOP)</h2>
+<p>I will do my best to break down OOP but in case my explanations are not clear enough, I will link a great post by the pros at Real Python. The Palo SDK uses objects very heavily in their code base. For example, if you create an instance of a firewall object, this not only creates a firewall but will also inherit attributes and methods from a parent class. Please see my router class example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Router</span>:
+    pizza_box <span style="color:#f92672">=</span> True
+
+    <span style="color:#66d9ef">def</span> __init__(self, vendor, os):
+        self<span style="color:#f92672">.</span>vendor <span style="color:#f92672">=</span> vendor
+        self<span style="color:#f92672">.</span>os <span style="color:#f92672">=</span> os
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CiscoRouter</span>(Router):
+    <span style="color:#66d9ef">pass</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> my_router <span style="color:#f92672">=</span> CiscoRouter(<span style="color:#e6db74">&#34;Cisco&#34;</span>, <span style="color:#e6db74">&#34;IOS&#34;</span>)
+<span style="color:#f92672">&gt;&gt;&gt;</span> my_router<span style="color:#f92672">.</span>vendor
+<span style="color:#e6db74">&#39;Cisco&#39;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> my_router<span style="color:#f92672">.</span>os
+<span style="color:#e6db74">&#39;IOS&#39;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> my_router<span style="color:#f92672">.</span>pizza_box
+True
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>In the example above, we have a parent class called <strong>Router</strong> and a child of that class called <strong>CiscoRouter</strong>. We set “Cisco” and “IOS” as the vendor and os respectively. Even though we did not specify the “pizza_box” attribute in the <strong>CiscoRouter</strong> class, it was inherited from the <strong>Router</strong> parent class. Please view this as an oversimplification. There is so much more to learn in this arena and I have a long way to go.</p>
+<h2 id="oop-in-the-pan-sdk">OOP in the PAN SDK</h2>
+<p>The PAN SDK works much in the same way. There are main parent classes and many child classes below them that will inherit attributes and available methods. Let me show you an example straight from the pan-os-python code base. Lets look at a firewall object.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Firewall</span>(PanDevice):
+    <span style="color:#e6db74">&#34;&#34;&#34;A Palo Alto Networks Firewall
+</span><span style="color:#e6db74">    This object can represent a firewall physical chassis,virtual firewall, or individual vsys.
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</code></pre></div><p>The <strong>Firewall</strong> class is actually a child class of the <strong>PanDevice</strong> class. Lets instantiate a firewall object to get us going.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> fw <span style="color:#f92672">=</span> firewall<span style="color:#f92672">.</span>Firewall(<span style="color:#e6db74">&#34;192.168.10.192&#34;</span>, <span style="color:#e6db74">&#34;admin&#34;</span>, <span style="color:#e6db74">&#34;PaloAlto123!&#34;</span>)
+<span style="color:#f92672">&gt;&gt;&gt;</span> type(fw)
+<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#a6e22e">panos</span><span style="color:#f92672">.</span>firewall<span style="color:#f92672">.</span>Firewall<span style="color:#e6db74">&#39;&gt;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> inspect
+<span style="color:#f92672">&gt;&gt;&gt;</span> inspect(fw)
+<span style="color:#960050;background-color:#1e0010">╭────────────────────</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#a6e22e">panos</span><span style="color:#f92672">.</span>firewall<span style="color:#f92672">.</span>Firewall<span style="color:#e6db74">&#39;&gt; ─────────────────────╮</span>
+<span style="color:#960050;background-color:#1e0010">│</span> A Palo Alto Networks Firewall                                              <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                                                            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span> <span style="color:#960050;background-color:#1e0010">╭────────────────────────────────────────────────────────────────────────╮</span> <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span> <span style="color:#960050;background-color:#1e0010">│</span> <span style="color:#f92672">&lt;</span>Firewall <span style="color:#e6db74">&#39;192.168.10.192&#39;</span> None at <span style="color:#ae81ff">0x7ffa0c5e5ac0</span><span style="color:#f92672">&gt;</span>                     <span style="color:#960050;background-color:#1e0010">│</span> <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span> <span style="color:#960050;background-color:#1e0010">╰────────────────────────────────────────────────────────────────────────╯</span> <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                                                            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                   api_key <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;LUFRPT1hUEZ2K0w3UGFzMHdxQVcxcVJLZ3VzS1NKNmc9… │</span>
+<span style="color:#960050;background-color:#1e0010">│</span>              CHILDMETHODS <span style="color:#f92672">=</span> ()                                             <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                  children <span style="color:#f92672">=</span> []                                             <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                CHILDTYPES <span style="color:#f92672">=</span> (                                              <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.AuthenticationProfile&#39;</span>,            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.AuthenticationSequence&#39;</span>,           <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.Vsys&#39;</span>,                             <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.VsysResources&#39;</span>,                    <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.SystemSettings&#39;</span>,                   <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.LogSettingsSystem&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.LogSettingsConfig&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.PasswordProfile&#39;</span>,                  <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.Administrator&#39;</span>,                    <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.Telemetry&#39;</span>,                        <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.SnmpServerProfile&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.EmailServerProfile&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.LdapServerProfile&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.SyslogServerProfile&#39;</span>,              <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;device.HttpServerProfile&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;ha.HighAvailability&#39;</span>,                     <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.AddressObject&#39;</span>,                   <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.AddressGroup&#39;</span>,                    <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ServiceObject&#39;</span>,                   <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ServiceGroup&#39;</span>,                    <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.Tag&#39;</span>,                             <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ApplicationObject&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ApplicationGroup&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ApplicationFilter&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ApplicationContainer&#39;</span>,            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.ScheduleObject&#39;</span>,                  <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.SecurityProfileGroup&#39;</span>,            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.CustomUrlCategory&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.LogForwardingProfile&#39;</span>,            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.DynamicUserGroup&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.Region&#39;</span>,                          <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;objects.Edl&#39;</span>,                             <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;policies.Rulebase&#39;</span>,                       <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.EthernetInterface&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.AggregateInterface&#39;</span>,              <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.LoopbackInterface&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.TunnelInterface&#39;</span>,                 <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.VlanInterface&#39;</span>,                   <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.Vlan&#39;</span>,                            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.VirtualRouter&#39;</span>,                   <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.ManagementProfile&#39;</span>,               <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.VirtualWire&#39;</span>,                     <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.IkeGateway&#39;</span>,                      <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.IpsecTunnel&#39;</span>,                     <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.IpsecCryptoProfile&#39;</span>,              <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.IkeCryptoProfile&#39;</span>,                <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.GreTunnel&#39;</span>,                       <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.Dhcp&#39;</span>,                            <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                                 <span style="color:#e6db74">&#39;network.Zone&#39;</span>                             <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>                             )                                              <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">╰────────────────────────────────────────────────────────────────────────────╯</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>Think of those <strong>CHILDTYPES</strong> as things you can associate with this firewall object. For now lets take a quick detour and look at the <strong>PanDevice</strong> class.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PanDevice</span>(PanObject):
+    <span style="color:#e6db74">&#34;&#34;&#34;A Palo Alto Networks device
+</span><span style="color:#e6db74">    The device can be of any type (currently supported devices are firewall, or panorama). The class handles common device functions that apply to all device types.
+</span><span style="color:#e6db74">    Usually this class is not instantiated directly. It is the base class for a firewall.Firewall object or a panorama.Panorama object.
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+
+    NAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hostname&#34;</span>
+
+    <span style="color:#66d9ef">def</span> __init__(
+        self,
+        hostname,
+        api_username<span style="color:#f92672">=</span>None,
+        api_password<span style="color:#f92672">=</span>None,
+        api_key<span style="color:#f92672">=</span>None,
+        port<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span>,
+        is_virtual<span style="color:#f92672">=</span>None,
+        timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1200</span>,
+        interval<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>,
+        <span style="color:#f92672">*</span>args,
+        <span style="color:#f92672">**</span>kwargs
+    )
+</code></pre></div><p>At this point even <strong>PanDevice</strong> is a child of another class, <strong>PanObject</strong>. When we created our firewall object we did not specify a timeout. Lets check the firewall and see if this was inherited.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> fw<span style="color:#f92672">.</span>timeout
+<span style="color:#ae81ff">1200</span>
+</code></pre></div><p>Lets take one more detour and look at the <strong>PanObject</strong> class.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PanObject</span>(object):
+    <span style="color:#e6db74">&#34;&#34;&#34;Base class for all package objects
+</span><span style="color:#e6db74">    This class defines an object that can be placed in a tree to generate configuration.&#34;&#34;&#34;</span>
+</code></pre></div><p>It looks like <strong>PanObject</strong> is the base for all objects. Now you might be asking… why do I care? When configuring a PAN firewall, almost everything has some type of reference or dependency for something else to exist. For example, I cant assign an interface to a virtual router named “DMZ” if that does not exist first. Another example, I cant assign address objects to an address group if the address objects don’t exist. Once I wrapped my head around the concept of inheritance and configuration trees, the SDK made much more sense.</p>
+<p><code>From pan-os-python readthedocs</code></p>
+<p><img src="/blog/images/inheritance-diagram.png" alt="Inheritance"></p>
+<h2 id="configuring-zone-example">Configuring Zone Example</h2>
+<p>I love providing examples and its one of the best ways I learn. I’ll walk you through configuring a firewall zone and the configuration tree involved to get the correct sequences down. For reference below is an example configuration tree from the official pan-os-python documentation.</p>
+<p><img src="/blog/images/zone-build.png" alt="Zone Build"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> panos <span style="color:#f92672">import</span> firewall
+<span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> panos <span style="color:#f92672">import</span> network
+<span style="color:#f92672">&gt;&gt;&gt;</span> fw <span style="color:#f92672">=</span> firewall<span style="color:#f92672">.</span>Firewall(<span style="color:#e6db74">&#34;192.168.10.192&#34;</span>, <span style="color:#e6db74">&#34;admin&#34;</span>, <span style="color:#e6db74">&#34;PaloAlto123!&#34;</span>)
+<span style="color:#f92672">&gt;&gt;&gt;</span> lan_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(
+<span style="color:#f92672">...</span>     name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;User LAN&#34;</span>,
+<span style="color:#f92672">...</span>     mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;layer3&#34;</span>,
+<span style="color:#f92672">...</span>     zone_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;DefaultZoneProtectionProfile&#34;</span>,
+<span style="color:#f92672">...</span>     log_setting<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zone-Forwarding-Profile&#34;</span>,
+<span style="color:#f92672">...</span>     enable_packet_buffer_protection<span style="color:#f92672">=</span>True,
+<span style="color:#f92672">...</span> )
+<span style="color:#f92672">&gt;&gt;&gt;</span> fw<span style="color:#f92672">.</span>add(lan_zone)
+<span style="color:#f92672">&lt;</span>Zone User LAN <span style="color:#ae81ff">0x7ffa0b8aa7f0</span><span style="color:#f92672">&gt;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> lan_zone<span style="color:#f92672">.</span>create()
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>Lets break that all down. We are importing a few required libraries from panos. One will be used to instantiate a firewall object and the other will be used to build a zone object. We then define any required parameters to the zone object. This is then added to the <strong>fw</strong> object using the <strong>add</strong> method. There are many methods available, for this proof of concept I heavily used the <strong>create</strong> method.</p>
+<h3 id="repeating-myself">Repeating Myself</h3>
+<p>Once I had the process down to configure zones, interfaces, or anything else available in the SDK, I started to get everything on paper. Eventually the zone portion of my script looked something like below…</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Creating Zones on Firewall</span>
+lan_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(
+    name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;User LAN&#34;</span>,
+    mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;layer3&#34;</span>,
+    zone_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;DefaultZoneProtectionProfile&#34;</span>,
+    log_setting<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zone-Forwarding-Profile&#34;</span>,
+    enable_packet_buffer_protection<span style="color:#f92672">=</span>True,
+)
+fw<span style="color:#f92672">.</span>add(lan_zone)
+lan_zone<span style="color:#f92672">.</span>create()
+
+
+dc_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(
+    name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Datacenter&#34;</span>,
+    mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;layer3&#34;</span>,
+    zone_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;DefaultZoneProtectionProfile&#34;</span>,
+    log_setting<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zone-Forwarding-Profile&#34;</span>,
+    enable_packet_buffer_protection<span style="color:#f92672">=</span>True,
+)
+fw<span style="color:#f92672">.</span>add(dc_zone)
+dc_zone<span style="color:#f92672">.</span>create()
+
+
+dmz_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(
+    name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;DMZ&#34;</span>,
+    mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;layer3&#34;</span>,
+    zone_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;DefaultZoneProtectionProfile&#34;</span>,
+    log_setting<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zone-Forwarding-Profile&#34;</span>,
+    enable_packet_buffer_protection<span style="color:#f92672">=</span>True,
+)
+fw<span style="color:#f92672">.</span>add(dmz_zone)
+dmz_zone<span style="color:#f92672">.</span>create()
+
+
+outside_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(
+    name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Outside&#34;</span>,
+    mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;layer3&#34;</span>,
+    zone_profile<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;OutsideZoneProtectionProfile&#34;</span>,
+    log_setting<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zone-Forwarding-Profile&#34;</span>,
+    enable_packet_buffer_protection<span style="color:#f92672">=</span>True,
+)
+fw<span style="color:#f92672">.</span>add(outside_zone)
+outside_zone<span style="color:#f92672">.</span>create()
+</code></pre></div><p>For every zone, the steps required to create them is all the same. This is true for other pieces of the firewall configuration; interfaces, tags, etc. Eventually my configuration script grew rather large and had repetition all over the place. I left that file (connect.py) in the original repository so individuals could see how something can be transformed to be a bit more manageable.</p>
+<h3 id="making-zones-and-not-repeating-myself">Making Zones and Not Repeating Myself</h3>
+<p>I eventually turned all of those steps into a simple function. The function would take two to three parameters. Usually something like the firewall object and the data required to create a zone.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> configs.zones <span style="color:#f92672">import</span> zones
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create_zone</span>(fire, curent_zone):
+    <span style="color:#e6db74">&#34;&#34;&#34;Creates firewall zone and returns object&#34;&#34;&#34;</span>
+    set_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(<span style="color:#f92672">**</span>curent_zone)
+    fire<span style="color:#f92672">.</span>add(set_zone)
+    set_zone<span style="color:#f92672">.</span>create()
+    <span style="color:#66d9ef">return</span> set_zone
+
+
+<span style="color:#66d9ef">for</span> zone <span style="color:#f92672">in</span> zones:
+    create_zone(fw, zone)
+</code></pre></div><p>We now have a new import, zones! I figured it was more manageable to break out the parameters into individual Python files. An example of the directory and zones.py file is below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/pan-auto$ tree configs/
+configs/
+├── address_groups.py
+├── address_objects.py
+├── __init__.py
+├── interfaces.py
+├── nats.py
+├── routing.py
+├── security_policies.py
+├── tags.py
+└── zones.py
+</code></pre></div><p><code>zones.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">zones <span style="color:#f92672">=</span> [
+    {
+        <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;User LAN&#34;</span>,
+        <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;layer3&#34;</span>,
+        <span style="color:#e6db74">&#34;enable_packet_buffer_protection&#34;</span>: True,
+    },
+    {
+        <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Datacenter&#34;</span>,
+        <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;layer3&#34;</span>,
+        <span style="color:#e6db74">&#34;enable_packet_buffer_protection&#34;</span>: True,
+    },
+    {
+        <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;DMZ&#34;</span>,
+        <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;layer3&#34;</span>,
+        <span style="color:#e6db74">&#34;enable_packet_buffer_protection&#34;</span>: True,
+    },
+    {
+        <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Outside&#34;</span>,
+        <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;layer3&#34;</span>,
+        <span style="color:#e6db74">&#34;enable_packet_buffer_protection&#34;</span>: True,
+    },
+    {
+        <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Test&#34;</span>,
+        <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;layer3&#34;</span>,
+        <span style="color:#e6db74">&#34;enable_packet_buffer_protection&#34;</span>: True,
+    },
+]
+</code></pre></div><p>In the previous example you may have seen the line below and been a bit confused (I was).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">set_zone <span style="color:#f92672">=</span> network<span style="color:#f92672">.</span>Zone(<span style="color:#f92672">**</span>curent_zone)
+</code></pre></div><p>What does “**” mean??? In Python this is a known as Kwargs or keyword arguments. This allows us to pass in the dictionaries we created to our object call and reference the correct parameters. This has the benefit of decoupling the object from the data completely. Every zone can have as many or as little keyword arguments as necessary to create the object.</p>
+<h2 id="making-prints-pretty">Making Prints Pretty</h2>
+<p><img src="/blog/images/pretty-firewall.png" alt="Pretty Firewall"></p>
+<p>I’ve been sharing terminal output like this on twitter during this learning journey. This isn’t required by any means but if I’m on the terminal all the time, why not make it look good? I’ll break down one example of these tasks, the rest follow a very similar structure.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> rich.progress <span style="color:#f92672">import</span> Progress, SpinnerColumn, BarColumn, TextColumn
+
+<span style="color:#66d9ef">with</span> Progress(
+    SpinnerColumn(<span style="color:#e6db74">&#34;bouncingBall&#34;</span>, speed<span style="color:#f92672">=</span><span style="color:#ae81ff">0.6</span>),
+    BarColumn(),
+    TextColumn(<span style="color:#e6db74">&#34;[progress.percentage]{task.description} {task.percentage:&gt;3.0f}%&#34;</span>),
+) <span style="color:#66d9ef">as</span> progress:
+
+    job1 <span style="color:#f92672">=</span> progress<span style="color:#f92672">.</span>add_task(<span style="color:#e6db74">&#34;[bright_green]Configuring Zones&#34;</span>, total<span style="color:#f92672">=</span>len(zones))
+
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> progress<span style="color:#f92672">.</span>finished:
+        <span style="color:#66d9ef">for</span> zone <span style="color:#f92672">in</span> zones:
+            create_zone(fw, zone)
+            progress<span style="color:#f92672">.</span>update(job1, advance<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</code></pre></div><p>This portion of the script will use the Rich Python Library from Will McGugan, linked below! I’m importing anything required to build the progress bar output. This example was based off of the included example under Rich. I select a type of spinner to display and what text will be shown. I then add a task to <code>progress</code>. In this case <code>job1</code> has a total equal to length of the zones variable. We have five zones so this will equate to five. Once the for loop starts, it will advance the task up by one every time. Eventually this will hit 5 and <code>progress</code> will be finished.</p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this post. Really means a lot and I hope you found something in here useful. Initially working with this SDK was a pain in the rear, but after digging into the configuration trees and inheritance it all clicked. Looking through some source code never hurt either! Please note, what’s included here and in the repository linked below is just a subset of what is possible using these tools. I wish you all the best and happy automating!</p>
+<ul>
+<li><a href="https://www.pluralsight.com/courses/deploy-administer-secure-palo-alto-firewalls">PAN Pluralsight Course by Craig Stansbury</a></li>
+<li><a href="https://pan-os-python.readthedocs.io/en/latest/readme.html">PAN-OS Python SDK Documentation</a></li>
+<li><a href="https://realpython.com/python3-object-oriented-programming/#what-is-object-oriented-programming-in-python">Object-Oriented Programming (OOP) in Python 3 by Real Python/David Amos</a></li>
+<li><a href="https://rich.readthedocs.io/en/stable/introduction.html">Rich Python Library by Will McGugan</a></li>
+<li><a href="https://github.com/JulioPDX/pan-auto">GitHub Repository</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Building a Network CI/CD Pipeline Part 6</title>
