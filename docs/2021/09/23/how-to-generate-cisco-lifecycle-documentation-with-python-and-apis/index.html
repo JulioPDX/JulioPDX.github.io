@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others." />
+<meta name="keywords" content=", Cisco, Network Automation, Python" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/" />
+
+
+    <title>
+        
+            How to Generate Cisco Lifecycle Documentation With Python and APIs :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="How to Generate Cisco Lifecycle Documentation With Python and APIs">
+<meta itemprop="description" content="Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.">
+<meta itemprop="datePublished" content="2021-09-23T10:06:16-08:00" />
+<meta itemprop="dateModified" content="2021-09-23T10:06:16-08:00" />
+<meta itemprop="wordCount" content="1840">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="Cisco,Network Automation,Python," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="How to Generate Cisco Lifecycle Documentation With Python and APIs"/>
+<meta name="twitter:description" content="Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others."/>
+
+
+
+
+    <meta property="og:title" content="How to Generate Cisco Lifecycle Documentation With Python and APIs" />
+<meta property="og:description" content="Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2021-09-23T10:06:16-08:00" />
+<meta property="article:modified_time" content="2021-09-23T10:06:16-08:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-09-23 10:06:16 -0800 -0800" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        9 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/">How to Generate Cisco Lifecycle Documentation With Python and APIs</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#cisco-support-apis">Cisco Support APIs</a></li>
+    <li><a href="#handling-support-api-authentication">Handling Support API Authentication</a></li>
+    <li><a href="#chicken-and-egg-problem">Chicken and Egg Problem</a></li>
+    <li><a href="#imports-and-csvs">Imports and CSVs</a></li>
+    <li><a href="#nornir-and-napalm">Nornir and NAPALM</a></li>
+    <li><a href="#support-apis-and-functions">Support APIs and Functions</a></li>
+    <li><a href="#dq-example">Dq Example</a></li>
+    <li><a href="#send-data-to-csv">Send Data to CSV</a></li>
+    <li><a href="#example-csv">Example CSV</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the <a href="https://developer.cisco.com/docs/support-apis/#!introduction-to-cisco-support-apis/introduction-to-cisco-support-apis">Cisco Support APIs</a> are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.</p>
+<p>I wanted to see if there was a way to incorporate a few of these APIs together to create meaningful documentation for the operator in the field. This documentation could then be used to plan out device upgrades, replacements, or just a way to track software versions of the entire device fleet. I hope you find something useful or maybe take bits and pieces so it may help you in your environment.</p>
+<h2 id="cisco-support-apis">Cisco Support APIs</h2>
+<p>As mentioned earlier, these APIs really are an incredible resource. If you are a Cisco Smart Net Total Care customer or a Cisco Partner Support Services partner, you most likely have access to these APIs. If you would like to follow along you will have to register an application to get started. It sounds more daunting than it really is, check out this <a href="https://developer.cisco.com/docs/support-apis/#!application-registration/application-registration">guide</a> to get that process started.</p>
+<h2 id="handling-support-api-authentication">Handling Support API Authentication</h2>
+<p>When interacting with APIs there are usually a few options to choose from. You may use a username/password combination, token, or a combination of client IDs and secrets. I chose the latter. The default timer for tokens used for the support APIs is good for about one hour. This will require the user to reauthenticate every hour. I tried to keep this simple by having a local credentials.yaml file in the repo, which is then added to the <em>.gitignore</em> file.</p>
+<p><code>credentials.yaml example</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">support_client_id</span>: <span style="color:#ae81ff">SomeClientId</span>
+<span style="color:#f92672">support_client_secret</span>: <span style="color:#ae81ff">SomeClientSecret</span>
+</code></pre></div><p>Once you have the client ID and client secret from the app that is registered. You can execute the auth.py script in the repo. Repository is linked at the bottom of this post!</p>
+<p><code>auth.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
+<span style="color:#f92672">import</span> yaml
+
+
+URL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://cloudsso.cisco.com/as/token.oauth2&#34;</span>
+
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;./credentials.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    myvars <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>safe_load(file)
+
+payload <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#34;grant_type=client_credentials&amp;client_id={myvars[&#39;support_client_id&#39;]}&amp;client_secret={myvars[&#39;support_client_secret&#39;]}&#34;</span>
+
+headers <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>,
+}
+
+response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>request(<span style="color:#e6db74">&#34;POST&#34;</span>, URL, headers<span style="color:#f92672">=</span>headers, data<span style="color:#f92672">=</span>payload)
+
+<span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>status_code <span style="color:#f92672">==</span> <span style="color:#ae81ff">200</span>:
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;credentials.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> f:
+        creds <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>load(f, Loader<span style="color:#f92672">=</span>yaml<span style="color:#f92672">.</span>SafeLoader)
+
+    creds[<span style="color:#e6db74">&#34;support_auth_token&#34;</span>] <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#34;access_token&#34;</span>]
+
+    <span style="color:#75715e"># Rewriting credentials.yaml with new token variable</span>
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;credentials.yaml&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> f:
+        yaml<span style="color:#f92672">.</span>dump(creds, f)
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Auth token updated successfully!!!&#34;</span>)
+<span style="color:#66d9ef">else</span>:
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Failed to update token, please check client ID or client secret&#34;</span>)
+</code></pre></div><p>At the top of the script we are importing requests to interact with APIs and yaml for working with yaml files. This will then load the current client secret and client ID from our credentials.yaml file. On line 16 we run our API POST call to retrieve a token. This token can then be used to interact with the support APIs. The second half of the script will essentially recreate the <em>credentials.yaml</em> file, but with the token now in place. Example below!</p>
+<p><code>credentials.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">support_auth_token</span>: <span style="color:#ae81ff">SomeToken</span>
+<span style="color:#f92672">support_client_id</span>: <span style="color:#ae81ff">SomeClientId</span>
+<span style="color:#f92672">support_client_secret</span>: <span style="color:#ae81ff">SomeClientSecret</span>
+</code></pre></div><h2 id="chicken-and-egg-problem">Chicken and Egg Problem</h2>
+<p>Now that we have a working token, we could use this to run some kind of API GET to gather some data about a device or platform based on the serial number or part ID. Here is the main issue I ran into. The support APIs require either a serial number or part ID to gather relevant information. At some point you will need an inventory or a list of serial numbers to feed into the APIs to gather information for you. I am cheating a bit and started with an inventory file of three devices. This inventory only included the device IP addresses and their platform for handling connections. Example inventory below.</p>
+<p><code>hosts.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#75715e"># Please note, the cisco_ios group is only used to set the device platform type</span>
+<span style="color:#f92672">some-router-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.10&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco_ios</span>
+
+<span style="color:#f92672">some-router-02</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.11&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco_ios</span>
+
+<span style="color:#f92672">some-other-node</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.12&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco_ios</span>
+</code></pre></div><h2 id="imports-and-csvs">Imports and CSVs</h2>
+<p>We will be using Nornir and NAPALM for the initial connection to our devices. The csv import is used for creating our file with all of our information. The yaml import is used to interact with our credentials.yaml file and load the token. You may notice a lot of imports from “tools”, these are a few neat functions I made for this small project. More on those in a bit.</p>
+<p><code>info.py imports and auth</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> csv
+<span style="color:#f92672">import</span> yaml
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get
+<span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> manu_year_cisco, nornir_set_creds, product_info, software_release, eox
+
+
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;./credentials.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    myvars <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>safe_load(file)
+
+my_token <span style="color:#f92672">=</span> myvars[<span style="color:#e6db74">&#34;support_auth_token&#34;</span>]
+</code></pre></div><p>Moving a bit down on the script is the initial interaction with a csv file. We will use the CSV library to create our file and write a few headers that will soon be populated with relevant information.</p>
+<p><code>info.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;device_info.csv&#34;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> csv_file:
+    fieldnames <span style="color:#f92672">=</span> [
+        <span style="color:#e6db74">&#34;Name&#34;</span>,
+        <span style="color:#e6db74">&#34;Platform&#34;</span>,
+        <span style="color:#e6db74">&#34;Model&#34;</span>,
+        <span style="color:#e6db74">&#34;Base_PID&#34;</span>,
+        <span style="color:#e6db74">&#34;Replacement&#34;</span>,
+        <span style="color:#e6db74">&#34;Serial&#34;</span>,
+        <span style="color:#e6db74">&#34;EoS&#34;</span>,
+        <span style="color:#e6db74">&#34;EoSM&#34;</span>,
+        <span style="color:#e6db74">&#34;LDoS&#34;</span>,
+        <span style="color:#e6db74">&#34;EoCR&#34;</span>,
+        <span style="color:#e6db74">&#34;Manufacture Year&#34;</span>,
+        <span style="color:#e6db74">&#34;Current SW&#34;</span>,
+        <span style="color:#e6db74">&#34;Recommended SW&#34;</span>,
+    ]
+    writer <span style="color:#f92672">=</span> csv<span style="color:#f92672">.</span>DictWriter(csv_file, fieldnames<span style="color:#f92672">=</span>fieldnames)
+    writer<span style="color:#f92672">.</span>writeheader()
+</code></pre></div><h2 id="nornir-and-napalm">Nornir and NAPALM</h2>
+<p>This script utilizes Nornir and NAPALM for the initial device connection. This is only used for a very small run to use a NAPALM getter. In this case we are using the “get_facts” getter. This will retrieve a ton of useful information. For my case I will be capturing the hostname, model, version, serial, and platform. Snippet below of this process.</p>
+<p><code>info.py snipper</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">all_the_things</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;It does all the things&#34;&#34;&#34;</span>
+    task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Get facts for {task.host.name}!&#34;</span>, task<span style="color:#f92672">=</span>napalm_get, getters<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;get_facts&#34;</span>]
+    )
+
+    name <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;hostname&#34;</span>]
+    model <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;model&#34;</span>]
+    ver <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;os_version&#34;</span>]
+    version <span style="color:#f92672">=</span> ver<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;,&#34;</span>)[<span style="color:#ae81ff">1</span>]
+    serial <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;serial_number&#34;</span>]
+    platform <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;vendor&#34;</span>]
+</code></pre></div><h2 id="support-apis-and-functions">Support APIs and Functions</h2>
+<p>Now that we have the device serial number and model, we can utilize the support APIs to get any other relevant information. When I initially started getting my thoughts into code, the script started getting rather long. Too long for the actual process I was implementing. I eventually split out the API calls to functions within the “tools.py” file. Remember all those imports? I’ll go over one that sets the credentials (thanks Kirk Byers) and one that interacts with the support APIs. The support APIs all follow the same general flow.</p>
+<p>I was having a bit of trouble elegantly setting the device username and password without being in any file. I eventually saw a simple function by Kirk, one of the creators of Nornir.</p>
+<p><code>info.py main</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config/config.yaml&#34;</span>)
+    nornir_set_creds(norn)
+    norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>all_the_things)
+<span style="color:#75715e"># Nornir is initialized as &#34;norn&#34;</span>
+<span style="color:#75715e"># The &#34;norn&#34; object is then passed into the nornir_set_creds function</span>
+</code></pre></div><p>The version I went with will look for environment variables to be set, you could set this to prompt as well but I got tired of typing.</p>
+<p><code>Setting Credentials</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">nornir_set_creds</span>(norn, username<span style="color:#f92672">=</span>None, password<span style="color:#f92672">=</span>None):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Handler so credentials are not stored in cleartext.
+</span><span style="color:#e6db74">    Thank you Kirk!
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> username:
+        username <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;NORNIR_USER&#34;</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> password:
+        password <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;NORNIR_PASS&#34;</span>)
+
+    <span style="color:#66d9ef">for</span> host_obj <span style="color:#f92672">in</span> norn<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>values():
+        host_obj<span style="color:#f92672">.</span>username <span style="color:#f92672">=</span> username
+        host_obj<span style="color:#f92672">.</span>password <span style="color:#f92672">=</span> password
+</code></pre></div><p>I’ll do my best to breakdown the most involved function for the support APIs, EoX! This API returns so much useful information that I made the function just return a dictionary of useful things that can be passed to our CSV. The function takes a serial number as the first parameter and a token as the second. These values will then be passed to the headers of the API call as well as the URL. I run a simple check to see if there’s even been an announcement for that serial number. If not, then set all the values to “N/A”. It gets really interesting after the else statement. You probably notice “Dq” all over the place. “Dq”, short for dictionary query, allows you to query a dictionary in really useful ways. This tool comes from the popular <a href="https://pubhub.devnetcloud.com/media/genie-docs/docs/userguide/utils/index.html#">Genie library</a>. In all honesty, I just really wanted to play with it! It really does make finding relevant information in a dictionary a lot shorter. I’ll give you an example after the script.</p>
+<p><code>eox function</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">eox</span>(serial: str, token: str):
+    <span style="color:#e6db74">&#34;&#34;&#34;Returns all eox information and replacement option from serial number&#34;&#34;&#34;</span>
+    device <span style="color:#f92672">=</span> {}
+    headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;Authorization&#34;</span>: f<span style="color:#e6db74">&#34;Bearer {token}&#34;</span>}
+    url <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#34;https://api.cisco.com/supporttools/eox/rest/5/EOXBySerialNumber/1/{serial}&#34;</span>
+    req <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>request(<span style="color:#e6db74">&#34;GET&#34;</span>, url, headers<span style="color:#f92672">=</span>headers)
+    content <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>json()
+    <span style="color:#66d9ef">if</span> content[<span style="color:#e6db74">&#34;EOXRecord&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;EOXExternalAnnouncementDate&#34;</span>][<span style="color:#e6db74">&#34;value&#34;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>:
+        device[<span style="color:#e6db74">&#34;eos&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;eosm&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;ldos&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;eocr&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;replacement&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+    <span style="color:#66d9ef">else</span>:
+        device[<span style="color:#e6db74">&#34;eos&#34;</span>] <span style="color:#f92672">=</span> Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;EndOfSaleDate&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        device[<span style="color:#e6db74">&#34;eosm&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;EndOfSWMaintenanceReleases&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+        device[<span style="color:#e6db74">&#34;ldos&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;LastDateOfSupport&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+        device[<span style="color:#e6db74">&#34;eocr&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;EndOfServiceContractRenewal&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+        device[<span style="color:#e6db74">&#34;replacement&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)
+            <span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;MigrationProductId&#34;</span>)
+            <span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;MigrationProductId&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+    <span style="color:#66d9ef">return</span> device
+</code></pre></div><h2 id="dq-example">Dq Example</h2>
+<p>Lets say we had the following dictionary to parse through. Our goal is to get the state value of the “10.10.10.10” OSPF neighbor.</p>
+<p><code>Example dictionary</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> device <span style="color:#f92672">=</span> {
+<span style="color:#f92672">...</span>     <span style="color:#e6db74">&#34;router&#34;</span>: {
+<span style="color:#f92672">...</span>         <span style="color:#e6db74">&#34;ospf&#34;</span>: {
+<span style="color:#f92672">...</span>             <span style="color:#e6db74">&#34;neighbors&#34;</span>: [
+<span style="color:#f92672">...</span>                 {
+<span style="color:#f92672">...</span>                     <span style="color:#e6db74">&#34;10.10.10.10&#34;</span>: {
+<span style="color:#f92672">...</span>                         <span style="color:#e6db74">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;up&#34;</span>
+<span style="color:#f92672">...</span>                     }
+<span style="color:#f92672">...</span>                 },
+<span style="color:#f92672">...</span>                 {
+<span style="color:#f92672">...</span>                     <span style="color:#e6db74">&#34;20.20.20.20&#34;</span>: {
+<span style="color:#f92672">...</span>                         <span style="color:#e6db74">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;down&#34;</span>
+<span style="color:#f92672">...</span>                     }
+<span style="color:#f92672">...</span>                 }
+<span style="color:#f92672">...</span>             ]
+<span style="color:#f92672">...</span>         }
+<span style="color:#f92672">...</span>     }
+<span style="color:#f92672">...</span> }
+<span style="color:#f92672">&gt;&gt;&gt;</span> device[<span style="color:#e6db74">&#34;router&#34;</span>][<span style="color:#e6db74">&#34;ospf&#34;</span>][<span style="color:#e6db74">&#34;neighbors&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;10.10.10.10&#34;</span>][<span style="color:#e6db74">&#34;state&#34;</span>]
+<span style="color:#e6db74">&#39;up&#39;</span>
+</code></pre></div><p>What you see above is one way of doing it. Mind you, in my example this dictionary is only going so many levels deep. Imagine if you were going down a deeply nested dictionary. Below is how you would do the same using Dq.</p>
+<p><code>Dq Example</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> Dq(device)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;10.10.10.10&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;state&#34;</span>)
+[<span style="color:#e6db74">&#39;up&#39;</span>]
+<span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#75715e"># Notice that Dq returns a list, below is how to get only the string</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> Dq(device)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;10.10.10.10&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;state&#34;</span>, <span style="color:#ae81ff">0</span>)
+<span style="color:#e6db74">&#39;up&#39;</span>
+</code></pre></div><h2 id="send-data-to-csv">Send Data to CSV</h2>
+<p>Now that we execute all of our functions to hit the support APIs, we have all the information we need to build our CSV. At the top we are setting variables to the result of what is returned from our functions. Some functions only require a serial, like calculating the manufacture year, and others require a serial number and token. After that we use the CSV library to write all the data to the file we created earlier, in this call we are opening the file in append mode with the <code>mode=’a'</code> set.</p>
+<p><code>info.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    manu_year <span style="color:#f92672">=</span> manu_year_cisco(serial)
+    base_pid <span style="color:#f92672">=</span> product_info(serial, my_token)
+    upgrade <span style="color:#f92672">=</span> software_release(base_pid, my_token)
+    my_eox <span style="color:#f92672">=</span> eox(serial, my_token)
+
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;device_info.csv&#34;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;a&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> myfile:
+        write <span style="color:#f92672">=</span> csv<span style="color:#f92672">.</span>DictWriter(myfile, fieldnames<span style="color:#f92672">=</span>fieldnames)
+        write<span style="color:#f92672">.</span>writerow(
+            {
+                <span style="color:#e6db74">&#34;Name&#34;</span>: name,
+                <span style="color:#e6db74">&#34;Model&#34;</span>: model,
+                <span style="color:#e6db74">&#34;Current SW&#34;</span>: version,
+                <span style="color:#e6db74">&#34;Serial&#34;</span>: serial,
+                <span style="color:#e6db74">&#34;Platform&#34;</span>: platform,
+                <span style="color:#e6db74">&#34;Manufacture Year&#34;</span>: manu_year,
+                <span style="color:#e6db74">&#34;Base_PID&#34;</span>: base_pid,
+                <span style="color:#e6db74">&#34;Recommended SW&#34;</span>: upgrade,
+                <span style="color:#e6db74">&#34;EoS&#34;</span>: my_eox[<span style="color:#e6db74">&#34;eos&#34;</span>],
+                <span style="color:#e6db74">&#34;EoSM&#34;</span>: my_eox[<span style="color:#e6db74">&#34;eosm&#34;</span>],
+                <span style="color:#e6db74">&#34;LDoS&#34;</span>: my_eox[<span style="color:#e6db74">&#34;ldos&#34;</span>],
+                <span style="color:#e6db74">&#34;EoCR&#34;</span>: my_eox[<span style="color:#e6db74">&#34;eocr&#34;</span>],
+                <span style="color:#e6db74">&#34;Replacement&#34;</span>: my_eox[<span style="color:#e6db74">&#34;replacement&#34;</span>],
+            }
+        )
+</code></pre></div><h2 id="example-csv">Example CSV</h2>
+<p>Below is a snip from the CSV example in the repo. If you want to test this out, feel free to clone down the repository and modify your hosts file.</p>
+<p><img src="/blog/images/support_info_table.png" alt="Support Info Table"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far! This was a really fun tool to create and allowed me to learn a bit about the support APIs, working with CSVs (with Python), and using Dq! I hope you found this even a bit useful. Something that could be a possibility with a script like this is populating a tool like Netbox!</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/auto_cisco_support_info">Git Repository</a></li>
+<li><a href="https://developer.cisco.com/docs/support-apis/#!introduction-to-cisco-support-apis">Information about the Cisco Support APIs</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/cisco/">Cisco</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/network-automation/">Network Automation</a></span>
+        <span class="tag"><a href="https://juliopdx.github.io/tags/python/">Python</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1840 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-09-23 11:06
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/">
+                    <span class="button__text">Converting Network Icons for Labs With Python</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

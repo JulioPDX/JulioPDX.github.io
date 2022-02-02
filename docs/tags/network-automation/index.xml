@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/network-automation/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 23 Sep 2021 10:06:16 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/network-automation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Generate Cisco Lifecycle Documentation With Python and APIs</title>
+      <link>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>
+      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</guid>
+      <description>Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.</description>
+    </item>
+    
+    <item>
+      <title>Converting Network Icons for Labs With Python</title>
+      <link>https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/</link>
+      <pubDate>Fri, 17 Sep 2021 09:31:09 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/</guid>
+      <description>Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively.</description>
+    </item>
+    
     <item>
       <title>Integrating Nornir With FastAPI</title>
       <link>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</link>

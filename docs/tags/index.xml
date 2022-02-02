@@ -7,7 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 23 Sep 2021 10:06:16 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cisco</title>
+      <link>https://juliopdx.github.io/tags/cisco/</link>
+      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/cisco/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Network Automation</title>
+      <link>https://juliopdx.github.io/tags/network-automation/</link>
+      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://juliopdx.github.io/tags/python/</link>
+      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Arista</title>
       <link>https://juliopdx.github.io/tags/arista/</link>
@@ -27,15 +54,6 @@
     </item>
     
     <item>
-      <title>Cisco</title>
-      <link>https://juliopdx.github.io/tags/cisco/</link>
-      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/cisco/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>FastAPI</title>
       <link>https://juliopdx.github.io/tags/fastapi/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
@@ -45,29 +63,11 @@
     </item>
     
     <item>
-      <title>Network Automation</title>
-      <link>https://juliopdx.github.io/tags/network-automation/</link>
-      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Nornir</title>
       <link>https://juliopdx.github.io/tags/nornir/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/nornir/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Python</title>
-      <link>https://juliopdx.github.io/tags/python/</link>
-      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/python/</guid>
       <description></description>
     </item>
     

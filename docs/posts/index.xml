@@ -6,8 +6,412 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate>
+        <lastBuildDate>Thu, 23 Sep 2021 10:06:16 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>How to Generate Cisco Lifecycle Documentation With Python and APIs</title>
+            <link>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>
+            <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</guid>
+            <description>Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the <a href="https://developer.cisco.com/docs/support-apis/#!introduction-to-cisco-support-apis/introduction-to-cisco-support-apis">Cisco Support APIs</a> are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.</p>
+<p>I wanted to see if there was a way to incorporate a few of these APIs together to create meaningful documentation for the operator in the field. This documentation could then be used to plan out device upgrades, replacements, or just a way to track software versions of the entire device fleet. I hope you find something useful or maybe take bits and pieces so it may help you in your environment.</p>
+<h2 id="cisco-support-apis">Cisco Support APIs</h2>
+<p>As mentioned earlier, these APIs really are an incredible resource. If you are a Cisco Smart Net Total Care customer or a Cisco Partner Support Services partner, you most likely have access to these APIs. If you would like to follow along you will have to register an application to get started. It sounds more daunting than it really is, check out this <a href="https://developer.cisco.com/docs/support-apis/#!application-registration/application-registration">guide</a> to get that process started.</p>
+<h2 id="handling-support-api-authentication">Handling Support API Authentication</h2>
+<p>When interacting with APIs there are usually a few options to choose from. You may use a username/password combination, token, or a combination of client IDs and secrets. I chose the latter. The default timer for tokens used for the support APIs is good for about one hour. This will require the user to reauthenticate every hour. I tried to keep this simple by having a local credentials.yaml file in the repo, which is then added to the <em>.gitignore</em> file.</p>
+<p><code>credentials.yaml example</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">support_client_id</span>: <span style="color:#ae81ff">SomeClientId</span>
+<span style="color:#f92672">support_client_secret</span>: <span style="color:#ae81ff">SomeClientSecret</span>
+</code></pre></div><p>Once you have the client ID and client secret from the app that is registered. You can execute the auth.py script in the repo. Repository is linked at the bottom of this post!</p>
+<p><code>auth.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
+<span style="color:#f92672">import</span> yaml
+
+
+URL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://cloudsso.cisco.com/as/token.oauth2&#34;</span>
+
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;./credentials.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    myvars <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>safe_load(file)
+
+payload <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#34;grant_type=client_credentials&amp;client_id={myvars[&#39;support_client_id&#39;]}&amp;client_secret={myvars[&#39;support_client_secret&#39;]}&#34;</span>
+
+headers <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>,
+}
+
+response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>request(<span style="color:#e6db74">&#34;POST&#34;</span>, URL, headers<span style="color:#f92672">=</span>headers, data<span style="color:#f92672">=</span>payload)
+
+<span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>status_code <span style="color:#f92672">==</span> <span style="color:#ae81ff">200</span>:
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;credentials.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> f:
+        creds <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>load(f, Loader<span style="color:#f92672">=</span>yaml<span style="color:#f92672">.</span>SafeLoader)
+
+    creds[<span style="color:#e6db74">&#34;support_auth_token&#34;</span>] <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#34;access_token&#34;</span>]
+
+    <span style="color:#75715e"># Rewriting credentials.yaml with new token variable</span>
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;credentials.yaml&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> f:
+        yaml<span style="color:#f92672">.</span>dump(creds, f)
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Auth token updated successfully!!!&#34;</span>)
+<span style="color:#66d9ef">else</span>:
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Failed to update token, please check client ID or client secret&#34;</span>)
+</code></pre></div><p>At the top of the script we are importing requests to interact with APIs and yaml for working with yaml files. This will then load the current client secret and client ID from our credentials.yaml file. On line 16 we run our API POST call to retrieve a token. This token can then be used to interact with the support APIs. The second half of the script will essentially recreate the <em>credentials.yaml</em> file, but with the token now in place. Example below!</p>
+<p><code>credentials.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">support_auth_token</span>: <span style="color:#ae81ff">SomeToken</span>
+<span style="color:#f92672">support_client_id</span>: <span style="color:#ae81ff">SomeClientId</span>
+<span style="color:#f92672">support_client_secret</span>: <span style="color:#ae81ff">SomeClientSecret</span>
+</code></pre></div><h2 id="chicken-and-egg-problem">Chicken and Egg Problem</h2>
+<p>Now that we have a working token, we could use this to run some kind of API GET to gather some data about a device or platform based on the serial number or part ID. Here is the main issue I ran into. The support APIs require either a serial number or part ID to gather relevant information. At some point you will need an inventory or a list of serial numbers to feed into the APIs to gather information for you. I am cheating a bit and started with an inventory file of three devices. This inventory only included the device IP addresses and their platform for handling connections. Example inventory below.</p>
+<p><code>hosts.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#75715e"># Please note, the cisco_ios group is only used to set the device platform type</span>
+<span style="color:#f92672">some-router-01</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.10&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco_ios</span>
+
+<span style="color:#f92672">some-router-02</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.11&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco_ios</span>
+
+<span style="color:#f92672">some-other-node</span>:
+  <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.12&#34;</span>
+  <span style="color:#f92672">groups</span>:
+    - <span style="color:#ae81ff">cisco_ios</span>
+</code></pre></div><h2 id="imports-and-csvs">Imports and CSVs</h2>
+<p>We will be using Nornir and NAPALM for the initial connection to our devices. The csv import is used for creating our file with all of our information. The yaml import is used to interact with our credentials.yaml file and load the token. You may notice a lot of imports from “tools”, these are a few neat functions I made for this small project. More on those in a bit.</p>
+<p><code>info.py imports and auth</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> csv
+<span style="color:#f92672">import</span> yaml
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get
+<span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> manu_year_cisco, nornir_set_creds, product_info, software_release, eox
+
+
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;./credentials.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    myvars <span style="color:#f92672">=</span> yaml<span style="color:#f92672">.</span>safe_load(file)
+
+my_token <span style="color:#f92672">=</span> myvars[<span style="color:#e6db74">&#34;support_auth_token&#34;</span>]
+</code></pre></div><p>Moving a bit down on the script is the initial interaction with a csv file. We will use the CSV library to create our file and write a few headers that will soon be populated with relevant information.</p>
+<p><code>info.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;device_info.csv&#34;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> csv_file:
+    fieldnames <span style="color:#f92672">=</span> [
+        <span style="color:#e6db74">&#34;Name&#34;</span>,
+        <span style="color:#e6db74">&#34;Platform&#34;</span>,
+        <span style="color:#e6db74">&#34;Model&#34;</span>,
+        <span style="color:#e6db74">&#34;Base_PID&#34;</span>,
+        <span style="color:#e6db74">&#34;Replacement&#34;</span>,
+        <span style="color:#e6db74">&#34;Serial&#34;</span>,
+        <span style="color:#e6db74">&#34;EoS&#34;</span>,
+        <span style="color:#e6db74">&#34;EoSM&#34;</span>,
+        <span style="color:#e6db74">&#34;LDoS&#34;</span>,
+        <span style="color:#e6db74">&#34;EoCR&#34;</span>,
+        <span style="color:#e6db74">&#34;Manufacture Year&#34;</span>,
+        <span style="color:#e6db74">&#34;Current SW&#34;</span>,
+        <span style="color:#e6db74">&#34;Recommended SW&#34;</span>,
+    ]
+    writer <span style="color:#f92672">=</span> csv<span style="color:#f92672">.</span>DictWriter(csv_file, fieldnames<span style="color:#f92672">=</span>fieldnames)
+    writer<span style="color:#f92672">.</span>writeheader()
+</code></pre></div><h2 id="nornir-and-napalm">Nornir and NAPALM</h2>
+<p>This script utilizes Nornir and NAPALM for the initial device connection. This is only used for a very small run to use a NAPALM getter. In this case we are using the “get_facts” getter. This will retrieve a ton of useful information. For my case I will be capturing the hostname, model, version, serial, and platform. Snippet below of this process.</p>
+<p><code>info.py snipper</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">all_the_things</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;It does all the things&#34;&#34;&#34;</span>
+    task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Get facts for {task.host.name}!&#34;</span>, task<span style="color:#f92672">=</span>napalm_get, getters<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;get_facts&#34;</span>]
+    )
+
+    name <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;hostname&#34;</span>]
+    model <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;model&#34;</span>]
+    ver <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;os_version&#34;</span>]
+    version <span style="color:#f92672">=</span> ver<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;,&#34;</span>)[<span style="color:#ae81ff">1</span>]
+    serial <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;serial_number&#34;</span>]
+    platform <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result[<span style="color:#e6db74">&#34;get_facts&#34;</span>][<span style="color:#e6db74">&#34;vendor&#34;</span>]
+</code></pre></div><h2 id="support-apis-and-functions">Support APIs and Functions</h2>
+<p>Now that we have the device serial number and model, we can utilize the support APIs to get any other relevant information. When I initially started getting my thoughts into code, the script started getting rather long. Too long for the actual process I was implementing. I eventually split out the API calls to functions within the “tools.py” file. Remember all those imports? I’ll go over one that sets the credentials (thanks Kirk Byers) and one that interacts with the support APIs. The support APIs all follow the same general flow.</p>
+<p>I was having a bit of trouble elegantly setting the device username and password without being in any file. I eventually saw a simple function by Kirk, one of the creators of Nornir.</p>
+<p><code>info.py main</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config/config.yaml&#34;</span>)
+    nornir_set_creds(norn)
+    norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>all_the_things)
+<span style="color:#75715e"># Nornir is initialized as &#34;norn&#34;</span>
+<span style="color:#75715e"># The &#34;norn&#34; object is then passed into the nornir_set_creds function</span>
+</code></pre></div><p>The version I went with will look for environment variables to be set, you could set this to prompt as well but I got tired of typing.</p>
+<p><code>Setting Credentials</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">nornir_set_creds</span>(norn, username<span style="color:#f92672">=</span>None, password<span style="color:#f92672">=</span>None):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Handler so credentials are not stored in cleartext.
+</span><span style="color:#e6db74">    Thank you Kirk!
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> username:
+        username <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;NORNIR_USER&#34;</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> password:
+        password <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;NORNIR_PASS&#34;</span>)
+
+    <span style="color:#66d9ef">for</span> host_obj <span style="color:#f92672">in</span> norn<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>values():
+        host_obj<span style="color:#f92672">.</span>username <span style="color:#f92672">=</span> username
+        host_obj<span style="color:#f92672">.</span>password <span style="color:#f92672">=</span> password
+</code></pre></div><p>I’ll do my best to breakdown the most involved function for the support APIs, EoX! This API returns so much useful information that I made the function just return a dictionary of useful things that can be passed to our CSV. The function takes a serial number as the first parameter and a token as the second. These values will then be passed to the headers of the API call as well as the URL. I run a simple check to see if there’s even been an announcement for that serial number. If not, then set all the values to “N/A”. It gets really interesting after the else statement. You probably notice “Dq” all over the place. “Dq”, short for dictionary query, allows you to query a dictionary in really useful ways. This tool comes from the popular <a href="https://pubhub.devnetcloud.com/media/genie-docs/docs/userguide/utils/index.html#">Genie library</a>. In all honesty, I just really wanted to play with it! It really does make finding relevant information in a dictionary a lot shorter. I’ll give you an example after the script.</p>
+<p><code>eox function</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">eox</span>(serial: str, token: str):
+    <span style="color:#e6db74">&#34;&#34;&#34;Returns all eox information and replacement option from serial number&#34;&#34;&#34;</span>
+    device <span style="color:#f92672">=</span> {}
+    headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;Authorization&#34;</span>: f<span style="color:#e6db74">&#34;Bearer {token}&#34;</span>}
+    url <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#34;https://api.cisco.com/supporttools/eox/rest/5/EOXBySerialNumber/1/{serial}&#34;</span>
+    req <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>request(<span style="color:#e6db74">&#34;GET&#34;</span>, url, headers<span style="color:#f92672">=</span>headers)
+    content <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>json()
+    <span style="color:#66d9ef">if</span> content[<span style="color:#e6db74">&#34;EOXRecord&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;EOXExternalAnnouncementDate&#34;</span>][<span style="color:#e6db74">&#34;value&#34;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>:
+        device[<span style="color:#e6db74">&#34;eos&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;eosm&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;ldos&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;eocr&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+        device[<span style="color:#e6db74">&#34;replacement&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N/A&#34;</span>
+    <span style="color:#66d9ef">else</span>:
+        device[<span style="color:#e6db74">&#34;eos&#34;</span>] <span style="color:#f92672">=</span> Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;EndOfSaleDate&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        device[<span style="color:#e6db74">&#34;eosm&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;EndOfSWMaintenanceReleases&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+        device[<span style="color:#e6db74">&#34;ldos&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;LastDateOfSupport&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+        device[<span style="color:#e6db74">&#34;eocr&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;EndOfServiceContractRenewal&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;value&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+        device[<span style="color:#e6db74">&#34;replacement&#34;</span>] <span style="color:#f92672">=</span> (
+            Dq(content)
+            <span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;MigrationProductId&#34;</span>)
+            <span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;MigrationProductId&#34;</span>, <span style="color:#ae81ff">0</span>)
+        )
+    <span style="color:#66d9ef">return</span> device
+</code></pre></div><h2 id="dq-example">Dq Example</h2>
+<p>Lets say we had the following dictionary to parse through. Our goal is to get the state value of the “10.10.10.10” OSPF neighbor.</p>
+<p><code>Example dictionary</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> device <span style="color:#f92672">=</span> {
+<span style="color:#f92672">...</span>     <span style="color:#e6db74">&#34;router&#34;</span>: {
+<span style="color:#f92672">...</span>         <span style="color:#e6db74">&#34;ospf&#34;</span>: {
+<span style="color:#f92672">...</span>             <span style="color:#e6db74">&#34;neighbors&#34;</span>: [
+<span style="color:#f92672">...</span>                 {
+<span style="color:#f92672">...</span>                     <span style="color:#e6db74">&#34;10.10.10.10&#34;</span>: {
+<span style="color:#f92672">...</span>                         <span style="color:#e6db74">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;up&#34;</span>
+<span style="color:#f92672">...</span>                     }
+<span style="color:#f92672">...</span>                 },
+<span style="color:#f92672">...</span>                 {
+<span style="color:#f92672">...</span>                     <span style="color:#e6db74">&#34;20.20.20.20&#34;</span>: {
+<span style="color:#f92672">...</span>                         <span style="color:#e6db74">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;down&#34;</span>
+<span style="color:#f92672">...</span>                     }
+<span style="color:#f92672">...</span>                 }
+<span style="color:#f92672">...</span>             ]
+<span style="color:#f92672">...</span>         }
+<span style="color:#f92672">...</span>     }
+<span style="color:#f92672">...</span> }
+<span style="color:#f92672">&gt;&gt;&gt;</span> device[<span style="color:#e6db74">&#34;router&#34;</span>][<span style="color:#e6db74">&#34;ospf&#34;</span>][<span style="color:#e6db74">&#34;neighbors&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;10.10.10.10&#34;</span>][<span style="color:#e6db74">&#34;state&#34;</span>]
+<span style="color:#e6db74">&#39;up&#39;</span>
+</code></pre></div><p>What you see above is one way of doing it. Mind you, in my example this dictionary is only going so many levels deep. Imagine if you were going down a deeply nested dictionary. Below is how you would do the same using Dq.</p>
+<p><code>Dq Example</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> Dq(device)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;10.10.10.10&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;state&#34;</span>)
+[<span style="color:#e6db74">&#39;up&#39;</span>]
+<span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#75715e"># Notice that Dq returns a list, below is how to get only the string</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> Dq(device)<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;10.10.10.10&#34;</span>)<span style="color:#f92672">.</span>get_values(<span style="color:#e6db74">&#34;state&#34;</span>, <span style="color:#ae81ff">0</span>)
+<span style="color:#e6db74">&#39;up&#39;</span>
+</code></pre></div><h2 id="send-data-to-csv">Send Data to CSV</h2>
+<p>Now that we execute all of our functions to hit the support APIs, we have all the information we need to build our CSV. At the top we are setting variables to the result of what is returned from our functions. Some functions only require a serial, like calculating the manufacture year, and others require a serial number and token. After that we use the CSV library to write all the data to the file we created earlier, in this call we are opening the file in append mode with the <code>mode=’a'</code> set.</p>
+<p><code>info.py snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    manu_year <span style="color:#f92672">=</span> manu_year_cisco(serial)
+    base_pid <span style="color:#f92672">=</span> product_info(serial, my_token)
+    upgrade <span style="color:#f92672">=</span> software_release(base_pid, my_token)
+    my_eox <span style="color:#f92672">=</span> eox(serial, my_token)
+
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;device_info.csv&#34;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;a&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> myfile:
+        write <span style="color:#f92672">=</span> csv<span style="color:#f92672">.</span>DictWriter(myfile, fieldnames<span style="color:#f92672">=</span>fieldnames)
+        write<span style="color:#f92672">.</span>writerow(
+            {
+                <span style="color:#e6db74">&#34;Name&#34;</span>: name,
+                <span style="color:#e6db74">&#34;Model&#34;</span>: model,
+                <span style="color:#e6db74">&#34;Current SW&#34;</span>: version,
+                <span style="color:#e6db74">&#34;Serial&#34;</span>: serial,
+                <span style="color:#e6db74">&#34;Platform&#34;</span>: platform,
+                <span style="color:#e6db74">&#34;Manufacture Year&#34;</span>: manu_year,
+                <span style="color:#e6db74">&#34;Base_PID&#34;</span>: base_pid,
+                <span style="color:#e6db74">&#34;Recommended SW&#34;</span>: upgrade,
+                <span style="color:#e6db74">&#34;EoS&#34;</span>: my_eox[<span style="color:#e6db74">&#34;eos&#34;</span>],
+                <span style="color:#e6db74">&#34;EoSM&#34;</span>: my_eox[<span style="color:#e6db74">&#34;eosm&#34;</span>],
+                <span style="color:#e6db74">&#34;LDoS&#34;</span>: my_eox[<span style="color:#e6db74">&#34;ldos&#34;</span>],
+                <span style="color:#e6db74">&#34;EoCR&#34;</span>: my_eox[<span style="color:#e6db74">&#34;eocr&#34;</span>],
+                <span style="color:#e6db74">&#34;Replacement&#34;</span>: my_eox[<span style="color:#e6db74">&#34;replacement&#34;</span>],
+            }
+        )
+</code></pre></div><h2 id="example-csv">Example CSV</h2>
+<p>Below is a snip from the CSV example in the repo. If you want to test this out, feel free to clone down the repository and modify your hosts file.</p>
+<p><img src="/blog/images/support_info_table.png" alt="Support Info Table"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far! This was a really fun tool to create and allowed me to learn a bit about the support APIs, working with CSVs (with Python), and using Dq! I hope you found this even a bit useful. Something that could be a possibility with a script like this is populating a tool like Netbox!</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/auto_cisco_support_info">Git Repository</a></li>
+<li><a href="https://developer.cisco.com/docs/support-apis/#!introduction-to-cisco-support-apis">Information about the Cisco Support APIs</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Converting Network Icons for Labs With Python</title>
+            <link>https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/</link>
+            <pubDate>Fri, 17 Sep 2021 09:31:09 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/</guid>
+            <description>Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively.</description>
+            <content type="html"><![CDATA[<p><img src="/blog/images/topo_wasif_bhatti.png" alt="Topo Wasif Bhatti"></p>
+<h2 id="introduction">Introduction</h2>
+<p>First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original <a href="https://github.com/ecceman/affinity">repository</a> and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively. Example of the icons are above in the featured image.</p>
+<p>I found eccemans repository after watching this video from <a href="https://www.youtube.com/watch?v=vUWjkEHPL3A&amp;ab_channel=TheNetworkBerg">The Network Berg</a>. Check out the video as they demonstrate the proper folder location where images can be uploaded on an EVE-NG server. I’ll also post a small example in this post. The original files are in SVG format, whereas we need PNG files for EVE-NG.</p>
+<h2 id="manual-conversion">Manual Conversion</h2>
+<p>At first the workflow would be something like the following:</p>
+<ul>
+<li>Clone the repository</li>
+<li>Convert image from SVG to PNG</li>
+<li>Right size image to 52×52</li>
+</ul>
+<p>Imagine repeating this process 10 times or even a couple hundred times. You can see how this would be pretty annoying after a while. I recall someone mentioning to me once, the best way to learn a programming language or any tool is to actually put it to use. Force the mind into a real world problem and use what has been learned to develop a solution.</p>
+<h2 id="automated-conversion">Automated Conversion</h2>
+<p>I’ll be completely honest, some of the libraries used were a first for me. But that points to the power of programming languages. Once you learn the basics, with a bit of reading and examples, one can develop very strong solutions. I’ll try and walkthrough the process of developing a simple python script that became really helpful for me.</p>
+<h3 id="research">Research</h3>
+<p>I started where most of us start. Just heading to a web browser and typing “how to convert SVG to PNG using python”. While there were a lot of decent examples, folks new to programming may find some of them overwhelming. Luckily for you and I, stack overflow is a thing and the community usually post awesome answers to questions like the one I had. If you would like to check out the post on stack, check it out <a href="https://stackoverflow.com/questions/51450134/how-to-convert-svg-to-png-or-jpeg-in-python">here</a>!</p>
+<h3 id="libvips-and-pyvips">libvips and pyvips</h3>
+<p>I wont go too much into detail on these libraries. The short of it is, libvips is an image processing library that can do a heck of a lot more than what I’m using it for. If you would like to check out their docs, <a href="https://www.libvips.org/API/current/">click here</a>. I like to think of pyvips as an entry point that leverages libvips under the hood. Write program in python and then it will call functions from libvips to execute.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get install libvips
+pip3 install pyvips
+</code></pre></div><h3 id="interating-over-folders-and-files">Interating Over Folders and Files</h3>
+<p>Now that I had tools that looked promising for our end goal, I needed a way to iterate over all folders and SVG files within them. Initially I figured the script could just create a PNG folder under the shape and color. This way users could go to svg &gt; circle &gt; blue &gt; PNG, and all the PNG files would be available for circle icons that were blue. Below is an example of what I had to work with. Please note this is just a snippet.</p>
+<p><code>SVG Folder Structure</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">├── svg
+│   ├── circle
+│   │   ├── blue
+│   │   │   ├── c_bug.svg
+│   │   │   ├── c_camera_blue.svg
+│   │   │   ├── c_camera_dome_blue.svg
+│   │   ├── gray
+│   │   │   ├── c_bug.svg
+│   │   │   ├── c_camera.svg
+│   │   │   ├── c_camera_dome.svg
+│   │   ├── green
+│   │   │   ├── c_bug_green.svg
+│   │   │   ├── c_camera_dome_green.svg
+│   │   │   ├── c_camera_green.svg
+│   │   └── red
+│   │       ├── c_bug_red.svg
+│   │       ├── c_camera_dome_red.svg
+│   │       ├── c_camera_red.svg
+│   ├── naked
+│   │   ├── bug.svg
+│   │   ├── camera.svg
+│   │   ├── camera_dome.svg
+│   └── square
+│       ├── blue
+│       │   ├── sq_bug_blue.svg
+│       │   ├── sq_camera_blue.svg
+│       │   ├── sq_camera_dome_blue.svg
+│       ├── gray
+│       │   ├── sq_bug.svg
+│       │   ├── sq_camera.svg
+│       │   ├── sq_camera_dome.svg
+│       ├── green
+│       │   ├── sq_bug_green.svg
+│       │   ├── sq_camera_dome_green.svg
+│       │   ├── sq_camera_green.svg
+│
+│       └── red
+│           ├── sq_bug_red.svg
+│           ├── sq_camera_dome_red.svg
+│           ├── sq_camera_red.svg
+</code></pre></div><p>Iterating over this structure initially seemed very complex but python makes this fairly simple. I leveraged <a href="https://www.geeksforgeeks.org/os-walk-python/">“walk” from “os”</a>. This was a bit of trial and error but when I was able to print the correct files, I could proceed with converting them. Small example below of printing root and files. I pass in a PATH variable to walk as a starting point.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> os <span style="color:#f92672">import</span> walk
+<span style="color:#f92672">&gt;&gt;&gt;</span> PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;svg/&#34;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">for</span> (root, dirs, files) <span style="color:#f92672">in</span> walk(PATH):
+<span style="color:#f92672">...</span>     <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> files:
+<span style="color:#f92672">...</span>         <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;.svg&#34;</span> <span style="color:#f92672">in</span> f:
+<span style="color:#f92672">...</span>             <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;{root}/{f}&#34;</span>)
+<span style="color:#f92672">...</span>
+svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_bug<span style="color:#f92672">.</span>svg
+svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_camera_blue<span style="color:#f92672">.</span>svg
+svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_camera_dome_blue<span style="color:#f92672">.</span>svg
+svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_client_blue<span style="color:#f92672">.</span>svg
+svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_client_vm_blue<span style="color:#f92672">.</span>svg
+</code></pre></div><p>If you notice, root is the same for all the files shown above, “svg/circle/blue/”. All that I needed now from my initial thinking was to add a PNG folder at the end of that root. Then all the shapes and colors would have a PNG folder for the images to be converted. Please see one solution below.</p>
+<p><code>Creating PNG Folder</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">try</span>:
+    mkdir(path<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{root}/png/&#34;</span>)
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">OSError</span> <span style="color:#66d9ef">as</span> error:
+    <span style="color:#66d9ef">pass</span>
+</code></pre></div><p>This isn’t the best solution at all or even the most efficient. This is basically using “mkdir” to create a directory under the root and adding png. The negative here is that it will throw an error after the first time it is created. I just handle it by setting the script to continue after running into this error.</p>
+<h3 id="converting-all-the-things">Converting All the Things</h3>
+<p>The conversion wasnt too bad at all. I’ll explain the code upfront this time. pyvips has a function to create a thumbnail based off of a file. In this case we are looping over every single file that ends with “.svg”. We size the thumbnail as a height and width of 52. I believe these are recommended from the EVE-NG import icons guide. After that we write the file, when doing this we will place each new file under the root we are iterating over, for example “svg/circle/blue/”, appending “/png/” and ending it by changing the extension name from “svg” to “png”. Clear as mud right?</p>
+<p><code>Itsy Bitys Function</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    All the action
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+
+    <span style="color:#66d9ef">for</span> (root, dirs, files) <span style="color:#f92672">in</span> walk(PATH):
+        <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> files:
+            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;.svg&#34;</span> <span style="color:#f92672">in</span> f:
+                <span style="color:#66d9ef">try</span>:
+                    mkdir(path<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{root}/png/&#34;</span>)
+                <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">OSError</span> <span style="color:#66d9ef">as</span> error:
+                    <span style="color:#66d9ef">pass</span>
+                convert_file <span style="color:#f92672">=</span> pyvips<span style="color:#f92672">.</span>Image<span style="color:#f92672">.</span>thumbnail(f<span style="color:#e6db74">&#34;{root}/{f}&#34;</span>, <span style="color:#ae81ff">52</span>, height<span style="color:#f92672">=</span><span style="color:#ae81ff">52</span>)
+                convert_file<span style="color:#f92672">.</span>write_to_file(f<span style="color:#e6db74">&#34;{root}/png/{f.replace(&#39;svg&#39;, &#39;png&#39;)}&#34;</span>)
+</code></pre></div><h2 id="importing-to-eve-ng">Importing to EVE-NG</h2>
+<p>At this point all the SVG files have been converted to PNG format. If you would like to add these icons to EVE-NG, you can use something like <a href="https://winscp.net/eng/index.php">winscp</a> or build some automation to send them to your EVE-NG server. The path you will need to store them in is “/opt/unetlab/html/images/icons/”.</p>
+<h2 id="bonus-automating-the-reference-file">Bonus, Automating the Reference File</h2>
+<p>Something that I thought was interesting, at the time there was no overall view of every icon. Or some type of directory to check out what each icon looked like, unless you opened each file individually. Since that time ecceman has added a nice PNG that displays all the icons.</p>
+<p>Before this existed a fellow networker also had a similar idea. Many thanks to <a href="https://twitter.com/pstavirs">@pstavirs</a> for the push!</p>
+<p><img src="/blog/images/request.png" alt="Request from pstavirs"></p>
+<p>I’ve worked with markdown before and adding image URLs. At this point we had every PNG file sized and ready to go. Why not just write a script that could build this markdown file for us. I ended up using “walk” again since I now needed to loop over every single PNG image. We decided on three icons per row, with name on the right side of the icon. I played with a bit of simple math in the loop to tell the program when to drop to the next line. If you have any questions on the process feel free to ping me. If you want to see the file in the raw <a href="https://raw.githubusercontent.com/JulioPDX/affinity/master/reference.md">click here</a>, crazy right? Rendered version below!</p>
+<p><img src="/blog/images/ref_mark.png" alt="Reference File Rendered"></p>
+<p><code>ref_build.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    All the action
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;reference.md&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#66d9ef">as</span> my_file:
+        <span style="color:#75715e"># Headers and settings alignments for file</span>
+        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;# Reference for Icons</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;|Icon|Name|Icon|Name|Icon|Name|</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;|:---:|:---:|:---:|:---:|:---:|:---:|</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#66d9ef">for</span> (root, dirs, files) <span style="color:#f92672">in</span> walk(PATH):
+            count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+            <span style="color:#75715e"># Iterating over all files with .png extension</span>
+            <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> files:
+                <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;.png&#34;</span> <span style="color:#f92672">in</span> f:
+                    <span style="color:#75715e"># Simple math checks on matches and reset</span>
+                    <span style="color:#75715e"># counter on third entry</span>
+                    count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+                    <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+                        my_file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;|![{f}]({root}/{f})|{f.replace(&#39;.png&#39;, &#39;&#39;)}|&#34;</span>)
+                    <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>:
+                        my_file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;![{f}]({root}/{f})|{f.replace(&#39;.png&#39;, &#39;&#39;)}|&#34;</span>)
+                    <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">3</span>:
+                        my_file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;![{f}]({root}/{f})|{f.replace(&#39;.png&#39;, &#39;&#39;)}|</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+                        count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far, it really means a lot. This was probably one of the most asked questions I get, “How do you get those icons in your topology?”. If you would like to add these images to your EVE instance, feel free to clone down the repository and add whatever you like. Putting what you learn to use has many advantages and this one was a lot of fun. Shout out to <a href="https://twitter.com/Network_101010">Jordi</a>, Wasif, and <a href="https://twitter.com/pstavirs">Srivats</a>. Thank you for being so positive in the community! I wish everyone all the best on your future studies and happy labbing!</p>
+<p><img src="/blog/images/happy_community.png" alt="Happy Community"></p>
+<ul>
+<li><a href="https://github.com/ecceman/affinity">Original repository from ecceman, amazing!</a></li>
+<li><a href="https://github.com/JulioPDX/affinity">Fork of original repo to add conversion script and reference builder</a></li>
+<li>Featured Image credit to Wasif Bhatti, thank you!</li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Integrating Nornir With FastAPI</title>
