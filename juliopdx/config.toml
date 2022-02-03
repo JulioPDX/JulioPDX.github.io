@@ -37,7 +37,7 @@ copyright = "This work is licensed under a Creative Commons Attribution-NonComme
   [params.footer]
     trademark = true
     rss = true
-    copyright = true
+    copyright = false
     author = true
 
     topText = []
