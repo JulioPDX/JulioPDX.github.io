@@ -45,20 +45,56 @@
     </item>
     
     <item>
-      <title>Ansible</title>
-      <link>https://juliopdx.com/tags/ansible/</link>
-      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      <title>BGP</title>
+      <link>https://juliopdx.com/tags/bgp/</link>
+      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
       
-      <guid>https://juliopdx.com/tags/ansible/</guid>
+      <guid>https://juliopdx.com/tags/bgp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Containerlab</title>
       <link>https://juliopdx.com/tags/containerlab/</link>
-      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/containerlab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSPF</title>
+      <link>https://juliopdx.com/tags/ospf/</link>
+      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/ospf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Redistribution</title>
+      <link>https://juliopdx.com/tags/redistribution/</link>
+      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/redistribution/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SR Linux</title>
+      <link>https://juliopdx.com/tags/sr-linux/</link>
+      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/sr-linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ansible</title>
+      <link>https://juliopdx.com/tags/ansible/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/ansible/</guid>
       <description></description>
     </item>
     
@@ -176,15 +212,6 @@
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/fastapi/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>BGP</title>
-      <link>https://juliopdx.com/tags/bgp/</link>
-      <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/bgp/</guid>
       <description></description>
     </item>
     

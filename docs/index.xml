@@ -28,6 +28,15 @@ A while back I mentioned that Containerlab could be an amazing resource in learn
     </item>
     
     <item>
+      <title>Multipoint Redistribution and SR Linux</title>
+      <link>https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/</link>
+      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/</guid>
+      <description>Introduction I’ve been working my way through Optimal Routing Design by Russ White, Don Slice, and Alvaro Retana. It has been a great read so far and I highly recommend it. When I work through a book I usually try and lab up any concept I can, this helps me make it stick as much as possible. Early on in the book the authors mention redistribution and possible issues that can come with doing it at more than one point in the network.</description>
+    </item>
+    
+    <item>
       <title>Learning a Little About Search Algorithms With Python</title>
       <link>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</link>
       <pubDate>Wed, 12 Jan 2022 15:12:30 -0800</pubDate>

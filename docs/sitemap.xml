@@ -48,17 +48,42 @@
   </url>
   
   <url>
+    <loc>https://juliopdx.com/tags/bgp/</loc>
+    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/containerlab/</loc>
+    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/</loc>
+    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/ospf/</loc>
+    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/redistribution/</loc>
+    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/sr-linux/</loc>
+    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</loc>
     <lastmod>2022-01-12T15:12:30-08:00</lastmod>
   </url>
   
   <url>
     <loc>https://juliopdx.com/tags/ansible/</loc>
-    <lastmod>2021-12-10T14:32:22-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/containerlab/</loc>
     <lastmod>2021-12-10T14:32:22-08:00</lastmod>
   </url>
   
@@ -185,11 +210,6 @@
   <url>
     <loc>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</loc>
     <lastmod>2021-09-01T18:52:28-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/bgp/</loc>
-    <lastmod>2021-08-29T18:04:42-08:00</lastmod>
   </url>
   
   <url>
