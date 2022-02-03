@@ -252,6 +252,6 @@ The change we made was really trivial but its a good way to show the new process
 - [Infrastructure as Code Blog Series by NWMichl](https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/)
 - [Building a Network CI/CD Pipeline Part 1](https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/)
 - [Building a Network CI/CD Pipeline Part 2](https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/)
-- [Building a Network Ci/CD Pipeline Part 3](https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-3/)
-- [Building a Network CI/CD Pipeline Part 4](https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-4/)
+- [Building a Network Ci/CD Pipeline Part 3](https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/)
+- [Building a Network CI/CD Pipeline Part 4](https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/)
 - [Building a Network CI/CD Pipeline Part 6](https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/)
