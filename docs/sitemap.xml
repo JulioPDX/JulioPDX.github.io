@@ -3,11 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://juliopdx.com/</loc>
-    <lastmod>2022-01-28T15:45:51-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</loc>
     <lastmod>2022-01-28T15:45:51-08:00</lastmod>
   </url>
@@ -29,6 +24,11 @@
   
   <url>
     <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2022-01-28T15:45:51-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/</loc>
     <lastmod>2022-01-28T15:45:51-08:00</lastmod>
   </url>
   
