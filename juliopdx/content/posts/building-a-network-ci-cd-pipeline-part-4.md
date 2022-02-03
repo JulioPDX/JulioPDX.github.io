@@ -319,6 +319,6 @@ Whats included in this post is just a subset of options that are available in pr
 - [Nornir NAPALM](https://github.com/nornir-automation/nornir_napalm)
 - [Building a Network CI/CD Pipeline Part 1](https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/)
 - [Building a Network CI/CD Pipeline Part 2](https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/)
-- [Building a Network Ci/CD Pipeline Part 3](https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-3/)
+- [Building a Network Ci/CD Pipeline Part 3](https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/)
 - [Building a Network CI/CD Pipeline Part 5](https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/)
 - [Building a Network CI/CD Pipeline Part 6](https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/)
