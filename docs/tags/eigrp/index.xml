@@ -7,13 +7,13 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/eigrp/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 25 Jan 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/eigrp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>EIGRP Network Design in the Lab</title>
-      <link>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</link>
-      <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
+      <link>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</link>
+      <pubDate>Tue, 25 Jan 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</guid>
+      <guid>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</guid>
       <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
     </item>
     

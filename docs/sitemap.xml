@@ -3,33 +3,8 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://juliopdx.com/tags/cisco/</loc>
-    <lastmod>2022-02-02T15:50:47-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/eigrp/</loc>
-    <lastmod>2022-02-02T15:50:47-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</loc>
-    <lastmod>2022-02-02T15:50:47-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.com/</loc>
-    <lastmod>2022-02-02T15:50:47-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/posts/</loc>
-    <lastmod>2022-02-02T15:50:47-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2022-02-02T15:50:47-08:00</lastmod>
+    <lastmod>2022-01-28T15:45:51-08:00</lastmod>
   </url>
   
   <url>
@@ -43,8 +18,33 @@
   </url>
   
   <url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2022-01-28T15:45:51-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://juliopdx.com/tags/python/</loc>
     <lastmod>2022-01-28T15:45:51-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2022-01-28T15:45:51-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/cisco/</loc>
+    <lastmod>2022-01-25T15:50:47-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/eigrp/</loc>
+    <lastmod>2022-01-25T15:50:47-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</loc>
+    <lastmod>2022-01-25T15:50:47-08:00</lastmod>
   </url>
   
   <url>

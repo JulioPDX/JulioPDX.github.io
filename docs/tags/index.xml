@@ -7,25 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Cisco</title>
-      <link>https://juliopdx.com/tags/cisco/</link>
-      <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/cisco/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>EIGRP</title>
-      <link>https://juliopdx.com/tags/eigrp/</link>
-      <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/eigrp/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Fri, 28 Jan 2022 15:45:51 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Network Automation</title>
       <link>https://juliopdx.com/tags/network-automation/</link>
@@ -41,6 +23,24 @@
       <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cisco</title>
+      <link>https://juliopdx.com/tags/cisco/</link>
+      <pubDate>Tue, 25 Jan 2022 15:50:47 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/cisco/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>EIGRP</title>
+      <link>https://juliopdx.com/tags/eigrp/</link>
+      <pubDate>Tue, 25 Jan 2022 15:50:47 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/eigrp/</guid>
       <description></description>
     </item>
     

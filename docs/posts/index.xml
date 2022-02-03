@@ -6,15 +6,35 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate>
+        <lastBuildDate>Fri, 28 Jan 2022 15:45:51 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>EIGRP Network Design in the Lab</title>
-            <link>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</link>
-            <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
+            <title>Learning Labs With Containerlab</title>
+            <link>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</link>
+            <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
             
-            <guid>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</guid>
+            <guid>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</guid>
+            <description>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
+A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved.</description>
+            <content type="html"><![CDATA[<p>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.</p>
+<p>A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved. This could also lead the class to discuss design concepts or why they were chosen, possibly even collaborate with each other. For example, sharing a Containerlab file is incredibly easy. Going through this process has shown me how difficult it really is to create training content. Thank you to everyone who writes blogs, creates training videos, and helps everyone learn no matter where they are in their career.</p>
+<p>I wanted to challenge myself and see if I could create something like this myself. I took a bit of inspiration from CS50X and Nick Russo’s amazing OSPF content. This is definitely not on that level or even difficulty. Currently I am on about week 7 of the CS50X course and it is seriously awesome. In that course, students build a script or a project and then automated testing is performed to validate if a project is acceptable. I created an OSPF troubleshooting lab that has a few problems and then automated testing at the end. Check it out on the GitHub link below as well as the other links shared.</p>
+<p>Thank you and happy labbing/troubleshooting.</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/ospf_tshoot/arista">OSPF Troubleshooting Lab</a></li>
+<li><a href="https://github.com/nickrusso42518/ospf_brkrst3310">Nick Russo Troubleshooting OSPF (BRKRST-3310)</a></li>
+<li><a href="https://cs50.harvard.edu/x/2022/">CS50X by Harvard (free)</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>EIGRP Network Design in the Lab</title>
+            <link>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</link>
+            <pubDate>Tue, 25 Jan 2022 15:50:47 -0800</pubDate>
+            
+            <guid>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</guid>
             <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
             <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
 <p>I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons. Like anything, it depends.</p>
@@ -312,26 +332,6 @@ core3#
 <p>I originally planned to build this using FRR but it looks like EIGRP is in Alpha stage. I will play with FRR more in the future. Due to this, the topology wont be neatly packaged in a Containerlab file. I will include the configurations below. I hope you all learned something today and thank you for stopping by. We didn’t even go into the new style of configuring EIGRP but I hope you get the point. Named EIGRP just moves some options from the interface level to the af-interface level :). Stay tuned for the next episode of dragon bal…. wait this isn’t that show! In all seriousness, I have something pretty cool planned when we get to OSPF.</p>
 <ul>
 <li><a href="/blog/files/eigrp-configs.zip">EIGRP Configurations zip</a></li>
-</ul>
-]]></content>
-        </item>
-        
-        <item>
-            <title>Learning Labs With Containerlab</title>
-            <link>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</link>
-            <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
-            
-            <guid>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</guid>
-            <description>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
-A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved.</description>
-            <content type="html"><![CDATA[<p>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.</p>
-<p>A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved. This could also lead the class to discuss design concepts or why they were chosen, possibly even collaborate with each other. For example, sharing a Containerlab file is incredibly easy. Going through this process has shown me how difficult it really is to create training content. Thank you to everyone who writes blogs, creates training videos, and helps everyone learn no matter where they are in their career.</p>
-<p>I wanted to challenge myself and see if I could create something like this myself. I took a bit of inspiration from CS50X and Nick Russo’s amazing OSPF content. This is definitely not on that level or even difficulty. Currently I am on about week 7 of the CS50X course and it is seriously awesome. In that course, students build a script or a project and then automated testing is performed to validate if a project is acceptable. I created an OSPF troubleshooting lab that has a few problems and then automated testing at the end. Check it out on the GitHub link below as well as the other links shared.</p>
-<p>Thank you and happy labbing/troubleshooting.</p>
-<ul>
-<li><a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/ospf_tshoot/arista">OSPF Troubleshooting Lab</a></li>
-<li><a href="https://github.com/nickrusso42518/ospf_brkrst3310">Nick Russo Troubleshooting OSPF (BRKRST-3310)</a></li>
-<li><a href="https://cs50.harvard.edu/x/2022/">CS50X by Harvard (free)</a></li>
 </ul>
 ]]></content>
         </item>
@@ -2080,11 +2080,11 @@ bgp_fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</spa
 <li><a href="https://unsplash.com/photos/bL8MDg0p_nI">Featured Image by Frederick Marschall</a></li>
 <li><a href="https://suzieq.readthedocs.io/en/latest/">Suzieq Documentation</a></li>
 <li><a href="https://elegantnetwork.github.io/posts/closing-the-loop-testing/">Closing the Loop on Testing Network Changes by Ratul Mahajan and Dinesh Dutt</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
-<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
-<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
-<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
 </ul>
 ]]></content>
         </item>
@@ -2258,11 +2258,11 @@ Branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> set up to
 <li><a href="https://unsplash.com/photos/o8C6UFpqC4s">Featured image by David Clode</a></li>
 <li><a href="https://nornir.readthedocs.io/en/latest/">Nornir</a></li>
 <li><a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Infrastructure as Code Blog Series by NWMichl</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
-<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
-<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
-<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-4/">Building a Network CI/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
 </ul>
 ]]></content>
         </item>
@@ -2479,11 +2479,11 @@ interface Ethernet1
 <li><a href="https://black.readthedocs.io/en/stable/">Black Code Formatting</a></li>
 <li><a href="https://pybatfish.readthedocs.io/en/latest/">Batfish and pybatfish</a></li>
 <li><a href="https://github.com/nornir-automation/nornir_napalm">Nornir NAPALM</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
-<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
-<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
-<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-3/">Building a Network Ci/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
 </ul>
 ]]></content>
         </item>
@@ -2592,11 +2592,11 @@ docker push juliopdx/netauto:latest
 <li><a href="https://docs.drone.io/pipeline/docker/syntax/">.drone.yml Configuration Options</a></li>
 <li><a href="https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/">Docker Build: A Beginner’s Guide to Building Docker Images by Samuel James</a></li>
 <li><a href="https://unsplash.com/photos/jOqJbvo1P9g">Featured image by Ian Taylor</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
-<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
-<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
-<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
 </ul>
 ]]></content>
         </item>
@@ -2681,11 +2681,11 @@ bea26a2221fd8090ea38720fc445eca6
 <li><a href="https://docs.drone.io/">Drone Docs</a></li>
 <li><a href="https://ngrok.com/docs">NGROK Docs</a></li>
 <li><a href="https://unsplash.com/photos/L9wrEGJjRdo">Featured image by Jonathan Lampel</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a></li>
-<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
-<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
-<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/">Building a Network CI/CD Pipeline Part 1</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
 </ul>
 ]]></content>
         </item>
@@ -2760,11 +2760,11 @@ juliopdx@drone:~$
 <li><a href="https://nwmichl.net/2020/10/28/network-infrastructure-as-code-with-ansible-part-1/">Infrastructure as code series by NWMichl</a></li>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">Installing Docker on Ubuntu 20.04 by Digital Ocean</a></li>
 <li><a href="https://unsplash.com/photos/Grg6bwZuBMs">Featured image by @selimarda</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
-<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci-cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a></li>
-<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci-cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
-<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci-cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
-<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci-cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/">Building a Network CI/CD Pipeline Part 2</a></li>
+<li><a href="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/">Building a Network CI/CD Pipeline Part 3</a></li>
+<li><a href="https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/">Building a Network Ci/CD Pipeline Part 4</a></li>
+<li><a href="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/">Building a Network CI/CD Pipeline Part 5</a></li>
+<li><a href="https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/">Building a Network CI/CD Pipeline Part 6</a></li>
 </ul>
 ]]></content>
         </item>
