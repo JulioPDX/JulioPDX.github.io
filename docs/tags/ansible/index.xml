@@ -2,27 +2,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ansible on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/ansible/</link>
+    <link>https://juliopdx.com/tags/ansible/</link>
     <description>Recent content in Ansible on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 10 Dec 2021 14:32:22 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Dec 2021 14:32:22 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My Journey and Experience With Containerlab</title>
-      <link>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</link>
+      <link>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</link>
       <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
+      <guid>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
       <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
     </item>
     
     <item>
       <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
-      <link>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
+      <link>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
       <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
+      <guid>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
       <description>Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</description>
     </item>
     

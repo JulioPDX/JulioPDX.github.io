@@ -2,57 +2,57 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Aruba on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/aruba/</link>
+    <link>https://juliopdx.com/tags/aruba/</link>
     <description>Recent content in Aruba on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/aruba/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Sep 2021 18:52:28 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/aruba/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Integrating Nornir With FastAPI</title>
-      <link>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</link>
+      <link>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</guid>
+      <guid>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</guid>
       <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
     </item>
     
     <item>
       <title>Route Redistribution OSPFv3 and EIGRPv6</title>
-      <link>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
+      <link>https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
       <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
+      <guid>https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
       <description>Introduction Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.
 In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols.</description>
     </item>
     
     <item>
       <title>Automating Multi Vendor Environments With Netmiko</title>
-      <link>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
+      <link>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
       <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
+      <guid>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
       <description>Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
 The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.</description>
     </item>
     
     <item>
       <title>Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</title>
-      <link>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
+      <link>https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
       <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
+      <guid>https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
       <description>Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
  You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.</description>
     </item>
     
     <item>
       <title>Aruba Spine Leaf With OSPFv3 and IPv6</title>
-      <link>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</link>
+      <link>https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</link>
       <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</guid>
+      <guid>https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</guid>
       <description>Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago.</description>
     </item>
     

@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Junos on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/junos/</link>
+    <link>https://juliopdx.com/tags/junos/</link>
     <description>Recent content in Junos on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 06 Dec 2021 13:57:09 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/junos/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Dec 2021 13:57:09 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/junos/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My Journey Learning About Juniper Junos</title>
-      <link>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</link>
+      <link>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</link>
       <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
+      <guid>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
       <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
     </item>
     

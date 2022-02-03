@@ -2,297 +2,297 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/</link>
+    <link>https://juliopdx.com/tags/</link>
     <description>Recent content in Tags on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cisco</title>
-      <link>https://juliopdx.github.io/tags/cisco/</link>
+      <link>https://juliopdx.com/tags/cisco/</link>
       <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/cisco/</guid>
+      <guid>https://juliopdx.com/tags/cisco/</guid>
       <description></description>
     </item>
     
     <item>
       <title>EIGRP</title>
-      <link>https://juliopdx.github.io/tags/eigrp/</link>
+      <link>https://juliopdx.com/tags/eigrp/</link>
       <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/eigrp/</guid>
+      <guid>https://juliopdx.com/tags/eigrp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Network Automation</title>
-      <link>https://juliopdx.github.io/tags/network-automation/</link>
+      <link>https://juliopdx.com/tags/network-automation/</link>
       <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/network-automation/</guid>
+      <guid>https://juliopdx.com/tags/network-automation/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>https://juliopdx.github.io/tags/python/</link>
+      <link>https://juliopdx.com/tags/python/</link>
       <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/python/</guid>
+      <guid>https://juliopdx.com/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Ansible</title>
-      <link>https://juliopdx.github.io/tags/ansible/</link>
+      <link>https://juliopdx.com/tags/ansible/</link>
       <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/ansible/</guid>
+      <guid>https://juliopdx.com/tags/ansible/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Containerlab</title>
-      <link>https://juliopdx.github.io/tags/containerlab/</link>
+      <link>https://juliopdx.com/tags/containerlab/</link>
       <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/containerlab/</guid>
+      <guid>https://juliopdx.com/tags/containerlab/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Docker</title>
-      <link>https://juliopdx.github.io/tags/docker/</link>
+      <link>https://juliopdx.com/tags/docker/</link>
       <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/docker/</guid>
+      <guid>https://juliopdx.com/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Junos</title>
-      <link>https://juliopdx.github.io/tags/junos/</link>
+      <link>https://juliopdx.com/tags/junos/</link>
       <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/junos/</guid>
+      <guid>https://juliopdx.com/tags/junos/</guid>
       <description></description>
     </item>
     
     <item>
       <title>PAN</title>
-      <link>https://juliopdx.github.io/tags/pan/</link>
+      <link>https://juliopdx.com/tags/pan/</link>
       <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/pan/</guid>
+      <guid>https://juliopdx.com/tags/pan/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Suzieq</title>
-      <link>https://juliopdx.github.io/tags/suzieq/</link>
+      <link>https://juliopdx.com/tags/suzieq/</link>
       <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/suzieq/</guid>
+      <guid>https://juliopdx.com/tags/suzieq/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Batfish</title>
-      <link>https://juliopdx.github.io/tags/batfish/</link>
+      <link>https://juliopdx.com/tags/batfish/</link>
       <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/batfish/</guid>
+      <guid>https://juliopdx.com/tags/batfish/</guid>
       <description></description>
     </item>
     
     <item>
       <title>NAPALM</title>
-      <link>https://juliopdx.github.io/tags/napalm/</link>
+      <link>https://juliopdx.com/tags/napalm/</link>
       <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/napalm/</guid>
+      <guid>https://juliopdx.com/tags/napalm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Nornir</title>
-      <link>https://juliopdx.github.io/tags/nornir/</link>
+      <link>https://juliopdx.com/tags/nornir/</link>
       <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/nornir/</guid>
+      <guid>https://juliopdx.com/tags/nornir/</guid>
       <description></description>
     </item>
     
     <item>
       <title>DockerHub</title>
-      <link>https://juliopdx.github.io/tags/dockerhub/</link>
+      <link>https://juliopdx.com/tags/dockerhub/</link>
       <pubDate>Wed, 20 Oct 2021 11:05:49 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/dockerhub/</guid>
+      <guid>https://juliopdx.com/tags/dockerhub/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Drone</title>
-      <link>https://juliopdx.github.io/tags/drone/</link>
+      <link>https://juliopdx.com/tags/drone/</link>
       <pubDate>Wed, 20 Oct 2021 11:05:49 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/drone/</guid>
+      <guid>https://juliopdx.com/tags/drone/</guid>
       <description></description>
     </item>
     
     <item>
       <title>NGROK</title>
-      <link>https://juliopdx.github.io/tags/ngrok/</link>
+      <link>https://juliopdx.com/tags/ngrok/</link>
       <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/ngrok/</guid>
+      <guid>https://juliopdx.com/tags/ngrok/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Arista</title>
-      <link>https://juliopdx.github.io/tags/arista/</link>
+      <link>https://juliopdx.com/tags/arista/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/arista/</guid>
+      <guid>https://juliopdx.com/tags/arista/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Aruba</title>
-      <link>https://juliopdx.github.io/tags/aruba/</link>
+      <link>https://juliopdx.com/tags/aruba/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/aruba/</guid>
+      <guid>https://juliopdx.com/tags/aruba/</guid>
       <description></description>
     </item>
     
     <item>
       <title>FastAPI</title>
-      <link>https://juliopdx.github.io/tags/fastapi/</link>
+      <link>https://juliopdx.com/tags/fastapi/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/fastapi/</guid>
+      <guid>https://juliopdx.com/tags/fastapi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>BGP</title>
-      <link>https://juliopdx.github.io/tags/bgp/</link>
+      <link>https://juliopdx.com/tags/bgp/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/bgp/</guid>
+      <guid>https://juliopdx.com/tags/bgp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cumulus</title>
-      <link>https://juliopdx.github.io/tags/cumulus/</link>
+      <link>https://juliopdx.com/tags/cumulus/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/cumulus/</guid>
+      <guid>https://juliopdx.com/tags/cumulus/</guid>
       <description></description>
     </item>
     
     <item>
       <title>IPv6</title>
-      <link>https://juliopdx.github.io/tags/ipv6/</link>
+      <link>https://juliopdx.com/tags/ipv6/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/ipv6/</guid>
+      <guid>https://juliopdx.com/tags/ipv6/</guid>
       <description></description>
     </item>
     
     <item>
       <title>IXP</title>
-      <link>https://juliopdx.github.io/tags/ixp/</link>
+      <link>https://juliopdx.com/tags/ixp/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/ixp/</guid>
+      <guid>https://juliopdx.com/tags/ixp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>OSPFv3</title>
-      <link>https://juliopdx.github.io/tags/ospfv3/</link>
+      <link>https://juliopdx.com/tags/ospfv3/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/ospfv3/</guid>
+      <guid>https://juliopdx.com/tags/ospfv3/</guid>
       <description></description>
     </item>
     
     <item>
       <title>L3VPN</title>
-      <link>https://juliopdx.github.io/tags/l3vpn/</link>
+      <link>https://juliopdx.com/tags/l3vpn/</link>
       <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/l3vpn/</guid>
+      <guid>https://juliopdx.com/tags/l3vpn/</guid>
       <description></description>
     </item>
     
     <item>
       <title>MPLS</title>
-      <link>https://juliopdx.github.io/tags/mpls/</link>
+      <link>https://juliopdx.com/tags/mpls/</link>
       <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/mpls/</guid>
+      <guid>https://juliopdx.com/tags/mpls/</guid>
       <description></description>
     </item>
     
     <item>
       <title>EIGRPv6</title>
-      <link>https://juliopdx.github.io/tags/eigrpv6/</link>
+      <link>https://juliopdx.com/tags/eigrpv6/</link>
       <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/eigrpv6/</guid>
+      <guid>https://juliopdx.com/tags/eigrpv6/</guid>
       <description></description>
     </item>
     
     <item>
       <title>EVE-NG</title>
-      <link>https://juliopdx.github.io/tags/eve-ng/</link>
+      <link>https://juliopdx.com/tags/eve-ng/</link>
       <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/eve-ng/</guid>
+      <guid>https://juliopdx.com/tags/eve-ng/</guid>
       <description></description>
     </item>
     
     <item>
       <title>RADIUS</title>
-      <link>https://juliopdx.github.io/tags/radius/</link>
+      <link>https://juliopdx.com/tags/radius/</link>
       <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/radius/</guid>
+      <guid>https://juliopdx.com/tags/radius/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data Center</title>
-      <link>https://juliopdx.github.io/tags/data-center/</link>
+      <link>https://juliopdx.com/tags/data-center/</link>
       <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/data-center/</guid>
+      <guid>https://juliopdx.com/tags/data-center/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Running</title>
-      <link>https://juliopdx.github.io/tags/running/</link>
+      <link>https://juliopdx.com/tags/running/</link>
       <pubDate>Mon, 08 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/running/</guid>
+      <guid>https://juliopdx.com/tags/running/</guid>
       <description></description>
     </item>
     
     <item>
       <title>CI/CD</title>
-      <link>https://juliopdx.github.io/tags/ci/cd/</link>
+      <link>https://juliopdx.com/tags/ci/cd/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/ci/cd/</guid>
+      <guid>https://juliopdx.com/tags/ci/cd/</guid>
       <description></description>
     </item>
     

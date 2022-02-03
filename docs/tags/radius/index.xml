@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>RADIUS on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/radius/</link>
+    <link>https://juliopdx.com/tags/radius/</link>
     <description>Recent content in RADIUS on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 16 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/radius/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.com/tags/radius/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Simple Radius Server in EVE-NG</title>
-      <link>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</link>
+      <link>https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/</link>
       <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</guid>
+      <guid>https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/</guid>
       <description>Introduction I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.
 If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server.</description>
     </item>

@@ -2,269 +2,269 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>JulioPDX</title>
-    <link>https://juliopdx.github.io/</link>
+    <link>https://juliopdx.com/</link>
     <description>Recent content on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>EIGRP Network Design in the Lab</title>
-      <link>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</link>
+      <link>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</link>
       <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</guid>
+      <guid>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</guid>
       <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
     </item>
     
     <item>
       <title>Learning Labs With Containerlab</title>
-      <link>https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/</link>
+      <link>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</link>
       <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/</guid>
+      <guid>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</guid>
       <description>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
 A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved.</description>
     </item>
     
     <item>
       <title>Learning a Little About Search Algorithms With Python</title>
-      <link>https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/</link>
+      <link>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</link>
       <pubDate>Wed, 12 Jan 2022 15:12:30 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/</guid>
+      <guid>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</guid>
       <description>Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
 I have been working through the Introduction to Computer Science course by CS50x (Harvard).</description>
     </item>
     
     <item>
       <title>My Journey and Experience With Containerlab</title>
-      <link>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</link>
+      <link>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</link>
       <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
+      <guid>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
       <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
     </item>
     
     <item>
       <title>My Journey Learning About Juniper Junos</title>
-      <link>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</link>
+      <link>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</link>
       <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
+      <guid>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
       <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
     </item>
     
     <item>
       <title>My Journey Learning About the Palo Alto Networks Python SDK</title>
-      <link>https://juliopdx.github.io/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</link>
+      <link>https://juliopdx.com/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</link>
       <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</guid>
+      <guid>https://juliopdx.com/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</guid>
       <description>Introduction Hello and thank you for checking out another blog post. This one will be all about Python and Palo Alto Networks (PAN). I was recently going through a PAN Firewall course on Pluralsight by Craig Stansbury. Craig does an excellent job of walking learners through the process of administering and securing a PAN firewall. I wanted to take this opportunity to double dip and try to wrap my head around the PAN pan-os-python library.</description>
     </item>
     
     <item>
       <title>Building a Network CI/CD Pipeline Part 6</title>
-      <link>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</link>
+      <link>https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</link>
       <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</guid>
+      <guid>https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</guid>
       <description>Introduction Hello all and thank you for tuning in to the last part of the network CI/CD series. It really means a lot and I hope you have learned a bit along the way. In this post we will focus on testing after a change is made, more specifically, we will be looking at Suzieq. If you stick around until the end, we will look at maintaining a “golden state” of configuration using cron and a message from Rocky.</description>
     </item>
     
     <item>
       <title>Building a Network CI/CD Pipeline Part 5</title>
-      <link>https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</link>
+      <link>https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</link>
       <pubDate>Mon, 08 Nov 2021 11:58:46 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</guid>
+      <guid>https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/</guid>
       <description>Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective.</description>
     </item>
     
     <item>
       <title>Building a Network CI/CD Pipeline Part 4</title>
-      <link>https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</link>
+      <link>https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</link>
       <pubDate>Sun, 31 Oct 2021 11:26:48 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</guid>
+      <guid>https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</guid>
       <description>Introduction Hello everyone and thank you for checking out part four in this series. I went on vacation for a bit, but I’m glad to be back on the keys. In this post I will break down all of the steps performed before a change hits our network devices. This is important because we have the opportunity to stop incorrect or invalid configurations from ever hitting our network devices. A few steps that we will cover are: Black for code formatting, Batfish to validate configuration updates, and NAPALM dry run for testing the legitimacy of the configuration files.</description>
     </item>
     
     <item>
       <title>Building a Network CI/CD Pipeline Part 3</title>
-      <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/</link>
+      <link>https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/</link>
       <pubDate>Wed, 20 Oct 2021 11:05:49 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/</guid>
+      <guid>https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/</guid>
       <description>Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?</description>
     </item>
     
     <item>
       <title>Building a Network CI/CD Pipeline Part 2</title>
-      <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</link>
+      <link>https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</link>
       <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</guid>
+      <guid>https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/</guid>
       <description>Introduction Thank you for checking out part two of this series. The last post went through installing docker on an Ubuntu server to begin our journey to building a CI/CD pipeline. In this post it will be all about connecting Drone to our code repository, in this case GitHub. From our reference diagram below, we will be focusing on the connections from GitHub to the Drone runners.
 The Pipeline Server and Runners Now that we have docker installed, we need something to test our code or execute it.</description>
     </item>
     
     <item>
       <title>Building a Network CI/CD Pipeline Part 1</title>
-      <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</link>
+      <link>https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</link>
       <pubDate>Wed, 20 Oct 2021 10:26:36 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</guid>
+      <guid>https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/</guid>
       <description>Introduction Hello all and thank you for joining me on another blog post! In this post or series of posts I hope to walk you through my journey on building a network CI/CD pipeline. This pipeline is not perfect and I’m sure there’s much more efficient ways to produce the same outcomes. I did make the choice to leave out a few things as the technologies involved and complexity kept growing.</description>
     </item>
     
     <item>
       <title>How to Generate Cisco Lifecycle Documentation With Python and APIs</title>
-      <link>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>
+      <link>https://juliopdx.com/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>
       <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</guid>
+      <guid>https://juliopdx.com/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</guid>
       <description>Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.</description>
     </item>
     
     <item>
       <title>Converting Network Icons for Labs With Python</title>
-      <link>https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/</link>
+      <link>https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/</link>
       <pubDate>Fri, 17 Sep 2021 09:31:09 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/09/17/converting-network-icons-for-labs-with-python/</guid>
+      <guid>https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/</guid>
       <description>Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively.</description>
     </item>
     
     <item>
       <title>Integrating Nornir With FastAPI</title>
-      <link>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</link>
+      <link>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</guid>
+      <guid>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</guid>
       <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
     </item>
     
     <item>
       <title>My Journey Learning About Internet Exchange Points (IXPs)</title>
-      <link>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</link>
+      <link>https://juliopdx.com/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</guid>
+      <guid>https://juliopdx.com/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</guid>
       <description>Introduction Hello all and thank you for checking out one of my blog posts. Really means a lot! Have you ever heard IXP mentioned in network engineering speak and thought, what the heck is that? I definitely have, and in my day to day I don’t usually interact with an IXP at all. So here I am a curious individual, wanting to learn the things. I figured, what the heck, now is as good a time as any to deep dive some IXP knowledge.</description>
     </item>
     
     <item>
       <title>Basic Network Testing With Nornir and NTC Templates</title>
-      <link>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
+      <link>https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
       <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
+      <guid>https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
       <description>Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&amp;rsquo;ll share with you.</description>
     </item>
     
     <item>
       <title>Automating MPLS L3VPNs With Nornir</title>
-      <link>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
+      <link>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
       <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
+      <guid>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
       <description>Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.</description>
     </item>
     
     <item>
       <title>Python Slack Bot for Network Engineers</title>
-      <link>https://juliopdx.github.io/2021/05/24/python-slack-bot-for-network-engineers/</link>
+      <link>https://juliopdx.com/2021/05/24/python-slack-bot-for-network-engineers/</link>
       <pubDate>Mon, 24 May 2021 10:19:32 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/05/24/python-slack-bot-for-network-engineers/</guid>
+      <guid>https://juliopdx.com/2021/05/24/python-slack-bot-for-network-engineers/</guid>
       <description>Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one.</description>
     </item>
     
     <item>
       <title>Route Redistribution OSPFv3 and EIGRPv6</title>
-      <link>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
+      <link>https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
       <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
+      <guid>https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
       <description>Introduction Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.
 In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols.</description>
     </item>
     
     <item>
       <title>Simple Radius Server in EVE-NG</title>
-      <link>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</link>
+      <link>https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/</link>
       <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</guid>
+      <guid>https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/</guid>
       <description>Introduction I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.
 If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server.</description>
     </item>
     
     <item>
       <title>Automating Multi Vendor Environments With Netmiko</title>
-      <link>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
+      <link>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
       <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
+      <guid>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
       <description>Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
 The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.</description>
     </item>
     
     <item>
       <title>Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</title>
-      <link>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
+      <link>https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
       <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
+      <guid>https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
       <description>Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
  You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.</description>
     </item>
     
     <item>
       <title>Aruba Spine Leaf With OSPFv3 and IPv6</title>
-      <link>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</link>
+      <link>https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</link>
       <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</guid>
+      <guid>https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/</guid>
       <description>Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago.</description>
     </item>
     
     <item>
       <title>My Journey to Completing the David Goggins 4x4x48 Challenge</title>
-      <link>https://juliopdx.github.io/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</link>
+      <link>https://juliopdx.com/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</link>
       <pubDate>Mon, 08 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</guid>
+      <guid>https://juliopdx.com/2021/03/08/my-journey-to-completing-the-david-goggins-4x4x48-challenge/</guid>
       <description>Introduction Hello and thank you for tuning in. Just for clarity, the 4x4x48 challenge was created by David Goggins. The challenge requires participants to run 4 miles every 4 hours for 48 hours. Participants are allowed to substitute running with walking or general exercise. The main goal is to get people moving as well as donate to charity!
 The next thought may be why the hell would someone want to run 48 miles on a perfectly nice weekend?</description>
     </item>
     
     <item>
       <title>Network Validation With Nornir &amp; Napalm</title>
-      <link>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</link>
+      <link>https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/</link>
       <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/02/27/network-validation-with-nornir-napalm/</guid>
+      <guid>https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/</guid>
       <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
     </item>
     
     <item>
       <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
-      <link>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
+      <link>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
       <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
+      <guid>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
       <description>Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://juliopdx.github.io/about/</link>
+      <link>https://juliopdx.com/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/about/</guid>
+      <guid>https://juliopdx.com/about/</guid>
       <description>Hello World </description>
     </item>
     

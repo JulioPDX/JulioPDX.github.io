@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Julio Perez on JulioPDX</title>
-    <link>https://juliopdx.github.io/authors/julio-perez/</link>
+    <link>https://juliopdx.com/authors/julio-perez/</link>
     <description>Recent content in Julio Perez on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.github.io/authors/julio-perez/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 29 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://juliopdx.com/authors/julio-perez/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses</title>
-      <link>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
+      <link>https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</link>
       <pubDate>Mon, 29 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
+      <guid>https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/</guid>
       <description>Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
  You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.</description>
     </item>

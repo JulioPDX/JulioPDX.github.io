@@ -2,92 +2,92 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cisco on JulioPDX</title>
-    <link>https://juliopdx.github.io/tags/cisco/</link>
+    <link>https://juliopdx.com/tags/cisco/</link>
     <description>Recent content in Cisco on JulioPDX</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>EIGRP Network Design in the Lab</title>
-      <link>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</link>
+      <link>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</link>
       <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</guid>
+      <guid>https://juliopdx.com/2022/02/02/eigrp-network-design-in-the-lab/</guid>
       <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
     </item>
     
     <item>
       <title>How to Generate Cisco Lifecycle Documentation With Python and APIs</title>
-      <link>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>
+      <link>https://juliopdx.com/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</link>
       <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</guid>
+      <guid>https://juliopdx.com/2021/09/23/how-to-generate-cisco-lifecycle-documentation-with-python-and-apis/</guid>
       <description>Introduction I was recently in a Twitter conversation with a few network engineers, in that feed was great dialogue on how often folks upgrade their network environments. Whether its when a massive vulnerability hits or just keeping up with vendor recommended releases. I mentioned that the Cisco Support APIs are an incredible resource. These APIs allow users with the appropriate access to get information about their devices. This could be recommended software releases, EoX dates, last day of support, vulnerabilities, and others.</description>
     </item>
     
     <item>
       <title>Integrating Nornir With FastAPI</title>
-      <link>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</link>
+      <link>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</link>
       <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/09/01/integrating-nornir-with-fastapi/</guid>
+      <guid>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</guid>
       <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
     </item>
     
     <item>
       <title>My Journey Learning About Internet Exchange Points (IXPs)</title>
-      <link>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</link>
+      <link>https://juliopdx.com/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</link>
       <pubDate>Sun, 29 Aug 2021 18:04:42 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</guid>
+      <guid>https://juliopdx.com/2021/08/29/my-journey-learning-about-internet-exchange-points-ixps/</guid>
       <description>Introduction Hello all and thank you for checking out one of my blog posts. Really means a lot! Have you ever heard IXP mentioned in network engineering speak and thought, what the heck is that? I definitely have, and in my day to day I don’t usually interact with an IXP at all. So here I am a curious individual, wanting to learn the things. I figured, what the heck, now is as good a time as any to deep dive some IXP knowledge.</description>
     </item>
     
     <item>
       <title>Basic Network Testing With Nornir and NTC Templates</title>
-      <link>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
+      <link>https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
       <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
+      <guid>https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
       <description>Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&amp;rsquo;ll share with you.</description>
     </item>
     
     <item>
       <title>Automating MPLS L3VPNs With Nornir</title>
-      <link>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
+      <link>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
       <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
+      <guid>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
       <description>Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.</description>
     </item>
     
     <item>
       <title>Route Redistribution OSPFv3 and EIGRPv6</title>
-      <link>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
+      <link>https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</link>
       <pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
+      <guid>https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/</guid>
       <description>Introduction Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.
 In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols.</description>
     </item>
     
     <item>
       <title>Simple Radius Server in EVE-NG</title>
-      <link>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</link>
+      <link>https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/</link>
       <pubDate>Fri, 16 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/04/16/simple-radius-server-in-eve-ng/</guid>
+      <guid>https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/</guid>
       <description>Introduction I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.
 If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server.</description>
     </item>
     
     <item>
       <title>Automating Multi Vendor Environments With Netmiko</title>
-      <link>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
+      <link>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
       <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://juliopdx.github.io/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
+      <guid>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
       <description>Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
 The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.</description>
     </item>
