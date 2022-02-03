@@ -2,14 +2,12 @@
 title: "Learning Labs With Containerlab"
 date: 2022-01-28T15:45:51-08:00
 draft: false
-toc: true
+toc: false
 images:
 tags:
   - Network Automation
   - Python
 ---
-
-## Intro
 
 Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
 
