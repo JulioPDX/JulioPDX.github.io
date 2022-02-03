@@ -34,7 +34,7 @@ enableEmoji  = false
 
   [params.footer]
     trademark = true
-    rss = false
+    rss = true
     copyright = true
     author = true
 
