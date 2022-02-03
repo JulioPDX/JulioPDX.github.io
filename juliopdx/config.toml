@@ -5,6 +5,8 @@ theme        = "hello-friend-ng"
 paginate     = 10
 publishDir   = "../docs"
 enableEmoji  = false
+rssLimit     = 10
+copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
 
 [permalinks]
   posts = '/:year/:month/:day/:title/'
@@ -35,7 +37,7 @@ enableEmoji  = false
   [params.footer]
     trademark = true
     rss = true
-    copyright = false
+    copyright = true
     author = true
 
     topText = []
@@ -74,6 +76,9 @@ enableEmoji  = false
     [languages.en.params.logo]
       logoText = "JulioPDX"
       logoHomeLink = "/"
+      logoMark     = "#"
+      logoCursorAnimate  = "2s"
+      logoCursorColor    = "#41FF00"    #"#67a2c9" Secondary blue for options :)
     # or
     #
     # path = "/img/your-example-logo.svg"

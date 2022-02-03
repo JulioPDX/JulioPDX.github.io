@@ -6,6 +6,7 @@
     <description>Recent content in Python on Welcome to the World of Tomorrow</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
     <lastBuildDate>Fri, 28 Jan 2022 15:45:51 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Learning Labs With Containerlab</title>
@@ -97,51 +98,6 @@ I have been working through the Introduction to Computer Science course by CS50x
       
       <guid>https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/</guid>
       <description>Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively.</description>
-    </item>
-    
-    <item>
-      <title>Integrating Nornir With FastAPI</title>
-      <link>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</link>
-      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</guid>
-      <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
-    </item>
-    
-    <item>
-      <title>Automating MPLS L3VPNs With Nornir</title>
-      <link>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
-      <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
-      <description>Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.</description>
-    </item>
-    
-    <item>
-      <title>Python Slack Bot for Network Engineers</title>
-      <link>https://juliopdx.com/2021/05/24/python-slack-bot-for-network-engineers/</link>
-      <pubDate>Mon, 24 May 2021 10:19:32 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/05/24/python-slack-bot-for-network-engineers/</guid>
-      <description>Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one.</description>
-    </item>
-    
-    <item>
-      <title>Network Validation With Nornir &amp; Napalm</title>
-      <link>https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/</link>
-      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/</guid>
-      <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
-    </item>
-    
-    <item>
-      <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
-      <link>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
-      <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
-      <description>Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</description>
     </item>
     
   </channel>

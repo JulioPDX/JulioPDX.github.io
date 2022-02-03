@@ -6,6 +6,7 @@
     <description>Recent content in Network Automation on Welcome to the World of Tomorrow</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
     <lastBuildDate>Fri, 28 Jan 2022 15:45:51 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/network-automation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Learning Labs With Containerlab</title>
@@ -97,61 +98,6 @@ The Pipeline Server and Runners Now that we have docker installed, we need somet
       
       <guid>https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/</guid>
       <description>Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively.</description>
-    </item>
-    
-    <item>
-      <title>Integrating Nornir With FastAPI</title>
-      <link>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</link>
-      <pubDate>Wed, 01 Sep 2021 18:52:28 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/</guid>
-      <description>Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.</description>
-    </item>
-    
-    <item>
-      <title>Basic Network Testing With Nornir and NTC Templates</title>
-      <link>https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</link>
-      <pubDate>Sun, 15 Aug 2021 11:12:03 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/</guid>
-      <description>Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&amp;rsquo;ll share with you.</description>
-    </item>
-    
-    <item>
-      <title>Automating MPLS L3VPNs With Nornir</title>
-      <link>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</link>
-      <pubDate>Sat, 14 Aug 2021 10:38:25 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/</guid>
-      <description>Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.</description>
-    </item>
-    
-    <item>
-      <title>Automating Multi Vendor Environments With Netmiko</title>
-      <link>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</link>
-      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.com/2021/04/02/automating-multi-vendor-environments-with-netmiko/</guid>
-      <description>Introduction Hello again! I was working through Nick Russos’ awesome Automating Networks with Python course on Pluralsight, check it out HERE. In the course, Nick does a great job of breaking down the code and the functionality of each bit. I’m still doing a lot of leaning in Python so please bear with me.
-The course uses an MPLS environment as an example of network automation with Python. I decided to use the principles taught in the Netmiko portion of the course to try and automate some OSPF between multiple vendors.</description>
-    </item>
-    
-    <item>
-      <title>Network Validation With Nornir &amp; Napalm</title>
-      <link>https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/</link>
-      <pubDate>Sat, 27 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.com/2021/02/27/network-validation-with-nornir-napalm/</guid>
-      <description>Intro I wanted to get my feet wet with Nornir/NAPALM and Python network automation in general. One simple goal to start with in network automation is validating configurations or deploying “show commands” and returning some kind of useful information. I wanted to start with something very simple, as easy wins make me want to keep progressing. In this post I will break down how I validate SNMP information on network devices using Nornir and NAPALM.</description>
-    </item>
-    
-    <item>
-      <title>Creating List of IP Addresses With Ansible Filter Plugin</title>
-      <link>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</link>
-      <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/</guid>
-      <description>Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</description>
     </item>
     
   </channel>
