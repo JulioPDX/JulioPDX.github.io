@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 20 Oct 2021 11:05:49 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Dec 2021 14:32:22 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Journey and Experience With Containerlab</title>
+      <link>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
+      <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
+    </item>
+    
     <item>
       <title>Building a Network CI/CD Pipeline Part 3</title>
       <link>https://juliopdx.github.io/2021/10/20/building-a-network-ci/cd-pipeline-part-3/</link>

@@ -6,8 +6,1494 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 22 Nov 2021 13:18:29 -0800</lastBuildDate>
+        <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>EIGRP Network Design in the Lab</title>
+            <link>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</link>
+            <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</guid>
+            <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons. Like anything, it depends.</p>
+<h2 id="the-topology">The Topology</h2>
+<p><img src="/blog/images/eigrp-design.png" alt="EIGRP Topo"></p>
+<p>Lets break down the topology above. Everything is in EIGRP AS 12345. I just chose a random number but for the most part, using multiple autonomous systems in EIGRP does not limit the query scope, so we will use just one. Every link is configured as a /31 point to point to save on address space. We will be using a fairly traditional 3 tier design. The DMZ node is advertising a default route throughout the network and has a few loopbacks representing public IP addresses. Example of that below as well as one core nodes routing table before any optimization is performed.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dmz node redistributing a default route
+router eigrp 12345
+ network 10.0.0.11 0.0.0.0
+ network 10.0.0.13 0.0.0.0
+ redistribute static
+ eigrp router-id 0.0.0.12
+!
+ip route 0.0.0.0 0.0.0.0 Null0
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">core3#show ip route eigrp | b Gate
+Gateway of last resort is 10.0.0.13 to network 0.0.0.0
+
+D*EX  0.0.0.0/0 [170/281600] via 10.0.0.13, 00:01:21, Ethernet0/3
+      10.0.0.0/8 is variably subnetted, 54 subnets, 3 masks
+D        10.0.0.0/31 [90/307200] via 10.0.0.4, 00:01:21, Ethernet0/1
+                     [90/307200] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.0.0.6/31 [90/307200] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.0.0.10/31 [90/307200] via 10.0.0.13, 00:01:21, Ethernet0/3
+                      [90/307200] via 10.0.0.4, 00:01:21, Ethernet0/1
+D        10.0.0.14/31 [90/307200] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.0.0.16/31 [90/307200] via 10.0.0.4, 00:01:21, Ethernet0/1
+D        10.1.2.0/24 [90/332800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                     [90/332800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.3.0/24 [90/332800] via 10.0.0.2, 00:30:01, Ethernet0/0
+D        10.1.4.0/24 [90/332800] via 10.0.0.2, 00:30:01, Ethernet0/0
+D        10.1.5.0/24 [90/332800] via 10.0.0.2, 00:30:01, Ethernet0/0
+D        10.1.30.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.31.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.32.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.33.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.34.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.40.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.41.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.42.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.43.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.44.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.50.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.51.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.52.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.53.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.54.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.1.255.253/32 [90/435200] via 10.0.0.2, 00:30:01, Ethernet0/0
+D        10.1.255.254/32 [90/435200] via 10.0.0.4, 00:01:21, Ethernet0/1
+D        10.2.3.0/24 [90/332800] via 10.0.0.4, 00:01:21, Ethernet0/1
+D        10.2.4.0/24 [90/332800] via 10.0.0.4, 00:01:21, Ethernet0/1
+D        10.2.5.0/24 [90/332800] via 10.0.0.4, 00:01:21, Ethernet0/1
+D        10.2.30.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.31.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.32.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.33.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.34.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.40.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.41.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.42.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.43.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.44.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.50.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.51.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.52.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.53.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.54.0/24 [90/460800] via 10.0.0.4, 00:01:21, Ethernet0/1
+                      [90/460800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        10.2.255.253/32 [90/435200] via 10.0.0.2, 00:30:01, Ethernet0/0
+D        10.2.255.254/32 [90/435200] via 10.0.0.4, 00:01:21, Ethernet0/1
+      172.16.0.0/16 is variably subnetted, 15 subnets, 3 masks
+D        172.16.17.0/31 [90/307200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.17.2/31 [90/307200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.17.8/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.17.16/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.17.24/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.17.32/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.17.253/32 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+                          [90/435200] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        172.16.17.254/32 [90/409600] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.18.0/31 [90/332800] via 10.0.0.9, 00:01:21, Ethernet0/2
+                        [90/332800] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        172.16.18.8/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.18.16/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.18.24/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.18.32/29 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+D        172.16.18.253/32 [90/435200] via 10.0.0.9, 00:01:21, Ethernet0/2
+                          [90/435200] via 10.0.0.2, 00:01:21, Ethernet0/0
+D        172.16.18.254/32 [90/409600] via 10.0.0.9, 00:01:21, Ethernet0/2
+core3#
+</code></pre></div><p>At the moment since no optimizations have been added, if we were to lose any of these links, the network would have to ask every node if they are aware of an alternate path to reach a particular destination. Not very efficient at all. A few places where we can improve are the 10.1.0.0 and 10.2.0.0 networks. Those are all coming from nodes R3, R4, and R5. Think of these as our fake access layer in a campus. The networks in the 172.16.17.0 and 172.16.18.0 networks are coming from a services edge of the network. This could be servers or whatever services you can think of. In this case it is just one node called servers advertising some routes.</p>
+<h2 id="optimizations-in-the-core-layer">Optimizations in the Core Layer</h2>
+<p>The main idea behind the core is to push the traffic as fast as possible. Try to limit the extra stuffs that can consume resources within the core. Please note that I said within, do summarize from the core to the aggregation layer. How does this look like in practice? From the aggregation standpoint, all we really need from the core is a default route. One way to do this is to configure a summary on the interfaces towards the aggregates.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!core1
+interface Ethernet0/2
+ ip summary-address eigrp 12345 0.0.0.0 0.0.0.0
+!
+interface Ethernet0/3
+ ip summary-address eigrp 12345 0.0.0.0 0.0.0.0
+</code></pre></div><p>There’s a catch though. When you create a summary route, EIGRP will add the sweet null0 route… At this point core1 believes it has the better default route over the one the dmz node is sending. For example, lets try and ping the 8.8.8.8 network from svcs1.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">svcs1#ping 8.8.8.8
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+U.U.U
+Success rate is 0 percent (0/5)
+svcs1#
+</code></pre></div><p>We have effectively black holed traffic. So how do we get around this? We make that summary route look terrible so it will not be added into the routing table.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!core1-3
+router eigrp 12345
+ summary-metric 0.0.0.0/0 distance 255
+ network 0.0.0.0
+</code></pre></div><p>Please note, you will see the advertise all the things command (network 0.0.0.0) in the configurations. In reality, you should be explicit (network 10.1.2.1 0.0.0.0). Lets try that ping again!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">svcs1#ping 8.8.8.8
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+svcs1#
+</code></pre></div><p>I’ll add that config and summary metric to all core nodes pointing to their different aggregation layers!</p>
+<h2 id="optimizations-in-the-aggregation-layer">Optimizations in the Aggregation Layer</h2>
+<p>A bit similar as before, we can advertise summary routes from the aggregation layer to the core. The catch here is that if one of the aggregation nodes loses access to a route, it will still advertise that summary if a route within the summary is present. The solution here is to connect the aggregation nodes either physically or using a tunnel. I decided to run a direct connection for simplicity. Here is what it looks like to summarize the 10.1.0.0/16 and 10.2.0.0/16 networks from dis1 and dis2. It should be noted, the creation of the null0 route for these summaries is not a big deal, the local network will see more specific routes to reach each destination.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dis1 and dis2
+interface Ethernet1/0
+ ip summary-address eigrp 12345 10.1.0.0 255.255.0.0
+ ip summary-address eigrp 12345 10.2.0.0 255.255.0.0
+</code></pre></div><p>Similar summaries can be performed from svcs1 and svcs2.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!svcs1 and svcs2
+interface Ethernet0/0
+ ip summary-address eigrp 12345 172.16.17.0 255.255.255.0
+ ip summary-address eigrp 12345 172.16.18.0 255.255.255.0
+</code></pre></div><p>Lets check the access layer and see how a route table is looking.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#  show ip route eigrp | b Gate
+Gateway of last resort is 10.2.3.2 to network 0.0.0.0
+
+D*EX  0.0.0.0/0 [170/332800] via 10.2.3.2, 00:17:27, Ethernet0/1
+      10.0.0.0/8 is variably subnetted, 55 subnets, 3 masks
+D        10.0.0.14/31 [90/307200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.0.0.16/31 [90/307200] via 10.2.3.2, 00:57:32, Ethernet0/1
+D        10.1.2.0/24 [90/307200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                     [90/307200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.4.0/24 [90/307200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.5.0/24 [90/307200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.40.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.41.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.42.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.43.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.44.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.50.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.51.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.52.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.53.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.54.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.255.253/32 [90/409600] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.1.255.254/32 [90/409600] via 10.2.3.2, 00:57:32, Ethernet0/1
+D        10.2.4.0/24 [90/307200] via 10.2.3.2, 00:57:32, Ethernet0/1
+D        10.2.5.0/24 [90/307200] via 10.2.3.2, 00:57:32, Ethernet0/1
+D        10.2.40.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.41.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.42.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.43.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.44.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.50.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.51.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.52.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.53.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.54.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
+                      [90/435200] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.255.253/32 [90/409600] via 10.1.3.1, 00:57:32, Ethernet0/0
+D        10.2.255.254/32 [90/409600] via 10.2.3.2, 00:57:32, Ethernet0/1
+</code></pre></div><p>This is a bit overkill for the access layer and we can make improvements here as well. We could add another summary command and metric but lets look at another method. We will limit what is advertised to the access layer using the distribute command coupled with a prefix list. Please see example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dis1 and dis2 pointing towards access
+!Similar on svcs1 and svcs2
+router eigrp 12345
+ distribute-list prefix DEFAULT out Ethernet0/1
+ distribute-list prefix DEFAULT out Ethernet0/2
+ distribute-list prefix DEFAULT out Ethernet0/3
+!
+ip prefix-list DEFAULT seq 20 permit 0.0.0.0/0
+</code></pre></div><p>Lets check that routing table again on R3.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#show ip route eigrp | b Gate
+Gateway of last resort is 10.2.3.2 to network 0.0.0.0
+
+D*EX  0.0.0.0/0 [170/332800] via 10.2.3.2, 00:34:32, Ethernet0/1
+R3#
+</code></pre></div><h2 id="optimizations-in-the-access-layer">Optimizations in the Access Layer</h2>
+<p><img src="/blog/images/stub.png" alt="Stub"></p>
+<p>The amount of filtering and summarizing performed already, we have limited the amount of queries EIGRP will send out to search for alternate paths of a route. Another addition that can be made at the access layer is setting the stub flag. Why use the stub feature? Lets say R4 had a loopback1 network of “10.1.48.1/24”. If we were to shut this interface, then we would see a query from dis1 and dis2 towards R3</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#debug eigrp packets query
+    (QUERY)
+EIGRP Packet debugging is on
+R3#
+*Jan 25 20:48:49.461: EIGRP: Received QUERY on Et0/1 - paklen 44 nbr 10.2.3.2
+*Jan 25 20:48:49.461:   AS 12345, Flags 0x0:(NULL), Seq 2628/0 interfaceQ 0/0 iidbQ un/rely 0/0 peerQ un/rely 0/0
+*Jan 25 20:48:49.462: EIGRP: Received QUERY on Et0/0 - paklen 44 nbr 10.1.3.1
+*Jan 25 20:48:49.462:   AS 12345, Flags 0x0:(NULL), Seq 976/0 interfaceQ 0/0 iidbQ un/rely 0/0 peerQ un/rely 0/0
+R3#u all
+All possible debugging has been turned off
+</code></pre></div><p>In this example R3 would not have an alternate path to this route and overall we may not want to use these access layer nodes as a transit network to reach other destinations. These devices may have lower bandwidth or overall resources. The stub feature is a neat way to say “do not query me”. Lets test this out!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!Stub setting added to all access layer nodes
+R3#show run | s router
+router eigrp 12345
+ network 0.0.0.0
+ eigrp router-id 0.0.0.6
+ eigrp stub connected
+R3#
+R3#debug eigrp packets query
+    (QUERY)
+EIGRP Packet debugging is on
+R3#
+</code></pre></div><p>Okay that’s a bit hard to visualize in writing but test it out and you’ll see that no query is sent to R3.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">dis1# show ip eigrp neighbors detail
+EIGRP-IPv4 Neighbors for AS(12345)
+H   Address                 Interface              Hold Uptime   SRTT   RTO  Q  Seq
+                                                   (sec)         (ms)       Cnt Num
+0   10.1.3.3                Et0/1                    14 00:06:35   11   100  0  712
+   Version 18.0/2.0, Retrans: 0, Retries: 0, Prefixes: 11
+   Topology-ids from peer - 0
+   Stub Peer Advertising (CONNECTED ) Routes
+   Suppressing queries
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dmz gets to be special because it is redistributing a static
+router eigrp 12345
+ network 10.0.0.11 0.0.0.0
+ network 10.0.0.13 0.0.0.0
+ redistribute static
+ eigrp router-id 0.0.0.12
+ eigrp stub static
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!Almost forgot that core3 routing table!
+core3#show ip route eigrp | b Gate
+Gateway of last resort is 10.0.0.13 to network 0.0.0.0
+
+D*EX  0.0.0.0/0 [170/281600] via 10.0.0.13, 00:28:48, Ethernet0/3
+      10.0.0.0/8 is variably subnetted, 15 subnets, 3 masks
+D        10.0.0.0/31 [90/307200] via 10.0.0.4, 02:10:02, Ethernet0/1
+                     [90/307200] via 10.0.0.2, 02:10:02, Ethernet0/0
+D        10.0.0.6/31 [90/307200] via 10.0.0.2, 02:10:02, Ethernet0/0
+D        10.0.0.10/31 [90/307200] via 10.0.0.4, 00:28:52, Ethernet0/1
+D        10.0.0.14/31 [90/307200] via 10.0.0.2, 02:10:02, Ethernet0/0
+D        10.0.0.16/31 [90/307200] via 10.0.0.4, 02:10:02, Ethernet0/1
+D        10.1.0.0/16 [90/435200] via 10.0.0.4, 01:58:15, Ethernet0/1
+                     [90/435200] via 10.0.0.2, 01:58:15, Ethernet0/0
+D        10.2.0.0/16 [90/435200] via 10.0.0.4, 01:58:15, Ethernet0/1
+                     [90/435200] via 10.0.0.2, 01:58:15, Ethernet0/0
+      172.16.0.0/24 is subnetted, 2 subnets
+D        172.16.17.0 [90/409600] via 10.0.0.9, 01:50:23, Ethernet0/2
+D        172.16.18.0 [90/409600] via 10.0.0.9, 01:50:23, Ethernet0/2
+core3#
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>I originally planned to build this using FRR but it looks like EIGRP is in Alpha stage. I will play with FRR more in the future. Due to this, the topology wont be neatly packaged in a Containerlab file. I will include the configurations below. I hope you all learned something today and thank you for stopping by. We didn’t even go into the new style of configuring EIGRP but I hope you get the point. Named EIGRP just moves some options from the interface level to the af-interface level :). Stay tuned for the next episode of dragon bal…. wait this isn’t that show! In all seriousness, I have something pretty cool planned when we get to OSPF.</p>
+<ul>
+<li><a href="/blog/files/eigrp-configs.zip">EIGRP Configurations zip</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Learning Labs With Containerlab</title>
+            <link>https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/</link>
+            <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/</guid>
+            <description>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
+A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved.</description>
+            <content type="html"><![CDATA[<p>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.</p>
+<p>A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved. This could also lead the class to discuss design concepts or why they were chosen, possibly even collaborate with each other. For example, sharing a Containerlab file is incredibly easy. Going through this process has shown me how difficult it really is to create training content. Thank you to everyone who writes blogs, creates training videos, and helps everyone learn no matter where they are in their career.</p>
+<p>I wanted to challenge myself and see if I could create something like this myself. I took a bit of inspiration from CS50X and Nick Russo’s amazing OSPF content. This is definitely not on that level or even difficulty. Currently I am on about week 7 of the CS50X course and it is seriously awesome. In that course, students build a script or a project and then automated testing is performed to validate if a project is acceptable. I created an OSPF troubleshooting lab that has a few problems and then automated testing at the end. Check it out on the GitHub link below as well as the other links shared.</p>
+<p>Thank you and happy labbing/troubleshooting.</p>
+<ul>
+<li><a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/ospf_tshoot/arista">OSPF Troubleshooting Lab</a></li>
+<li><a href="https://github.com/nickrusso42518/ospf_brkrst3310">Nick Russo Troubleshooting OSPF (BRKRST-3310)</a></li>
+<li><a href="https://cs50.harvard.edu/x/2022/">CS50X by Harvard (free)</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Learning a Little About Search Algorithms With Python</title>
+            <link>https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/</link>
+            <pubDate>Wed, 12 Jan 2022 15:12:30 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/</guid>
+            <description>Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
+I have been working through the Introduction to Computer Science course by CS50x (Harvard).</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.</p>
+<p>I have been working through the Introduction to Computer Science course by CS50x (Harvard). The course does an incredible job of walking learners through the very basics of programming with Scratch and the C language. The course eventually shifts over to Python for the remainder of the course. While taking the course, you learn about arrays, algorithms, memory, and more. David Malan and team really do an incredible job and try to make the barrier of entry as low as possible (free and includes a web based VScode editor).</p>
+<p>In week three we learn a bit about algorithms. This was easily one of my favorite weeks. The class walks through different search and sorting algorithms. These are then compared performance wise. This post will go over two search algorithms; linear and binary. I will use some subnets from the 10.0.0.0/8 network for our examples.</p>
+<h2 id="creating-the-data">Creating the Data</h2>
+<p>I decided to create a big list of subnets with some Python. The code below will produce three files that can be used for testing.</p>
+<p><code>ip_create.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Small script to create test files&#34;&#34;&#34;</span>
+<span style="color:#f92672">import</span> ipaddress
+<span style="color:#f92672">import</span> random
+
+net <span style="color:#f92672">=</span> ipaddress<span style="color:#f92672">.</span>ip_network(<span style="color:#e6db74">&#34;10.0.0.0/8&#34;</span>)<span style="color:#f92672">.</span>subnets(new_prefix<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>)
+
+networks <span style="color:#f92672">=</span> [str(n<span style="color:#f92672">.</span>network_address) <span style="color:#66d9ef">for</span> n <span style="color:#f92672">in</span> net]
+
+<span style="color:#75715e"># Ordered list of subnets</span>
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;ordered_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
+        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+
+<span style="color:#75715e"># Reversed list of subnets</span>
+networks<span style="color:#f92672">.</span>reverse()
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;reverse_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
+        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+
+<span style="color:#75715e"># Random list of subnets</span>
+random<span style="color:#f92672">.</span>shuffle(networks)
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;random_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
+        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div><p><code>ordered_ip.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.0.0.0
+10.0.1.0
+10.0.2.0
+10.0.3.0
+10.0.4.0
+10.0.5.0
+10.0.6.0
+10.0.7.0
+10.0.8.0
+10.0.9.0
+...
+</code></pre></div><p><code>random_ip.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.44.148.0
+10.47.64.0
+10.166.151.0
+10.139.81.0
+10.237.230.0
+10.139.3.0
+10.179.165.0
+10.96.37.0
+10.26.247.0
+10.12.255.0
+...
+</code></pre></div><p><code>reverse_ip.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.255.255.0
+10.255.254.0
+10.255.253.0
+10.255.252.0
+10.255.251.0
+10.255.250.0
+10.255.249.0
+10.255.248.0
+10.255.247.0
+...
+</code></pre></div><h2 id="linear-search">Linear Search</h2>
+<p>Linear search is fairly simple in nature. We take a list or array and check one by one until we find our desired value.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
+</code></pre></div><p>For example, using the data above. If we wanted to check for the value of 70, we would first have to check 10 then 20 then 30 and so on. This means it would take us “n” steps. Think of “n” as the size of the array. In our example the array is of size 7. Worst case scenario would be 7 checks. This can then be referenced as “O(n)” or O of n. Now what about the best case scenario? Well, if we are looking for the 10 in this array, then it only requires one step. This is known as “Ω(1)” or Omega of one.</p>
+<h2 id="binary-search">Binary Search</h2>
+<p>Binary search works a bit differently than linear search. Binary search does have one additional requirement, the array must be sorted. If not, the algorithm breaks. Binary search works by continuously making the size of the array smaller. Essentially making the search size smaller on each iteration.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># First Check</span>
+Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
+Start: <span style="color:#ae81ff">0</span>
+End: <span style="color:#ae81ff">6</span>
+Midpoint: <span style="color:#ae81ff">3</span>
+</code></pre></div><p>Same array as above but with additional information. We have the start of the array at 0 and the end of the array at 6. The midpoint is found by (start + end) / 2. In this case we are looking for 70. The midpoint(40) is lower than our target(70) so the start will shift to midpoint + 1.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Second Check</span>
+Value: <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
+Start: <span style="color:#ae81ff">4</span>
+End: <span style="color:#ae81ff">6</span>
+Midpoint: <span style="color:#ae81ff">5</span>
+</code></pre></div><p>On the second check we are searching through a smaller piece of the array. Midpoint is found by (6 + 4) / 2 = 5. The target is higher than our midpoint of 70. So again we will shift the start to midpoint (5) + 1.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Third Check</span>
+Value: <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">6</span>
+Start: <span style="color:#ae81ff">6</span>
+End: <span style="color:#ae81ff">6</span>
+Midpoint: <span style="color:#ae81ff">6</span>
+
+<span style="color:#75715e"># Value is Found</span>
+</code></pre></div><p>On this third check the midpoint is equal to our target, the value is found! This will also work in the opposite, but we will decrease the end to (midpoint – 1). Whats the big deal? In binary search, when the size of the array increases, the amount of steps will not grow as large as linear search. Making the algorithm much more efficient. Best case scenario, on the initial midpoint we find our target. This is similar to linear search, Ω(1). What about worst case? That is known as O(log n). Long story short, much faster.</p>
+<h2 id="comparing-with-subnets">Comparing With Subnets</h2>
+<p>We will be working with subnets as our data. To make things more simple, I will convert these to their decimal equivalent. What do I mean by this? Please see example below!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> ipaddress <span style="color:#f92672">import</span> ip_address
+<span style="color:#f92672">&gt;&gt;&gt;</span> int(ip_address(<span style="color:#e6db74">&#34;0.0.0.1&#34;</span>))
+<span style="color:#ae81ff">1</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> int(ip_address(<span style="color:#e6db74">&#34;0.0.1.0&#34;</span>))
+<span style="color:#ae81ff">256</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>When I run the comparisons, in reality they will be comparing integer values vs strings of subnets.</p>
+<h3 id="linear-seach-in-code">Linear Seach in Code</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> open(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    data <span style="color:#f92672">=</span> [int(ip_address(line<span style="color:#f92672">.</span>strip())) <span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> file<span style="color:#f92672">.</span>readlines()]
+
+my_target <span style="color:#f92672">=</span> int(
+    (ip_address(input(<span style="color:#e6db74">&#34;What /24 prefix in 10.0.0.0/8 are you looking for? &#34;</span>)))
+)
+
+<span style="color:#66d9ef">for</span> prefix <span style="color:#f92672">in</span> data:
+    time<span style="color:#f92672">.</span>sleep(DELAY)
+    <span style="color:#66d9ef">if</span> prefix <span style="color:#f92672">==</span> my_target:
+        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Found: {ip_address(my_target)} with linear search&#34;</span>)
+        <span style="color:#66d9ef">break</span>
+</code></pre></div><p>Initially we open one of the text files and use some list comprehension to create our list of integers that represent different subnets. Then we ask the user to enter a subnet, for example, “10.80.40.0”. We will then compare each prefix or subnet against our target. If we find it, we will convert the integer back to a cleaner format. You may have caught the sleep setting in the code. Well it turns out computers are really fast, so we will add some artificial delay. This is used in both search algorithms.</p>
+<h3 id="binary-search-in-code">Binary Search in Code</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bin_search</span>(some_array: list, target: int):
+    <span style="color:#e6db74">&#34;&#34;&#34;Simple binary search function&#34;&#34;&#34;</span>
+    array <span style="color:#f92672">=</span> sorted(some_array)
+    start <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    end <span style="color:#f92672">=</span> len(array) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+    found <span style="color:#f92672">=</span> False
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> found <span style="color:#f92672">and</span> start <span style="color:#f92672">&lt;=</span> end:
+        time<span style="color:#f92672">.</span>sleep(DELAY)
+        middle <span style="color:#f92672">=</span> int((start <span style="color:#f92672">+</span> end) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
+        <span style="color:#66d9ef">if</span> int(array[middle]) <span style="color:#f92672">==</span> target:
+            found <span style="color:#f92672">=</span> True
+            <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Found: {ip_address(target)} with binary search&#34;</span>)
+        <span style="color:#66d9ef">elif</span> int(array[middle]) <span style="color:#f92672">&gt;</span> target:
+            end <span style="color:#f92672">=</span> middle <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">else</span>:
+            start <span style="color:#f92672">=</span> middle <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</code></pre></div><p>I wrapped this in a function and set it to accept two parameters, some array and a target. We will first sort the array since that is required in binary search. We then set our start and end values. Once that is done, we will run a while loop and keep making the search smaller and smaller until the target is found. Lets check out some examples!</p>
+<h2 id="examples">Examples</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Best case scenario for Linear</span>
+<span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py ordered_ip<span style="color:#f92672">.</span>txt
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+Found: <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">with</span> linear search
+Elapsed time: <span style="color:#ae81ff">0.0801</span> seconds
+Found: <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">with</span> binary search
+Elapsed time: <span style="color:#ae81ff">0.0045</span> seconds
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Worst case scenario for Linear</span>
+<span style="color:#75715e"># Binary did not increase much at all!</span>
+<span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py ordered_ip<span style="color:#f92672">.</span>txt
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+Found: <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span> <span style="color:#66d9ef">with</span> linear search
+Elapsed time: <span style="color:#ae81ff">11.0045</span> seconds
+Found: <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span> <span style="color:#66d9ef">with</span> binary search
+Elapsed time: <span style="color:#ae81ff">0.0050</span> seconds
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Random list of subnets</span>
+<span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py random_ip<span style="color:#f92672">.</span>txt
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span>
+Found: <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span> <span style="color:#66d9ef">with</span> linear search
+Elapsed time: <span style="color:#ae81ff">10.6104</span> seconds
+Found: <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span> <span style="color:#66d9ef">with</span> binary search
+Elapsed time: <span style="color:#ae81ff">0.0159</span> seconds
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far, it really means a lot and please go vote for your favorite IT blogs.</p>
+<ul>
+<li><a href="https://cs50.harvard.edu/x/2022/">CS50x Introduction to Computer Science</a></li>
+<li><a href="https://github.com/JulioPDX/ne-algo-search">GitHub Repository</a></li>
+<li><a href="https://www.cisco.com/c/en/us/training-events/events-webinars/influencer-hub/blog-awards.html">Cisco IT Blog Awards</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>My Journey and Experience With Containerlab</title>
+            <link>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</link>
+            <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
+            <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</p>
+<h2 id="where-are-we">Where are we?</h2>
+<p>Before I get started on defining Containerlab, I think its important to mention where we have come from in the networking industry. In the past when a learner or fellow engineer wanted to test a technology, design, or topology, they would have to acquire physical gear. This would take up a lot of space, power, and can you imagine the cost back in the day? I say back in the day like it was 30 years ago. More like less than 10.</p>
+<p>The next phase added virtual versions of network operating systems, these could then be added to some hypervisor and stand up a virtual lab. Much more efficient but still required a lot of steps to get going and now required a server or some machine to host all the virtual machines. In the last few years, tools have sprung up to make this process even more simple (EVE-NG, GNS3, CML2).</p>
+<p>I don’t want to knock these tools as I still think they are pretty incredible and provide a lot of useful features. Like anything in tech, there are trade offs. With any of these tools, there is still a requirement to have a VM or workstation available that can run said tool and then run your NOS images. For the most part these can be CPU and memory intensive, depending on the image. The process of adding the individual images can be a pain as well depending on the tool itself.</p>
+<h2 id="why-containerlab">Why Containerlab?</h2>
+<p>So this is where Containerlab comes in. If you read my previous CI/CD blog series, I mentioned how quick and easy it was to get applications going by just running a packaged Docker container. This could be Drone, Batfish, or Suzeiq. Imagine that simplicity but for networking images. Containerlab was created to simplify the process of creating networking topologies within a Docker environment. I’ll do my best to walk you through some of the features of Containerlab and hopefully you walk away as impressed as I was.</p>
+<h2 id="getting-started-with-containerlab">Getting Started With Containerlab</h2>
+<p>One of the main requirements of Containerlab is to have an environment with Linux and Docker available. In my case, I am running a Linux laptop running <a href="https://pop.system76.com/">PopOS</a>. For instructions on getting Docker installed, please see this <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">example</a> by the team at Digital Ocean.</p>
+<h3 id="installing-containerlab">Installing Containerlab</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># download and install the latest release (may require sudo)</span>
+bash -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -sL https://get-clab.srlinux.dev<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</code></pre></div><h3 id="how-to-add-networking-images-to-containerlab">How to Add Networking Images to Containerlab</h3>
+<p>At this time there are a few network vendors that make acquiring container images for their NOS simple. Nokia (SR Linux) is a great example of that. In their case, you can just pull the image from a public repository to make it available to Containerlab. Others may require you to sign up for some guest account in their portal to get access to images. There are some that make you pick up the old telephone and ask for access, and others that don&rsquo;t make any of these an option. To all vendors “please make container images of your NOS and make it publicly available”. I will walk through the process of adding an Arista cEOS image to be used with Containerlab.</p>
+<ul>
+<li>Create <a href="https://www.arista.com/en/login">Arista</a> account, image access should be available right after verifying</li>
+<li>Head to <a href="https://www.arista.com/en/support/software-download">software downloads</a></li>
+</ul>
+<p><img src="/blog/images/ceos-download.png" alt="cEOS Download"></p>
+<p>Now that the image is downloaded, we need to make it available to Docker and Containerlab.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker import cEOS-lab-4.27.0F.tar ceos:4.27.0F
+❯ docker images
+REPOSITORY                        TAG            IMAGE ID       CREATED          SIZE
+ceos                              4.27.0F        b7119ccccbcd   <span style="color:#ae81ff">27</span> seconds ago   1.68GB
+</code></pre></div><h3 id="the-topology-definition-file">The Topology Definition File</h3>
+<p>Now that we have a NOS container image available, we can start the initial process of standing up a lab topology. In Containerlab, this is known as the <strong>clab file</strong>. In the root on my current directory, I will create a file called <strong>net.clab.yaml</strong>. Example of my file is below. I will break down each portion in a bit.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">cicd</span>
+<span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
+
+<span style="color:#f92672">mgmt</span>:
+  <span style="color:#f92672">network</span>: <span style="color:#ae81ff">statics</span>
+  <span style="color:#f92672">ipv4_subnet</span>: <span style="color:#ae81ff">172.100.100.0</span><span style="color:#ae81ff">/24</span>
+
+<span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">kinds</span>:
+    <span style="color:#f92672">ceos</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.0F</span>
+    <span style="color:#f92672">linux</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/hellt/network-multitool</span>
+  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">pdx-rtr-eos-01</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.11</span>
+    <span style="color:#f92672">pdx-rtr-eos-02</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.12</span>
+    <span style="color:#f92672">pdx-rtr-eos-03</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.13</span>
+    <span style="color:#f92672">pdx-rtr-eos-04</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.0F</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.14</span>
+    <span style="color:#f92672">client1</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.21</span>
+    <span style="color:#f92672">client2</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.22</span>
+  <span style="color:#f92672">links</span>:
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-01:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-02:eth1&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-02:eth2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-03:eth1&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-03:eth2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-04:eth1&#34;</span>]
+    <span style="color:#75715e"># Client connections</span>
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;client1:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-01:eth2&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;client2:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-04:eth2&#34;</span>]
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">cicd</span>
+<span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
+</code></pre></div><p>All labs must have a name at the top of the tree. This is great if you are deploying multiple labs and will prevent any conflict between them. By default lab nodes will be named using the following structure: <strong>clab-{{lab-name}}-{{node-name}}</strong>. For my example, rtr-01 would have the name of <strong>clab-cicd-pdx-rtr-eos-01</strong>. I am setting the <strong>prefix</strong> to <code>“”</code>, this will remove the prefix of <strong>clab-cicd</strong> on each node. That is more of a preference and not required.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">mgmt</span>:
+  <span style="color:#f92672">network</span>: <span style="color:#ae81ff">statics</span>
+  <span style="color:#f92672">ipv4_subnet</span>: <span style="color:#ae81ff">172.100.100.0</span><span style="color:#ae81ff">/24</span>
+</code></pre></div><p>Here we are telling Containerlab to stand up a Docker network named <strong>statics</strong> that can then be assigned to our nodes.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">kinds</span>:
+    <span style="color:#f92672">ceos</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.0F</span>
+    <span style="color:#f92672">linux</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/hellt/network-multitool</span>
+</code></pre></div><p>This is something I thought was really useful. Containerlab works by defining nodes with what kind of node it is and what image will be used for that node. The kind can be something like ceos, linux, crpd, and others. The documentation does an incredible job of breaking it all down. I will link the docs at the end of this post. In this example I am setting the kind of “ceos.image = ceos:4.27.0F”. This helps remove a lot of duplication when building out topology files with similar nodes.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">pdx-rtr-eos-01</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.11</span>
+    <span style="color:#f92672">pdx-rtr-eos-02</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.12</span>
+    <span style="color:#f92672">pdx-rtr-eos-03</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.13</span>
+    <span style="color:#f92672">pdx-rtr-eos-04</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.0F</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.14</span>
+    <span style="color:#f92672">client1</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.21</span>
+    <span style="color:#f92672">client2</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.22</span>
+</code></pre></div><p>This is where a lot of what has been defined is tied together. I will break down the first eos node and client node. Here, pdx-rtr-eos-01, is assigned the kind of ceos and will inherit the image of “ceos:4.27.0F”. This node will then be accessible either by IP address at 172.100.100.11 or by hostname or by the docker exec commands. I will show these examples in a bit. The client image is similar, it is a kind of linux and will inherit the image of “ghcr.io/hellt/network-multitool”, a publicly available image. If you notice I never had to pull down the image myself. It was handled by Containerlab.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">links</span>:
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-01:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-02:eth1&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-02:eth2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-03:eth1&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-03:eth2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-04:eth1&#34;</span>]
+    <span style="color:#75715e"># Client connections</span>
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;client1:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-01:eth2&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;client2:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-04:eth2&#34;</span>]
+</code></pre></div><p>The links portion is fairly simple but it does require some planning on the front end. The link numbering is defined in the Containerlab documentation and even the examples helped me create this links format. It looks fairly simple but the magic going on behind the scenes is awesome.</p>
+<h2 id="deploying-a-topology">Deploying a Topology</h2>
+<p>I may have lost you at this point but please bear with me. Lets get to the fun stuff.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ time sudo containerlab deploy -t net.clab.yaml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: net.clab.yaml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating lab directory: /home/juliopdx/git/gcl/cicd
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating docker network: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;statics&#39;</span>, IPv4Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;172.100.100.0/24&#39;</span>, IPv6Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>, MTU<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1500&#39;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: client1
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: client2
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: pdx-rtr-eos-04
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: pdx-rtr-eos-03
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: pdx-rtr-eos-01
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: pdx-rtr-eos-02
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: client2:eth1 &lt;--&gt; pdx-rtr-eos-04:eth2
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: pdx-rtr-eos-03:eth2 &lt;--&gt; pdx-rtr-eos-04:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: client1:eth1 &lt;--&gt; pdx-rtr-eos-01:eth2
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: pdx-rtr-eos-01:eth1 &lt;--&gt; pdx-rtr-eos-02:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: pdx-rtr-eos-02:eth2 &lt;--&gt; pdx-rtr-eos-03:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;pdx-rtr-eos-03&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;pdx-rtr-eos-04&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;pdx-rtr-eos-01&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;pdx-rtr-eos-02&#39;</span> node
+INFO<span style="color:#f92672">[</span>0056<span style="color:#f92672">]</span> Adding containerlab host entries to /etc/hosts file
+</code></pre></div><p>Lets walk through this a bit. Containerlab will spin up a directory named after our lab name, <strong>cicd</strong>. It will then create any management networks we have defined, in our case this will be the 172.100.100.0/24 network. After that each container is created and virtual links added. At the tail end you may have noticed that the Containerlab hosts were added to the <strong>/etc/hosts</strong> file. Containerlab is nice enough to provide a summary of everything that was deployed. Example below.</p>
+<p><img src="/blog/images/deploy-containerlab.png" alt="Deploy Topo"></p>
+<p>At the bottom you can see that it took 57 seconds to deploy the 4 cEOS containers and two Linux containers that will act as hosts. In theory we should be able to connect to the nodes?</p>
+<p><img src="/blog/images/ping-container.png" alt="Ping Container"></p>
+<h2 id="connecting-to-nodes">Connecting to Nodes</h2>
+<p>Great, now we have everything deployed but we need to do something with it. If folks are testing or learning a NOS, naturally we want to connect to the nodes to start laying down some sweet configuration. Luckily, we have a few options to connect to each node.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ ssh admin@cicd-pdx-rtr-eos-01
+Password:
+pdx-rtr-eos-01&gt;en
+pdx-rtr-eos-01#show version | inc image version
+Software image version: 4.27.0F-24305004.4270F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">)</span>
+pdx-rtr-eos-01#
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ ssh admin@172.100.100.11
+Password:
+pdx-rtr-eos-01&gt;en
+pdx-rtr-eos-01#show version | inc image version
+Software image version: 4.27.0F-24305004.4270F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">)</span>
+pdx-rtr-eos-01#
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker exec -it cicd-pdx-rtr-eos-01 Cli
+pdx-rtr-eos-01&gt;en
+pdx-rtr-eos-01#show version | inc image version
+Software image version: 4.27.0F-24305004.4270F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">)</span>
+pdx-rtr-eos-01#
+</code></pre></div><h2 id="viewing-the-topology">Viewing the Topology</h2>
+<p>I’m so used to using tools like GNS3 and EVE-NG. Both of these tools provide some type of GUI to view the current topology. Maybe its because I’m a visual person, but I really like to view the topology. Can you believe with a bit of digging… I found out that Containerlab can render a topology image. Example below. FYI, I don’t think the graph enjoyed all the dashes in my hostnames. I’ll post the original when I found this feature!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ sudo containerlab graph -t net.clab.yaml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: net.clab.yaml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Listening on :50080...
+</code></pre></div><p><img src="/blog/images/container-graph.jpeg" alt="Container Graph"></p>
+<p>Above is the original image I generated after I found this out. Seriously awesome! I would like to see the interfaces displayed though… I know I know, we had to define this in the links so who cares? I care! I want to see them in the generated image! 🙂</p>
+<h2 id="automating-some-configuration">Automating Some Configuration</h2>
+<p><img src="/blog/images/ci_cd_blog.png" alt="High Level Diagram"></p>
+<p>A while back I wrote a series on building a CI/CD pipeline. In that series, I used a generic topology with four Arista nodes running OSPF and BGP. I wanted to see if I could recreate this topology in Containerlab and utilize some of the automation skills I have been practicing. I wont go all in on this post but I will drop some configuration with Nornir and NAPALM using the Ansible inventory Containerlab created. Oh yeah, Containerlab creates an Ansible inventory when deploying a topology. Example of the inventory that was created after I deployed this topology is below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">all</span>:
+  <span style="color:#f92672">children</span>:
+    <span style="color:#f92672">ceos</span>:
+      <span style="color:#f92672">hosts</span>:
+        <span style="color:#f92672">cicd-pdx-rtr-eos-01</span>:
+          <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.11</span>
+        <span style="color:#f92672">cicd-pdx-rtr-eos-02</span>:
+          <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.12</span>
+        <span style="color:#f92672">cicd-pdx-rtr-eos-03</span>:
+          <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.13</span>
+        <span style="color:#f92672">cicd-pdx-rtr-eos-04</span>:
+          <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.14</span>
+    <span style="color:#f92672">linux</span>:
+      <span style="color:#f92672">hosts</span>:
+        <span style="color:#f92672">cicd-client1</span>:
+          <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.21</span>
+        <span style="color:#f92672">cicd-client2</span>:
+          <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.22</span>
+</code></pre></div><h3 id="nornir-with-ansible-inventory">Nornir With Ansible Inventory</h3>
+<p>Nornir has a plugin to interact with an Ansible inventory, after getting Nornir installed, its just a matter of installing the plugin and setting the inventory to use that plugin.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install nornir nornir_ansible nornir_napalm
+</code></pre></div><p><code>Nornir config.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">inventory</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">AnsibleInventory</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">hostsfile</span>: <span style="color:#e6db74">&#34;cicd/ansible-inventory.yml&#34;</span>
+
+<span style="color:#f92672">runner</span>:
+  <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">threaded</span>
+  <span style="color:#f92672">options</span>:
+    <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
+</code></pre></div><p>Below is a function used to set credentials and platform for the nodes in this deployment.</p>
+<h3 id="deployment-scripts">Deployment Scripts</h3>
+<p><code>tools.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Tools script that holds a variety of functions&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">import</span> os
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">nornir_set_creds</span>(norn, username<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;admin&#34;</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;admin&#34;</span>, platform<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;eos&#34;</span>):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Handler for credentials and platform
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> username:
+        username <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;NORNIR_USER&#34;</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> password:
+        password <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;MY_SECRET&#34;</span>)
+
+    <span style="color:#66d9ef">for</span> host_obj <span style="color:#f92672">in</span> norn<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>values():
+        host_obj<span style="color:#f92672">.</span>username <span style="color:#f92672">=</span> username
+        host_obj<span style="color:#f92672">.</span>password <span style="color:#f92672">=</span> password
+        host_obj<span style="color:#f92672">.</span>platform <span style="color:#f92672">=</span> platform
+</code></pre></div><p><code>deploy.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+
+<span style="color:#e6db74">&#34;&#34;&#34;Script used to configure the network&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_utils.plugins.functions <span style="color:#f92672">import</span> print_result
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
+<span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> nornir_set_creds
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_network</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;Configures network with Scrapli&#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;client&#34;</span> <span style="color:#f92672">in</span> task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name:
+        <span style="color:#66d9ef">pass</span>
+    <span style="color:#66d9ef">else</span>:
+        task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+            name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host.name}!&#34;</span>,
+            task<span style="color:#f92672">=</span>napalm_configure,
+            filename<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;configs/post/{task.host.name}.cfg&#34;</span>,
+            replace<span style="color:#f92672">=</span>True,
+        )
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nornir_settings/config.yaml&#34;</span>)
+    nornir_set_creds(norn)
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
+    print_result(result)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><h3 id="sample-configuration">Sample Configuration</h3>
+<p><code>cicd-pdx-rtr-eos-01.cfg</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">! Command: show running-config
+! device: pdx-rtr-eos-01 (cEOSLab, EOS-4.27.0F-24305004.4270F (engineering build))
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$RxQ5ae0GOW6SAiCU$7qzQNGX2pSIqWIYBIYGF8Xh30lo/s418/diYEEZj9rPrTJiAkYv0s6AvjpTfUHMGz.a58Hg29Yy/nV0Zvplux0
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname pdx-rtr-eos-01
+!
+spanning-tree mode mstp
+!
+management api http-commands
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+interface Ethernet1
+   description connection to pdx-rtr-eos-02
+   no switchport
+   ip address 10.0.12.1/24
+   ip ospf network point-to-point
+   ip ospf area 0.0.0.0
+!
+!
+interface Ethernet2
+   no switchport
+   ip address 192.168.1.1/24
+   ip ospf area 0.0.0.0
+!
+interface Loopback1
+   ip address 10.0.0.1/32
+   ip ospf area 0.0.0.0
+!
+interface Management0
+   ip address 172.100.100.11/24
+!
+ip routing
+!
+router bgp 65001
+   router-id 10.0.0.1
+   timers bgp 10 30
+   neighbor 10.0.0.4 remote-as 65004
+   neighbor 10.0.0.4 update-source Loopback1
+   neighbor 10.0.0.4 ebgp-multihop 3
+!
+router ospf 1
+   router-id 10.0.0.1
+   passive-interface Ethernet2
+   passive-interface Loopback1
+   max-lsa 12000
+!
+endtext
+</code></pre></div><p>Script output below! I’ll set the client1 and client2 IP addresses in the meantime!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker exec -it cicd-client1 bash
+bash-5.0# ifconfig eth1 192.168.1.2 netmask 255.255.255.0 up
+bash-5.0# route add default gw 192.168.1.1
+bash-5.0# ping -c <span style="color:#ae81ff">4</span> 192.168.1.1
+PING 192.168.1.1 <span style="color:#f92672">(</span>192.168.1.1<span style="color:#f92672">)</span> 56<span style="color:#f92672">(</span>84<span style="color:#f92672">)</span> bytes of data.
+<span style="color:#ae81ff">64</span> bytes from 192.168.1.1: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.064 ms
+<span style="color:#ae81ff">64</span> bytes from 192.168.1.1: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.074 ms
+<span style="color:#ae81ff">64</span> bytes from 192.168.1.1: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.080 ms
+<span style="color:#ae81ff">64</span> bytes from 192.168.1.1: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.073 ms
+
+--- 192.168.1.1 ping statistics ---
+<span style="color:#ae81ff">4</span> packets transmitted, <span style="color:#ae81ff">4</span> received, 0% packet loss, time 3072ms
+rtt min/avg/max/mdev <span style="color:#f92672">=</span> 0.064/0.072/0.080/0.005 ms
+bash-5.0# ifconfig eth1
+eth1      Link encap:Ethernet  HWaddr AA:C1:AB:94:0D:B0
+          inet addr:192.168.1.2  Bcast:192.168.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::a8c1:abff:fe94:db0/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:9500  Metric:1
+          RX packets:1754 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:26 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:218275 <span style="color:#f92672">(</span>213.1 KiB<span style="color:#f92672">)</span>  TX bytes:2112 <span style="color:#f92672">(</span>2.0 KiB<span style="color:#f92672">)</span>
+
+bash-5.0# exit
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">❯</span> python deploy<span style="color:#f92672">.</span>py
+deploy_network<span style="color:#f92672">******************************************************************</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>client1 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">**********************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>client2 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">**********************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">37</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+    transport ssh default
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet1
+<span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">12.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet2
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>interface Loopback1
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Management0
+    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.11</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">-</span>no ip routing
+<span style="color:#f92672">+</span>ip routing
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>router bgp <span style="color:#ae81ff">65001</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+<span style="color:#f92672">+</span>   timers bgp <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">30</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">65004</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span> update<span style="color:#f92672">-</span>source Loopback1
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span> ebgp<span style="color:#f92672">-</span>multihop <span style="color:#ae81ff">3</span>
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+<span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Ethernet2
+<span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Loopback1
+<span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ end
+<span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+    transport ssh default
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet1
+<span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">12.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet2
+<span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">23.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Management0
+    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.12</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">-</span>no ip routing
+<span style="color:#f92672">+</span>ip routing
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.2</span>
+<span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ end
+<span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">6</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">8</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ spanning<span style="color:#f92672">-</span>tree mode mstp
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>vrf instance MGMT
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+ management api http<span style="color:#f92672">-</span>commands
+    no shutdown
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>,<span style="color:#ae81ff">27</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+    transport ssh default
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet1
+<span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">23.3</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet2
+<span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">34.3</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Management0
+    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.13</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">-</span>no ip routing
+<span style="color:#f92672">+</span>ip routing
+<span style="color:#f92672">+</span>no ip routing vrf MGMT
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.3</span>
+<span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ end
+<span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ no aaa root
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">-</span>username admin privilege <span style="color:#ae81ff">15</span> role network<span style="color:#f92672">-</span>admin secret sha512 <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">6</span><span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">80</span>vAK4C7egYGmMCr<span style="color:#960050;background-color:#1e0010">$</span>aQs6Oe1HPzToV9KkGBQozUNUzaelo8cM6EXUzDfsjPF4q<span style="color:#f92672">/</span>LJDb3WOtP01uqrCzKJWk3KpOMno40Df1nsilfwI<span style="color:#f92672">/</span>
+<span style="color:#f92672">+</span>username admin privilege <span style="color:#ae81ff">15</span> role network<span style="color:#f92672">-</span>admin secret sha512 <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">6</span><span style="color:#960050;background-color:#1e0010">$</span>RxQ5ae0GOW6SAiCU<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">7</span>qzQNGX2pSIqWIYBIYGF8Xh30lo<span style="color:#f92672">/</span>s418<span style="color:#f92672">/</span>diYEEZj9rPrTJiAkYv0s6AvjpTfUHMGz<span style="color:#f92672">.</span>a58Hg29Yy<span style="color:#f92672">/</span>nV0Zvplux0
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ transceiver qsfp default<span style="color:#f92672">-</span>mode <span style="color:#ae81ff">4</span>x10G
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">37</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+    transport ssh default
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet1
+<span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">34.4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Ethernet2
+<span style="color:#f92672">+</span>   no switchport
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">4.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>interface Loopback1
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ interface Management0
+    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.14</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">-</span>no ip routing
+<span style="color:#f92672">+</span>ip routing
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>router bgp <span style="color:#ae81ff">65004</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span>
+<span style="color:#f92672">+</span>   timers bgp <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">30</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">65001</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span> update<span style="color:#f92672">-</span>source Loopback1
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span> ebgp<span style="color:#f92672">-</span>multihop <span style="color:#ae81ff">3</span>
+<span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
+<span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span>
+<span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Ethernet2
+<span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Loopback1
+<span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
+ <span style="color:#960050;background-color:#1e0010">!</span>
+ end
+<span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+</code></pre></div><h3 id="simple-verifications">Simple Verifications</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">pdx-rtr-eos-01#show ip ospf neighbor
+Neighbor ID     Instance VRF      Pri State                  Dead Time   Address         Interface
+10.0.0.2        1        default  0   FULL                   00:00:38    10.0.12.2       Ethernet1
+pdx-rtr-eos-01#show ip route ospf
+
+ O        10.0.0.4/32 [110/40] via 10.0.12.2, Ethernet1
+ O        10.0.23.0/24 [110/20] via 10.0.12.2, Ethernet1
+ O        10.0.34.0/24 [110/30] via 10.0.12.2, Ethernet1
+ O        192.168.4.0/24 [110/40] via 10.0.12.2, Ethernet1
+
+pdx-rtr-eos-01#show ip bgp summary
+BGP summary information for VRF default
+Router identifier 10.0.0.1, local AS number 65001
+Neighbor Status Codes: m - Under maintenance
+  Neighbor         V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
+  10.0.0.4         4 65004             86        86    0    0 00:11:34 Estab   0      0
+pdx-rtr-eos-01#ping 192.168.4.1
+PING 192.168.4.1 (192.168.4.1) 72(100) bytes of data.
+80 bytes from 192.168.4.1: icmp_seq=1 ttl=62 time=0.164 ms
+80 bytes from 192.168.4.1: icmp_seq=2 ttl=62 time=0.041 ms
+80 bytes from 192.168.4.1: icmp_seq=3 ttl=62 time=0.033 ms
+80 bytes from 192.168.4.1: icmp_seq=4 ttl=62 time=0.034 ms
+80 bytes from 192.168.4.1: icmp_seq=5 ttl=62 time=0.033 ms
+
+--- 192.168.4.1 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.033/0.061/0.164/0.051 ms, ipg/ewma 0.094/0.110 ms
+pdx-rtr-eos-01#
+</code></pre></div><p>At this point client1 (192.168.1.2) should be able to reach client2 (192.168.4.2)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">❯ docker exec -it cicd-client1 bash
+bash-5.0# ping -c 4 192.168.4.2
+PING 192.168.4.2 (192.168.4.2) 56(84) bytes of data.
+64 bytes from 192.168.4.2: icmp_seq=1 ttl=60 time=0.202 ms
+64 bytes from 192.168.4.2: icmp_seq=2 ttl=60 time=0.186 ms
+64 bytes from 192.168.4.2: icmp_seq=3 ttl=60 time=0.215 ms
+64 bytes from 192.168.4.2: icmp_seq=4 ttl=60 time=0.254 ms
+
+--- 192.168.4.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3066ms
+rtt min/avg/max/mdev = 0.186/0.214/0.254/0.025 ms
+bash-5.0#
+</code></pre></div><h2 id="destroying-a-topology">Destroying a Topology</h2>
+<p>When destroying the lab there are two main options. Well really there is more but the other sounds dangerous! You can either destroy the lab which is more like shutting it down. Or you can destroy a lab and cleanup all directories/configurations that have been configured. The former will maintain configurations when you deploy again and the latter will revert to a factory reset if you will.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># Maintain configurations after shutdown</span>
+sudo containerlab destroy -t net.clab.yaml
+<span style="color:#75715e"># Destroy all configurations</span>
+sudo containerlab destroy -t net.clab.yaml --cleanup
+</code></pre></div><h2 id="closing-thoughts">Closing Thoughts</h2>
+<p>I think Containerlabs is pretty freaking awesome. The fact that I can deploy this topology in under a minute is crazy and just from my laptop. I can see Containerlab in so many different avenues. Architects testing out a design, Engineers doing it all, or students on their initial journey down the networking path or IT in general. One of the coolest things that comes to mind is Containerlab in a classroom settings. Just imagine the Instructor or teacher creates a topology file. At this point were assuming the class has a Linux system and Docker installed. The instructor then says “Okay students today we’ll be going over topology <code>&lt;insert awesome topology&gt;.clab.yaml</code>. Students then learn about why a design was chosen or the technologies involved.</p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all so much for reading this far. I hope this wasn’t too long. GitHub repository is linked below! I was kind of building this on the fly and the documentation for Containerlab is pretty excellent. If you have any questions seriously check it out. Most all of your questions will be answered there!</p>
+<ul>
+<li><a href="https://containerlab.srlinux.dev/">Containerlab Documentation</a></li>
+<li><a href="https://netsim-tools.readthedocs.io/en/latest/">Another Option: netsim-tools by Ivan Pepelnjak</a></li>
+<li><a href="https://github.com/JulioPDX/gcl">GitHub repository for code used in this blog</a></li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>My Journey Learning About Juniper Junos</title>
+            <link>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</link>
+            <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
+            
+            <guid>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
+            <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab. Sit back and enjoy, I’ll include a neat automation example at the end.</p>
+<h2 id="what-is-junos">What is Junos?</h2>
+<p>Junos is the main operating system used in Juniper network devices. This could be the MX (routing), QFX (switching), and SRX (firewall). Since the same NOS is used across the product line, moving between them all in a configuration feels like being in the same device. This has a lot of benefits like eliminating that mode in your head of “which CLI am I in or which version of OS am I running?”. For the most part, it doesn’t matter, one configuration setting can transfer across all devices. At this point I’m probably overselling it, I’m sure there are some differences but you get the point.</p>
+<h2 id="reading-the-junos-cli">Reading the Junos CLI</h2>
+<p>When I first saw Junos CLI output… I’ll be honest, the first thought in my head was “WTF is that?”. Is it JSON? Is it a weird version of JSON? Most of my past experience was on the Cisco CLI and going from Cisco to this was a bit of a surprise. Below is a snippet from a Junos configuration (modified for brevity).</p>
+<p><code>Junos Config Snippet</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1&gt; show configuration
+## Last commit: 2021-12-06 11:19:02 PST by juliopdx
+version 18.2R1.9;
+system {
+    login {
+        message &#34;Welcome to the world of tomorrow!&#34;;
+    }
+    root-authentication {
+        encrypted-password &#34;$6$xUmeLj6B$NBFrTm.&#34;; ## SECRET-DATA
+    }
+    host-name R1;
+    time-zone America/Los_Angeles;
+    services {
+        ssh;
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        unit 0 {
+            family inet {
+                address 10.0.12.1/24;
+            }
+        }
+    }
+}
+routing-options {
+    static {
+        route 0.0.0.0/0 {
+            next-hop 192.168.10.1;
+            no-readvertise;
+        }
+    }
+    router-id 1.1.1.1;
+}
+protocols {
+    ospf {
+        reference-bandwidth 1g;
+        area 0.0.0.0 {
+            interface ge-0/0/0.0;
+        }
+    }
+}
+</code></pre></div><p>Looks a bit odd right? In reality, everything is in a nice orderly place. For example, any <strong>system</strong> configurations are neatly nested under that block. Any interface based settings would be under the <strong>interfaces</strong> block. Anything for OSPF is nested under <strong>protocols ospf</strong>.</p>
+<h2 id="cli-modes">CLI Modes</h2>
+<p>I think I’m getting a bit ahead of myself. Lets talk about the CLI modes. Junos mainly uses two CLI modes; operational and configuration. The mode you see displayed above is operational mode. Think of this as the mode you would use to view items or perform some… wait for it… operational tasks (monitor, troubleshoot, connectivity… ping). The second mode, configuration, is used to perform any and all configuration tasks on a Junos device.</p>
+<p><code>Configuration Mode</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1&gt; configure
+Entering configuration mode
+
+[edit]
+juliopdx@R1# &#34;Hi this is configuration mode&#34;
+</code></pre></div><p>Earlier I ran <strong>show configuration</strong> to view the configuration in operational mode. These commands can be executed in configuration mode as well by prepending <strong>run</strong> to the command. Please note, <strong>show</strong> works a bit differently when in configuration mode. Typing <strong>show</strong> will simply display the current configuration tree we are in (hold that thought for just a moment).</p>
+<p><code>Using ping with run</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# run ping 10.0.23.3
+PING 10.0.23.3 (10.0.23.3): 56 data bytes
+64 bytes from 10.0.23.3: icmp_seq=0 ttl=64 time=331.137 ms
+64 bytes from 10.0.23.3: icmp_seq=1 ttl=64 time=28.864 ms
+64 bytes from 10.0.23.3: icmp_seq=2 ttl=64 time=697.261 ms
+64 bytes from 10.0.23.3: icmp_seq=3 ttl=64 time=1142.495 ms
+64 bytes from 10.0.23.3: icmp_seq=4 ttl=64 time=148.471 ms
+^C
+--- 10.0.23.3 ping statistics ---
+5 packets transmitted, 5 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 28.864/469.646/1142.495/405.256 ms
+
+[edit]
+juliopdx@R1#
+</code></pre></div><h2 id="configuring-junos">Configuring Junos</h2>
+<p>At some point now we need to actually configure something. Let me just show you a small snippet of an interface configuration and we can walk through how the configuration goes.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interfaces {
+    ge-0/0/0 {
+        unit 0 {
+            family inet {
+                address 10.0.12.1/24;
+            }
+        }
+    }
+</code></pre></div><p>When you want to configure or remove something in Junos, the commands will start with either <strong>set</strong> or <strong>delete</strong>. If we wanted to configure interface ge-0/0/0 with IP address 10.0.12.1/24, the command below would do just that.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">set interfaces ge-0/0/0 unit 0 family inet address 10.0.12.1/24
+</code></pre></div><p>If you compare the configuration output to the command, its so similar, its basically the command in a tree format. You probably saw this and thought “What the heck is unit 0 and inet?”. Well <strong>unit 0</strong> will be used to create a sub-interface on the interface. Think of this as the default sub-interface that is created or all interfaces. Kind of how there is a secret default VRF in Cisco land but its not really displayed. The <strong>inet</strong> is essentially the IPv4 address family. Can you guess what <strong>inet6</strong> is?</p>
+<p>That command got a bit long and there is an option to shorten our commands. Lets say for example we were about to drop a long configuration stanza on interface ge-0/0/0 and we wanted to shorten the amount of typing. We can actually tell Junos what section of the configuration we would like to edit. Example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# edit interfaces ge-0/0/0 unit 0 family inet
+
+[edit interfaces ge-0/0/0 unit 0 family inet]
+juliopdx@R1#
+</code></pre></div><p>At this point we are in configuration mode and in the ge-0/0/0 interface hierarchy. Remember when I said hold that though on the <strong>show</strong> command? If we type <strong>show</strong> now, it will only display what section we are currently on. Another example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# show
+address 10.0.12.1/24;
+
+[edit interfaces ge-0/0/0 unit 0 family inet]
+juliopdx@R1
+</code></pre></div><p>Now if we wanted to configure that address, the command would be much shorter.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# set address 10.0.12.1/24
+
+[edit interfaces ge-0/0/0 unit 0 family inet]
+juliopdx@R1#
+</code></pre></div><h2 id="replace-compare-and-commit">Replace, Compare, and Commit</h2>
+<p>I really like how Junos does this. If we were to make a change in Junos, it doesn’t immediately activate the change. It stores this in something called a candidate configuration. Lets test this. Currently interface ge-0/0/0 has an IP of 10.0.12.1, the remote side has an address of 10.0.12.2. Lets change the config and see if we can ping the remote side.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit interfaces ge-0/0/0 unit 0 family inet]
+juliopdx@R1# top
+
+[edit]
+juliopdx@R1# replace pattern 10.0.12.1/24 with 10.0.50.1/24
+
+[edit]
+juliopdx@R1#
+</code></pre></div><p>I’ll walk through what is going on here. We entered <strong>top</strong> to return us to the highest level of the config hierarchy. We then execute another way of implementing a change, by using <strong>replace</strong>! This allows us to change a text patter with another, without stepping through the entire configuration. Lets check out the current state of our changes.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# show | compare
+[edit interfaces ge-0/0/0 unit 0 family inet]
++       address 10.0.50.1/24;
+-       address 10.0.12.1/24;
+
+[edit]
+juliopdx@R1# run ping 10.0.12.2
+PING 10.0.12.2 (10.0.12.2): 56 data bytes
+64 bytes from 10.0.12.2: icmp_seq=0 ttl=64 time=269.266 ms
+64 bytes from 10.0.12.2: icmp_seq=1 ttl=64 time=640.029 ms
+64 bytes from 10.0.12.2: icmp_seq=2 ttl=64 time=116.563 ms
+64 bytes from 10.0.12.2: icmp_seq=3 ttl=64 time=3.603 ms
+^C
+--- 10.0.12.2 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 3.603/257.365/640.029/240.205 ms
+
+[edit]
+juliopdx@R1#
+</code></pre></div><p>At this point we can see that 10.0.12.1 has been replaced with 10.0.50.1 under the ge-0/0/0 interface. But we can still ping the remote side? This is because the change is only on the candidate configuration and not the running configuration. I’ll commit these changes and we should lose access to the remote side.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# commit comment &#34;This is a bad config&#34;
+commit complete
+
+[edit]
+juliopdx@R1# run ping 10.0.12.2
+PING 10.0.12.2 (10.0.12.2): 56 data bytes
+36 bytes from 4.68.38.157: Destination Net Unreachable
+Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src      Dst
+ 4  5  00 0054 45fd   0 0000  3c  01 5773 192.168.10.143  10.0.12.2
+
+36 bytes from 4.68.38.157: Destination Net Unreachable
+Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src      Dst
+ 4  5  00 0054 4637   0 0000  3c  01 5739 192.168.10.143  10.0.12.2
+
+36 bytes from 4.68.38.157: Destination Net Unreachable
+Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src      Dst
+ 4  5  00 0054 464e   0 0000  3c  01 5722 192.168.10.143  10.0.12.2
+
+^C
+--- 10.0.12.2 ping statistics ---
+5 packets transmitted, 0 packets received, 100% packet loss
+
+[edit]
+juliopdx@R1#
+</code></pre></div><h2 id="rollback-and-commit-confirmed">Rollback and Commit Confirmed</h2>
+<p>Clearly our change was not successful. Imagine this but at a grander scale than just my simple address change. Junos has a very simple option to go back to a previously working configuration. You may have noticed that we added a comment to our bad configuration change. Lets check out our previous commits.</p>
+<p><code>Previous Commits</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit]
+juliopdx@R1# run show system commit
+0   2021-12-06 14:32:57 PST by juliopdx via cli
+    This is a bad config
+1   2021-12-06 13:41:27 PST by juliopdx via netconf
+</code></pre></div><p>I’m staying in configuration mode so some of these commands are prepended with <strong>run</strong>. It looks like commit 0, the latest commit is our bad commit. Commit 1 is our last known good state. Lets roll this back and see if that gets us operational.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# rollback 1
+load complete
+
+[edit]
+juliopdx@R1# show interfaces ge-0/0/0
+unit 0 {
+    family inet {
+        address 10.0.12.1/24;
+    }
+}
+
+[edit]
+juliopdx@R1# commit
+commit complete
+
+[edit]
+juliopdx@R1# run ping 10.0.12.2
+PING 10.0.12.2 (10.0.12.2): 56 data bytes
+64 bytes from 10.0.12.2: icmp_seq=0 ttl=63 time=338.004 ms
+64 bytes from 10.0.12.2: icmp_seq=1 ttl=63 time=8.134 ms
+64 bytes from 10.0.12.2: icmp_seq=2 ttl=63 time=6.880 ms
+64 bytes from 10.0.12.2: icmp_seq=3 ttl=63 time=13.623 ms
+^C
+--- 10.0.12.2 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 6.880/91.660/338.004/142.249 ms
+
+[edit]
+juliopdx@R1#
+</code></pre></div><p>Well that was easy! Another option for safety is commit confirmed. Basically, if you run commit confirmed, you will need to run commit again to make sure you want to implement the change. This is great in case you cut yourself off from the remote device. Example below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# replace pattern 10.0.12.1/24 with 10.0.50.1/24
+
+[edit]
+juliopdx@R1# commit confirmed 1
+commit confirmed will be automatically rolled back in 1 minutes unless confirmed
+commit complete
+
+# commit confirmed will be rolled back in 1 minute
+[edit]
+juliopdx@R1#
+Broadcast Message from root@R1
+        (no tty) at 14:44 PST...
+
+Commit was not confirmed; automatic rollback complete.
+
+
+[edit]
+juliopdx@R1#
+</code></pre></div><p>Pretty neat right? Since we did not type <strong>commit</strong> again, the change was automatically discarded.</p>
+<h2 id="viewing-configuration-as-set-commands">Viewing Configuration as Set Commands</h2>
+<p>There is another really neat way of viewing what has been configured on the device, <strong>display set</strong>. Imagine every <strong>set</strong> command that has been executed on the device being stored in a nice format that can be reused again. Please see snippet below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit]
+juliopdx@R1# run show configuration | display set
+set interfaces ge-0/0/0 unit 0 family inet address 10.0.12.1/24
+set interfaces ge-0/0/1 unit 0 family inet address 10.0.13.1/24
+set interfaces ge-0/0/2 unit 0 family inet address 10.0.0.1/24
+set interfaces fxp0 unit 0 family inet address 192.168.10.143/24
+set interfaces lo0 unit 0 family inet address 1.1.1.1/32
+set snmp description somedevice
+set snmp location &#34;123 fake street&#34;
+set snmp contact &#34;juliopdx@example.com&#34;
+set snmp community juliopdx authorization read-only
+set snmp trap-group test categories chassis
+set snmp trap-group test categories link
+set snmp trap-group test categories routing
+set snmp trap-group test categories startup
+set snmp trap-group test categories services
+set snmp trap-group test targets 192.168.10.198
+set routing-options static route 0.0.0.0/0 next-hop 192.168.10.1
+set routing-options static route 0.0.0.0/0 no-readvertise
+set routing-options router-id 1.1.1.1
+set protocols ospf reference-bandwidth 1g
+set protocols ospf area 0.0.0.0 interface ge-0/0/2.0 passive
+set protocols ospf area 0.0.0.0 interface lo0.0 passive
+set protocols ospf area 0.0.0.0 interface ge-0/0/0.0
+set protocols ospf area 0.0.0.0 interface ge-0/0/1.0
+
+[edit]
+juliopdx@R1#
+</code></pre></div><h2 id="bonus-automating-the-configuration">Bonus: Automating the Configuration</h2>
+<p>I couldn’t help myself, I wanted to take a shot at automating some of the configuration during my Junos learning. I’ll keep this short and sweet but I stayed with the common tools of Nornir, NAPALM, and some neat Jinja2 templates. I have covered everything in the repository (linked below) before besides the Jinja2 templates. I’ll go over those and the script to close this one out.</p>
+<h3 id="junos-configuration-hierarchy-and-jinja2">Junos Configuration Hierarchy and jinja2</h3>
+<p>The Junos text output I showed you initially in this post really lends itself to being automated. Even from a text standpoint. Everything has really natural breaks in separation. I mentioned this before but if you wanted to modify interfaces, this would all be done under the interfaces level. I took that same approach and broke the Jinja templates out. We have a main <strong>base.j2</strong> template that will then call on the rest. This will then build the entire running configuration of a device.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/junos-auto$ tree templates/
+templates/
+├── base.j2
+├── interfaces.j2
+├── protocols.j2
+├── routing-options.j2
+├── snmp.j2
+└── system.j2
+</code></pre></div><p><code>base.j2</code></p>
+<pre><code class="language-jinja2" data-lang="jinja2">version 18.2R1.9;
+{% include 'system.j2' %}
+
+{% include 'interfaces.j2' %}
+
+{% include 'snmp.j2' %}
+
+{% include 'routing-options.j2' %}
+
+{% include 'protocols.j2' %}
+</code></pre><p><code>interfaces.j2</code></p>
+<pre><code class="language-jinja2" data-lang="jinja2">interfaces {
+{% for interface in host.info.interfaces %}
+    {{ interface.name }} {
+        unit {{ interface.unit }} {
+            family {{ interface.family }} {
+                address {{ interface.address }};
+            }
+        }
+    }
+{% endfor %}
+}
+</code></pre><h3 id="defining-host-data">Defining Host Data</h3>
+<p>I kept it simple and used YAML files to store data about each node. Please note this is a very simple example. There are definitely more ways to improve this and remove some of the duplicate information.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/junos-auto$ tree host_vars/
+host_vars/
+├── R1.yaml
+├── R2.yaml
+└── R3.yaml
+</code></pre></div><p><code>R1.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">interfaces</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/0</span>
+    <span style="color:#f92672">unit</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">family</span>: <span style="color:#ae81ff">inet</span>
+    <span style="color:#f92672">address</span>: <span style="color:#ae81ff">10.0.12.1</span><span style="color:#ae81ff">/24</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/1</span>
+    <span style="color:#f92672">unit</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">family</span>: <span style="color:#ae81ff">inet</span>
+    <span style="color:#f92672">address</span>: <span style="color:#ae81ff">10.0.13.1</span><span style="color:#ae81ff">/24</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/2</span>
+    <span style="color:#f92672">unit</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">family</span>: <span style="color:#ae81ff">inet</span>
+    <span style="color:#f92672">address</span>: <span style="color:#ae81ff">10.0.0.1</span><span style="color:#ae81ff">/24</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fxp0</span>
+    <span style="color:#f92672">unit</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">family</span>: <span style="color:#ae81ff">inet</span>
+    <span style="color:#f92672">address</span>: <span style="color:#ae81ff">192.168.10.143</span><span style="color:#ae81ff">/24</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">lo0</span>
+    <span style="color:#f92672">unit</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">family</span>: <span style="color:#ae81ff">inet</span>
+    <span style="color:#f92672">address</span>: <span style="color:#ae81ff">1.1.1.1</span><span style="color:#ae81ff">/32</span>
+
+<span style="color:#f92672">routing_options</span>:
+  <span style="color:#f92672">statics</span>:
+    - <span style="color:#f92672">route</span>: <span style="color:#ae81ff">0.0.0.0</span><span style="color:#ae81ff">/0</span>
+      <span style="color:#f92672">next_hop</span>: <span style="color:#ae81ff">192.168.10.1</span>
+      <span style="color:#f92672">no_readvertise</span>: <span style="color:#66d9ef">True</span>
+  <span style="color:#f92672">router_id</span>: <span style="color:#ae81ff">1.1.1.1</span>
+
+<span style="color:#f92672">protocols</span>:
+  <span style="color:#f92672">ospf</span>:
+    <span style="color:#f92672">ref_band</span>: <span style="color:#ae81ff">1g</span>
+    <span style="color:#f92672">areas</span>:
+      <span style="color:#f92672">0.0.0.0</span>:
+        <span style="color:#f92672">interfaces</span>:
+          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/2.0</span>
+            <span style="color:#f92672">passive</span>: <span style="color:#66d9ef">True</span>
+          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">lo0</span>
+            <span style="color:#f92672">passive</span>: <span style="color:#66d9ef">True</span>
+          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/0.0</span>
+          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/1.0</span>
+</code></pre></div><h3 id="nornir-and-napalm">Nornir and NAPALM</h3>
+<p>The script below was a mix of work I’ve done in the past and a great video by IPvZero (linked below). In the video John, demonstrates the use of the <strong>load_yaml</strong> and <strong>template_file</strong> methods in Nornir. The former will load YAML data that will then be assigned to the current host. This data can then be used by the <strong>template_file</strong> method to create configurations files for each host.</p>
+<p><code>junos_norn.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Script used to interfact with some Junos gear&#34;&#34;&#34;</span>
+<span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
+<span style="color:#f92672">from</span> nornir_utils.plugins.functions <span style="color:#f92672">import</span> print_result
+<span style="color:#f92672">from</span> nornir_utils.plugins.tasks.data <span style="color:#f92672">import</span> load_yaml
+<span style="color:#f92672">from</span> nornir_jinja2.plugins.tasks <span style="color:#f92672">import</span> template_file
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">load_vars</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;Loads data to be added to each host from vars files&#34;&#34;&#34;</span>
+    my_vars <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>load_yaml, file<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;./host_vars/{task.host}.yaml&#34;</span>)
+    task<span style="color:#f92672">.</span>host[<span style="color:#e6db74">&#34;info&#34;</span>] <span style="color:#f92672">=</span> my_vars<span style="color:#f92672">.</span>result
+    template_configurations(task)
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">template_configurations</span>(task):
+    <span style="color:#e6db74">&#34;&#34;&#34;Builds network templates&#34;&#34;&#34;</span>
+    temp <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Building device configuration&#34;</span>,
+        task<span style="color:#f92672">=</span>template_file,
+        path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;templates&#34;</span>,
+        template<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;base.j2&#34;</span>,
+    )
+    config <span style="color:#f92672">=</span> temp<span style="color:#f92672">.</span>result
+    deploy_configurations(task, config)
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_configurations</span>(task, config):
+    <span style="color:#e6db74">&#34;&#34;&#34;Loads device configurations&#34;&#34;&#34;</span>
+    task<span style="color:#f92672">.</span>run(
+        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host}!&#34;</span>,
+        task<span style="color:#f92672">=</span>napalm_configure,
+        configuration<span style="color:#f92672">=</span>config,
+        replace<span style="color:#f92672">=</span>True,
+    )
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>load_vars)
+    print_result(result)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far. I hope you learned a bit about Junos and some automation. What I showed in this post barely scratches the surface on what Junos can do, definitely more to learn! This wasn’t created in a bubble and I will link some awesome resources I had when learning about Junos and automation. Please check it out if you get a chance. I will definitely be using Junos more in my day to day labbing and learning.</p>
+<ul>
+<li><a href="https://www.networkfuntimes.com/new-series-a-guide-to-junos-for-ios-engineers/">Junos for IOS Engineers by Chris Parker</a></li>
+<li><a href="https://www.pluralsight.com/authors/rich-bibby">Juniper Networks JNCIA Course by Rich Bibby on Pluralsight</a></li>
+<li><a href="https://www.youtube.com/watch?v=xKe_KxT2doY">Scrapli CFG Video by IPvZero</a></li>
+<li><a href="https://github.com/JulioPDX/junos-auto">GitHub Repository</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>My Journey Learning About the Palo Alto Networks Python SDK</title>

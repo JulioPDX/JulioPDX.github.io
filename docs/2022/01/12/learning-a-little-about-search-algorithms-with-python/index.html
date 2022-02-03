@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
+I have been working through the Introduction to Computer Science course by CS50x (Harvard)." />
+<meta name="keywords" content=", Python" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/" />
+
+
+    <title>
+        
+            Learning a Little About Search Algorithms With Python :: JulioPDX  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Learning a Little About Search Algorithms With Python">
+<meta itemprop="description" content="Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
+I have been working through the Introduction to Computer Science course by CS50x (Harvard).">
+<meta itemprop="datePublished" content="2022-01-12T15:12:30-08:00" />
+<meta itemprop="dateModified" content="2022-01-12T15:12:30-08:00" />
+<meta itemprop="wordCount" content="1294">
+<meta itemprop="image" content="https://juliopdx.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="Python," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.github.io/"/>
+
+<meta name="twitter:title" content="Learning a Little About Search Algorithms With Python"/>
+<meta name="twitter:description" content="Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
+I have been working through the Introduction to Computer Science course by CS50x (Harvard)."/>
+
+
+
+
+    <meta property="og:title" content="Learning a Little About Search Algorithms With Python" />
+<meta property="og:description" content="Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
+I have been working through the Introduction to Computer Science course by CS50x (Harvard)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/" />
+<meta property="og:image" content="https://juliopdx.github.io/"/>
+<meta property="article:published_time" content="2022-01-12T15:12:30-08:00" />
+<meta property="article:modified_time" content="2022-01-12T15:12:30-08:00" /><meta property="og:site_name" content="JulioPDX" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-01-12 15:12:30 -0800 PST" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        7 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/">Learning a Little About Search Algorithms With Python</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#creating-the-data">Creating the Data</a></li>
+    <li><a href="#linear-search">Linear Search</a></li>
+    <li><a href="#binary-search">Binary Search</a></li>
+    <li><a href="#comparing-with-subnets">Comparing With Subnets</a>
+      <ul>
+        <li><a href="#linear-seach-in-code">Linear Seach in Code</a></li>
+        <li><a href="#binary-search-in-code">Binary Search in Code</a></li>
+      </ul>
+    </li>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.</p>
+<p>I have been working through the Introduction to Computer Science course by CS50x (Harvard). The course does an incredible job of walking learners through the very basics of programming with Scratch and the C language. The course eventually shifts over to Python for the remainder of the course. While taking the course, you learn about arrays, algorithms, memory, and more. David Malan and team really do an incredible job and try to make the barrier of entry as low as possible (free and includes a web based VScode editor).</p>
+<p>In week three we learn a bit about algorithms. This was easily one of my favorite weeks. The class walks through different search and sorting algorithms. These are then compared performance wise. This post will go over two search algorithms; linear and binary. I will use some subnets from the 10.0.0.0/8 network for our examples.</p>
+<h2 id="creating-the-data">Creating the Data</h2>
+<p>I decided to create a big list of subnets with some Python. The code below will produce three files that can be used for testing.</p>
+<p><code>ip_create.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Small script to create test files&#34;&#34;&#34;</span>
+<span style="color:#f92672">import</span> ipaddress
+<span style="color:#f92672">import</span> random
+
+net <span style="color:#f92672">=</span> ipaddress<span style="color:#f92672">.</span>ip_network(<span style="color:#e6db74">&#34;10.0.0.0/8&#34;</span>)<span style="color:#f92672">.</span>subnets(new_prefix<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>)
+
+networks <span style="color:#f92672">=</span> [str(n<span style="color:#f92672">.</span>network_address) <span style="color:#66d9ef">for</span> n <span style="color:#f92672">in</span> net]
+
+<span style="color:#75715e"># Ordered list of subnets</span>
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;ordered_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
+        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+
+<span style="color:#75715e"># Reversed list of subnets</span>
+networks<span style="color:#f92672">.</span>reverse()
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;reverse_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
+        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+
+<span style="color:#75715e"># Random list of subnets</span>
+random<span style="color:#f92672">.</span>shuffle(networks)
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;random_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
+        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div><p><code>ordered_ip.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.0.0.0
+10.0.1.0
+10.0.2.0
+10.0.3.0
+10.0.4.0
+10.0.5.0
+10.0.6.0
+10.0.7.0
+10.0.8.0
+10.0.9.0
+...
+</code></pre></div><p><code>random_ip.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.44.148.0
+10.47.64.0
+10.166.151.0
+10.139.81.0
+10.237.230.0
+10.139.3.0
+10.179.165.0
+10.96.37.0
+10.26.247.0
+10.12.255.0
+...
+</code></pre></div><p><code>reverse_ip.txt</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.255.255.0
+10.255.254.0
+10.255.253.0
+10.255.252.0
+10.255.251.0
+10.255.250.0
+10.255.249.0
+10.255.248.0
+10.255.247.0
+...
+</code></pre></div><h2 id="linear-search">Linear Search</h2>
+<p>Linear search is fairly simple in nature. We take a list or array and check one by one until we find our desired value.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
+</code></pre></div><p>For example, using the data above. If we wanted to check for the value of 70, we would first have to check 10 then 20 then 30 and so on. This means it would take us “n” steps. Think of “n” as the size of the array. In our example the array is of size 7. Worst case scenario would be 7 checks. This can then be referenced as “O(n)” or O of n. Now what about the best case scenario? Well, if we are looking for the 10 in this array, then it only requires one step. This is known as “Ω(1)” or Omega of one.</p>
+<h2 id="binary-search">Binary Search</h2>
+<p>Binary search works a bit differently than linear search. Binary search does have one additional requirement, the array must be sorted. If not, the algorithm breaks. Binary search works by continuously making the size of the array smaller. Essentially making the search size smaller on each iteration.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># First Check</span>
+Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
+Start: <span style="color:#ae81ff">0</span>
+End: <span style="color:#ae81ff">6</span>
+Midpoint: <span style="color:#ae81ff">3</span>
+</code></pre></div><p>Same array as above but with additional information. We have the start of the array at 0 and the end of the array at 6. The midpoint is found by (start + end) / 2. In this case we are looking for 70. The midpoint(40) is lower than our target(70) so the start will shift to midpoint + 1.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Second Check</span>
+Value: <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
+Start: <span style="color:#ae81ff">4</span>
+End: <span style="color:#ae81ff">6</span>
+Midpoint: <span style="color:#ae81ff">5</span>
+</code></pre></div><p>On the second check we are searching through a smaller piece of the array. Midpoint is found by (6 + 4) / 2 = 5. The target is higher than our midpoint of 70. So again we will shift the start to midpoint (5) + 1.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Third Check</span>
+Value: <span style="color:#ae81ff">70</span>
+Index:  <span style="color:#ae81ff">6</span>
+Start: <span style="color:#ae81ff">6</span>
+End: <span style="color:#ae81ff">6</span>
+Midpoint: <span style="color:#ae81ff">6</span>
+
+<span style="color:#75715e"># Value is Found</span>
+</code></pre></div><p>On this third check the midpoint is equal to our target, the value is found! This will also work in the opposite, but we will decrease the end to (midpoint – 1). Whats the big deal? In binary search, when the size of the array increases, the amount of steps will not grow as large as linear search. Making the algorithm much more efficient. Best case scenario, on the initial midpoint we find our target. This is similar to linear search, Ω(1). What about worst case? That is known as O(log n). Long story short, much faster.</p>
+<h2 id="comparing-with-subnets">Comparing With Subnets</h2>
+<p>We will be working with subnets as our data. To make things more simple, I will convert these to their decimal equivalent. What do I mean by this? Please see example below!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> ipaddress <span style="color:#f92672">import</span> ip_address
+<span style="color:#f92672">&gt;&gt;&gt;</span> int(ip_address(<span style="color:#e6db74">&#34;0.0.0.1&#34;</span>))
+<span style="color:#ae81ff">1</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> int(ip_address(<span style="color:#e6db74">&#34;0.0.1.0&#34;</span>))
+<span style="color:#ae81ff">256</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>When I run the comparisons, in reality they will be comparing integer values vs strings of subnets.</p>
+<h3 id="linear-seach-in-code">Linear Seach in Code</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> open(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+    data <span style="color:#f92672">=</span> [int(ip_address(line<span style="color:#f92672">.</span>strip())) <span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> file<span style="color:#f92672">.</span>readlines()]
+
+my_target <span style="color:#f92672">=</span> int(
+    (ip_address(input(<span style="color:#e6db74">&#34;What /24 prefix in 10.0.0.0/8 are you looking for? &#34;</span>)))
+)
+
+<span style="color:#66d9ef">for</span> prefix <span style="color:#f92672">in</span> data:
+    time<span style="color:#f92672">.</span>sleep(DELAY)
+    <span style="color:#66d9ef">if</span> prefix <span style="color:#f92672">==</span> my_target:
+        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Found: {ip_address(my_target)} with linear search&#34;</span>)
+        <span style="color:#66d9ef">break</span>
+</code></pre></div><p>Initially we open one of the text files and use some list comprehension to create our list of integers that represent different subnets. Then we ask the user to enter a subnet, for example, “10.80.40.0”. We will then compare each prefix or subnet against our target. If we find it, we will convert the integer back to a cleaner format. You may have caught the sleep setting in the code. Well it turns out computers are really fast, so we will add some artificial delay. This is used in both search algorithms.</p>
+<h3 id="binary-search-in-code">Binary Search in Code</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bin_search</span>(some_array: list, target: int):
+    <span style="color:#e6db74">&#34;&#34;&#34;Simple binary search function&#34;&#34;&#34;</span>
+    array <span style="color:#f92672">=</span> sorted(some_array)
+    start <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    end <span style="color:#f92672">=</span> len(array) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+    found <span style="color:#f92672">=</span> False
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> found <span style="color:#f92672">and</span> start <span style="color:#f92672">&lt;=</span> end:
+        time<span style="color:#f92672">.</span>sleep(DELAY)
+        middle <span style="color:#f92672">=</span> int((start <span style="color:#f92672">+</span> end) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
+        <span style="color:#66d9ef">if</span> int(array[middle]) <span style="color:#f92672">==</span> target:
+            found <span style="color:#f92672">=</span> True
+            <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Found: {ip_address(target)} with binary search&#34;</span>)
+        <span style="color:#66d9ef">elif</span> int(array[middle]) <span style="color:#f92672">&gt;</span> target:
+            end <span style="color:#f92672">=</span> middle <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">else</span>:
+            start <span style="color:#f92672">=</span> middle <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</code></pre></div><p>I wrapped this in a function and set it to accept two parameters, some array and a target. We will first sort the array since that is required in binary search. We then set our start and end values. Once that is done, we will run a while loop and keep making the search smaller and smaller until the target is found. Lets check out some examples!</p>
+<h2 id="examples">Examples</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Best case scenario for Linear</span>
+<span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py ordered_ip<span style="color:#f92672">.</span>txt
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+Found: <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">with</span> linear search
+Elapsed time: <span style="color:#ae81ff">0.0801</span> seconds
+Found: <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">with</span> binary search
+Elapsed time: <span style="color:#ae81ff">0.0045</span> seconds
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Worst case scenario for Linear</span>
+<span style="color:#75715e"># Binary did not increase much at all!</span>
+<span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py ordered_ip<span style="color:#f92672">.</span>txt
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+Found: <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span> <span style="color:#66d9ef">with</span> linear search
+Elapsed time: <span style="color:#ae81ff">11.0045</span> seconds
+Found: <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span> <span style="color:#66d9ef">with</span> binary search
+Elapsed time: <span style="color:#ae81ff">0.0050</span> seconds
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Random list of subnets</span>
+<span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py random_ip<span style="color:#f92672">.</span>txt
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span>
+Found: <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span> <span style="color:#66d9ef">with</span> linear search
+Elapsed time: <span style="color:#ae81ff">10.6104</span> seconds
+Found: <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span> <span style="color:#66d9ef">with</span> binary search
+Elapsed time: <span style="color:#ae81ff">0.0159</span> seconds
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far, it really means a lot and please go vote for your favorite IT blogs.</p>
+<ul>
+<li><a href="https://cs50.harvard.edu/x/2022/">CS50x Introduction to Computer Science</a></li>
+<li><a href="https://github.com/JulioPDX/ne-algo-search">GitHub Repository</a></li>
+<li><a href="https://www.cisco.com/c/en/us/training-events/events-webinars/influencer-hub/blog-awards.html">Cisco IT Blog Awards</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.github.io/tags/python/">Python</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1294 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2022-01-12 15:12
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">Learning Labs With Containerlab</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/">
+                    <span class="button__text">My Journey and Experience With Containerlab</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.github.io/"></a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

@@ -7,7 +7,54 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 22 Nov 2021 13:18:29 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EIGRP Network Design in the Lab</title>
+      <link>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</link>
+      <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2022/02/02/eigrp-network-design-in-the-lab/</guid>
+      <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
+    </item>
+    
+    <item>
+      <title>Learning Labs With Containerlab</title>
+      <link>https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/</link>
+      <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2022/01/28/learning-labs-with-containerlab/</guid>
+      <description>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
+A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved.</description>
+    </item>
+    
+    <item>
+      <title>Learning a Little About Search Algorithms With Python</title>
+      <link>https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/</link>
+      <pubDate>Wed, 12 Jan 2022 15:12:30 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2022/01/12/learning-a-little-about-search-algorithms-with-python/</guid>
+      <description>Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
+I have been working through the Introduction to Computer Science course by CS50x (Harvard).</description>
+    </item>
+    
+    <item>
+      <title>My Journey and Experience With Containerlab</title>
+      <link>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
+      <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
+    </item>
+    
+    <item>
+      <title>My Journey Learning About Juniper Junos</title>
+      <link>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</link>
+      <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
+      <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
+    </item>
+    
     <item>
       <title>My Journey Learning About the Palo Alto Networks Python SDK</title>
       <link>https://juliopdx.github.io/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</link>

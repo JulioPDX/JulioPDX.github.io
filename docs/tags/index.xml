@@ -7,31 +7,85 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 22 Nov 2021 13:18:29 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Feb 2022 15:50:47 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>PAN</title>
-      <link>https://juliopdx.github.io/tags/pan/</link>
-      <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
+      <title>Cisco</title>
+      <link>https://juliopdx.github.io/tags/cisco/</link>
+      <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/pan/</guid>
+      <guid>https://juliopdx.github.io/tags/cisco/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Python</title>
-      <link>https://juliopdx.github.io/tags/python/</link>
-      <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
+      <title>EIGRP</title>
+      <link>https://juliopdx.github.io/tags/eigrp/</link>
+      <pubDate>Wed, 02 Feb 2022 15:50:47 -0800</pubDate>
       
-      <guid>https://juliopdx.github.io/tags/python/</guid>
+      <guid>https://juliopdx.github.io/tags/eigrp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Network Automation</title>
       <link>https://juliopdx.github.io/tags/network-automation/</link>
-      <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
+      <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/network-automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://juliopdx.github.io/tags/python/</link>
+      <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ansible</title>
+      <link>https://juliopdx.github.io/tags/ansible/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/ansible/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Containerlab</title>
+      <link>https://juliopdx.github.io/tags/containerlab/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/containerlab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://juliopdx.github.io/tags/docker/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Junos</title>
+      <link>https://juliopdx.github.io/tags/junos/</link>
+      <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/junos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PAN</title>
+      <link>https://juliopdx.github.io/tags/pan/</link>
+      <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/tags/pan/</guid>
       <description></description>
     </item>
     
@@ -72,15 +126,6 @@
     </item>
     
     <item>
-      <title>Docker</title>
-      <link>https://juliopdx.github.io/tags/docker/</link>
-      <pubDate>Wed, 20 Oct 2021 11:05:49 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/docker/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>DockerHub</title>
       <link>https://juliopdx.github.io/tags/dockerhub/</link>
       <pubDate>Wed, 20 Oct 2021 11:05:49 -0800</pubDate>
@@ -104,15 +149,6 @@
       <pubDate>Wed, 20 Oct 2021 10:41:26 -0800</pubDate>
       
       <guid>https://juliopdx.github.io/tags/ngrok/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Cisco</title>
-      <link>https://juliopdx.github.io/tags/cisco/</link>
-      <pubDate>Thu, 23 Sep 2021 10:06:16 -0800</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/cisco/</guid>
       <description></description>
     </item>
     
@@ -248,15 +284,6 @@
       <pubDate>Mon, 08 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://juliopdx.github.io/tags/running/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Ansible</title>
-      <link>https://juliopdx.github.io/tags/ansible/</link>
-      <pubDate>Tue, 02 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://juliopdx.github.io/tags/ansible/</guid>
       <description></description>
     </item>
     

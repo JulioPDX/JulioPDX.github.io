@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Containerlab on JulioPDX</title>
+    <link>https://juliopdx.github.io/tags/containerlab/</link>
+    <description>Recent content in Containerlab on JulioPDX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Fri, 10 Dec 2021 14:32:22 -0800</lastBuildDate><atom:link href="https://juliopdx.github.io/tags/containerlab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Journey and Experience With Containerlab</title>
+      <link>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</link>
+      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.github.io/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
+      <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
+    </item>
+    
+  </channel>
+</rss>
