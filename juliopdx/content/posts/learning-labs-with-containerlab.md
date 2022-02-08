@@ -4,6 +4,7 @@ date: 2022-01-28T15:45:51-08:00
 draft: false
 toc: false
 images:
+  - /blog/images/pete-pedroza.jpg
 tags:
   - Network Automation
   - Python
