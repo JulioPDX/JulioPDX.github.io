@@ -4,6 +4,7 @@ date: 2021-09-17T09:31:09-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/topo_wasif_bhatti.png
 tags:
   - Network Automation
   - Python

@@ -4,6 +4,7 @@ date: 2021-04-02
 draft: false
 toc: true
 images:
+  - /blog/images/multi_ospf.png
 tags:
   - Arista
   - Aruba

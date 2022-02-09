@@ -4,6 +4,7 @@ date: 2021-03-08
 draft: false
 toc: true
 images:
+  - /blog/images/denys-nevozhai.jpg
 tags:
   - Running
 ---
@@ -75,3 +76,7 @@ When embarking on great challenges, having a support team or person is critical.
 This experience has showed me if you put your mind to it, you really can do anything. Cliché I know. Take me as a small example. After the third ACL tear, I could’ve given up on all athletic hopes and dreams. Maybe now I can claim the title of being the greatest to ever run 52 miles with a twitter handle of Julio_PDX…
 
 ![Night Run](/blog/images/night_run.jpg)
+
+## Links
+
+- [Featured Image by Denys Nevozhai](https://unsplash.com/photos/D68ADLeMh5Q)

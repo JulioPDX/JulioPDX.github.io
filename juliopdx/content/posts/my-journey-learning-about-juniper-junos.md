@@ -4,6 +4,7 @@ date: 2021-12-06T13:57:09-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/v2osk.jpg
 tags:
   - Junos
   - Network Automation
@@ -502,6 +503,7 @@ if __name__ == "__main__":
 
 Thank you all for reading this far. I hope you learned a bit about Junos and some automation. What I showed in this post barely scratches the surface on what Junos can do, definitely more to learn! This wasn’t created in a bubble and I will link some awesome resources I had when learning about Junos and automation. Please check it out if you get a chance. I will definitely be using Junos more in my day to day labbing and learning.
 
+- [Featured Image by @V2osk](https://unsplash.com/@v2osk)
 - [Junos for IOS Engineers by Chris Parker](https://www.networkfuntimes.com/new-series-a-guide-to-junos-for-ios-engineers/)
 - [Juniper Networks JNCIA Course by Rich Bibby on Pluralsight](https://www.pluralsight.com/authors/rich-bibby)
 - [Scrapli CFG Video by IPvZero](https://www.youtube.com/watch?v=xKe_KxT2doY)

@@ -4,6 +4,7 @@ date: 2021-08-14T10:38:25-08:00
 draft: false
 toc: true
 images:
+- /blog/images/auto_mpls.png
 tags:
   - Cisco
   - L3VPN

@@ -4,6 +4,7 @@ date: 2021-10-20T10:26:36-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/selim.jpg
 tags:
   - CI/CD
   - Network Automation

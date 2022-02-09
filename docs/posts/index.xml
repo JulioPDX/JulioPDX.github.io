@@ -22,6 +22,7 @@ A while back I mentioned that Containerlab could be an amazing resource in learn
 <p>I wanted to challenge myself and see if I could create something like this myself. I took a bit of inspiration from CS50X and Nick Russo’s amazing OSPF content. This is definitely not on that level or even difficulty. Currently I am on about week 7 of the CS50X course and it is seriously awesome. In that course, students build a script or a project and then automated testing is performed to validate if a project is acceptable. I created an OSPF troubleshooting lab that has a few problems and then automated testing at the end. Check it out on the GitHub link below as well as the other links shared.</p>
 <p>Thank you and happy labbing/troubleshooting.</p>
 <ul>
+<li><a href="https://unsplash.com/photos/VyC0YSFRDTU">Featured Image by Pete Pedroza</a></li>
 <li><a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/ospf_tshoot/arista">OSPF Troubleshooting Lab</a></li>
 <li><a href="https://github.com/nickrusso42518/ospf_brkrst3310">Nick Russo Troubleshooting OSPF (BRKRST-3310)</a></li>
 <li><a href="https://cs50.harvard.edu/x/2022/">CS50X by Harvard (free)</a></li>
@@ -331,6 +332,7 @@ core3#
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>I originally planned to build this using FRR but it looks like EIGRP is in Alpha stage. I will play with FRR more in the future. Due to this, the topology wont be neatly packaged in a Containerlab file. I will include the configurations below. I hope you all learned something today and thank you for stopping by. We didn’t even go into the new style of configuring EIGRP but I hope you get the point. Named EIGRP just moves some options from the interface level to the af-interface level :). Stay tuned for the next episode of dragon bal…. wait this isn’t that show! In all seriousness, I have something pretty cool planned when we get to OSPF.</p>
 <ul>
+<li><a href="https://unsplash.com/photos/ZSPBhokqDMc">Featured Image by Med Badr Chenmaoui</a></li>
 <li><a href="/blog/files/eigrp-configs.zip">EIGRP Configurations zip</a></li>
 </ul>
 ]]></content>
@@ -806,6 +808,7 @@ R1#
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all for reading this far, seriously means a lot to me. I hope you found something useful or learned a bit along the way. If I have made any errors in the writing, please let me know! The goal is definitely to be technically accurate. Another option, grab the Github repository where this lab is stored (linked below) and run a pull request! I created a Containerlab repository for this lab and probably future labs I make with Containerlab. Happy labbing and thank you for stopping by!</p>
 <ul>
+<li><a href="https://unsplash.com/photos/Of2rc0KOfVU">Featured Image by Pat Krupa</a></li>
 <li><a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/mpoint_redis">GitHub Repository</a></li>
 <li><a href="https://containerlab.srlinux.dev/">Containerlab</a></li>
 </ul>
@@ -983,6 +986,7 @@ Elapsed time: <span style="color:#ae81ff">0.0159</span> seconds
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all for reading this far, it really means a lot and please go vote for your favorite IT blogs.</p>
 <ul>
+<li><a href="https://unsplash.com/photos/uPXs5Vx5bIg">Featured Image by Markus Spiske</a></li>
 <li><a href="https://cs50.harvard.edu/x/2022/">CS50x Introduction to Computer Science</a></li>
 <li><a href="https://github.com/JulioPDX/ne-algo-search">GitHub Repository</a></li>
 <li><a href="https://www.cisco.com/c/en/us/training-events/events-webinars/influencer-hub/blog-awards.html">Cisco IT Blog Awards</a></li>
@@ -1566,6 +1570,7 @@ sudo containerlab destroy -t net.clab.yaml --cleanup
 <h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all so much for reading this far. I hope this wasn’t too long. GitHub repository is linked below! I was kind of building this on the fly and the documentation for Containerlab is pretty excellent. If you have any questions seriously check it out. Most all of your questions will be answered there!</p>
 <ul>
+<li><a href="https://unsplash.com/photos/pwcKF7L4-no">Featured Image by Louis Reed</a></li>
 <li><a href="https://containerlab.srlinux.dev/">Containerlab Documentation</a></li>
 <li><a href="https://netsim-tools.readthedocs.io/en/latest/">Another Option: netsim-tools by Ivan Pepelnjak</a></li>
 <li><a href="https://github.com/JulioPDX/gcl">GitHub repository for code used in this blog</a></li>
@@ -1963,6 +1968,7 @@ host_vars/
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all for reading this far. I hope you learned a bit about Junos and some automation. What I showed in this post barely scratches the surface on what Junos can do, definitely more to learn! This wasn’t created in a bubble and I will link some awesome resources I had when learning about Junos and automation. Please check it out if you get a chance. I will definitely be using Junos more in my day to day labbing and learning.</p>
 <ul>
+<li><a href="https://unsplash.com/@v2osk">Featured Image by @V2osk</a></li>
 <li><a href="https://www.networkfuntimes.com/new-series-a-guide-to-junos-for-ios-engineers/">Junos for IOS Engineers by Chris Parker</a></li>
 <li><a href="https://www.pluralsight.com/authors/rich-bibby">Juniper Networks JNCIA Course by Rich Bibby on Pluralsight</a></li>
 <li><a href="https://www.youtube.com/watch?v=xKe_KxT2doY">Scrapli CFG Video by IPvZero</a></li>
@@ -2249,6 +2255,7 @@ configs/
 <h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all for reading this post. Really means a lot and I hope you found something in here useful. Initially working with this SDK was a pain in the rear, but after digging into the configuration trees and inheritance it all clicked. Looking through some source code never hurt either! Please note, what’s included here and in the repository linked below is just a subset of what is possible using these tools. I wish you all the best and happy automating!</p>
 <ul>
+<li><a href="https://unsplash.com/photos/GEyXGTY2e9w">Featured Image by Brandon Green</a></li>
 <li><a href="https://www.pluralsight.com/courses/deploy-administer-secure-palo-alto-firewalls">PAN Pluralsight Course by Craig Stansbury</a></li>
 <li><a href="https://pan-os-python.readthedocs.io/en/latest/readme.html">PAN-OS Python SDK Documentation</a></li>
 <li><a href="https://realpython.com/python3-object-oriented-programming/#what-is-object-oriented-programming-in-python">Object-Oriented Programming (OOP) in Python 3 by Real Python/David Amos</a></li>
@@ -3487,6 +3494,7 @@ my_token <span style="color:#f92672">=</span> myvars[<span style="color:#e6db74"
 <h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all for reading this far! This was a really fun tool to create and allowed me to learn a bit about the support APIs, working with CSVs (with Python), and using Dq! I hope you found this even a bit useful. Something that could be a possibility with a script like this is populating a tool like Netbox!</p>
 <ul>
+<li><a href="https://unsplash.com/photos/EG2KcQn28RI">Featured Image by Mille Sanders</a></li>
 <li><a href="https://github.com/JulioPDX/auto_cisco_support_info">Git Repository</a></li>
 <li><a href="https://developer.cisco.com/docs/support-apis/#!introduction-to-cisco-support-apis">Information about the Cisco Support APIs</a></li>
 </ul>
@@ -3744,6 +3752,7 @@ async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_con
 <h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you for reading this far, really means a lot. So much of this can be improved and I’m excited to keep learning about python and FastAPI. Please check out the links below for more information.</p>
 <ul>
+<li><a href="https://unsplash.com/photos/gEN5Btvf2Eg">Featured Image by Michael Dziedzic</a></li>
 <li><a href="https://realpython.com/fastapi-python-web-apis/">Real Python - Using FastAPI to Build Python Web APIs</a></li>
 <li><a href="https://nornir.readthedocs.io/en/latest/">Nornir Documentation</a></li>
 <li><a href="https://napalm.readthedocs.io/en/latest/support/#getters-support-matrix">NAPALM Getters</a></li>
@@ -4225,6 +4234,7 @@ cumulus@cumulus:mgmt:~$
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you again for checking out this post, I really appreciate it. Please send over any tips or just ping me if something I mentioned is way out into left field. If you are curious about IXPs, please check out the links below! I will include all configurations for the devices in the topology on my GitHub (linked below). Thank you to all the IXP operators around the world!</p>
 <ul>
+<li><a href="https://unsplash.com/photos/A7658fvN2cU">Featured Image by Finn Whelen</a></li>
 <li><a href="https://www.pacnog.org/pacnog6/IXP/IXP-design.pdf">PACNOG – Internet Exchange Point Design</a></li>
 <li><a href="https://learn.nsrc.org/bgp/ixp_history">Network Startup Resource Center – IXP Design and Implementation</a></li>
 <li><a href="https://www.euro-ix.net/media/filer_public/0a/5b/0a5b4a4e-e032-41f8-b0f7-43c1375c5442/ixp-wishlist.pdf">EURO-IX – Internet Exchange Point Wishlist</a></li>
@@ -4342,6 +4352,7 @@ set()
 <h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you for staying this long. I hope you enjoyed the post and found something useful. As you can see I have a long way to go with network testing but it really is an important skill. I&rsquo;ll include some links below!</p>
 <ul>
+<li><a href="https://unsplash.com/photos/DX9X0g0Cg88">Featured Image by Ildefonso Polo</a></li>
 <li><a href="https://github.com/JulioPDX/auto_mpls_l3vpn">GitHub Repository</a></li>
 <li><a href="https://nornir.readthedocs.io/en/latest/">Nornir</a></li>
 <li><a href="https://github.com/scrapli/nornir_scrapli">Scrapli</a></li>
@@ -5161,6 +5172,7 @@ BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#
 </ul>
 <h2 id="links">Links</h2>
 <ul>
+<li><a href="https://unsplash.com/photos/HBGYvOKXu8A">Featured Image by Jason Leung</a></li>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-build-a-slackbot-in-python-on-ubuntu-20-04">How To Build a Slackbot in Python on Ubuntu 20.04</a></li>
 <li><a href="https://www.youtube.com/playlist?list=PLzMcBGfZo4-kqyzTzJWCV6lyK-ZMYECDc">Python Slack Bot Tutorial Playlist by Tech With Tim</a></li>
 <li><a href="https://github.com/JulioPDX/ne_bot_example">GitHub Repository</a></li>
@@ -6284,6 +6296,10 @@ The next thought may be why the hell would someone want to run 48 miles on a per
 <h2 id="you-can-do-it">You Can Do It</h2>
 <p>This experience has showed me if you put your mind to it, you really can do anything. Cliché I know. Take me as a small example. After the third ACL tear, I could’ve given up on all athletic hopes and dreams. Maybe now I can claim the title of being the greatest to ever run 52 miles with a twitter handle of Julio_PDX…</p>
 <p><img src="/blog/images/night_run.jpg" alt="Night Run"></p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://unsplash.com/photos/D68ADLeMh5Q">Featured Image by Denys Nevozhai</a></li>
+</ul>
 ]]></content>
         </item>
         

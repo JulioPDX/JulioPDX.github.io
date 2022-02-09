@@ -4,6 +4,7 @@ date: 2021-02-27
 draft: false
 toc: true
 images:
+  - /blog/images/nornir_logo_02.jpg
 tags:
   - Python
   - Network Automation

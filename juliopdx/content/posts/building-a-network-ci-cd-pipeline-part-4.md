@@ -4,6 +4,7 @@ date: 2021-10-31T11:26:48-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/masaaki-komori.jpg
 tags:
   - CI/CD
   - Batfish

@@ -4,6 +4,7 @@ date: 2021-02-02
 draft: false
 toc: true
 images:
+  - /blog/images/router_pool_large.png
 tags:
   - Ansible
   - Python

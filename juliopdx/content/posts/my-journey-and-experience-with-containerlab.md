@@ -4,6 +4,7 @@ date: 2021-12-10T14:32:22-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/louis-reed.jpg
 tags:
   - Containerlab
   - Network Automation
@@ -706,6 +707,7 @@ I think Containerlabs is pretty freaking awesome. The fact that I can deploy thi
 
 Thank you all so much for reading this far. I hope this wasn’t too long. GitHub repository is linked below! I was kind of building this on the fly and the documentation for Containerlab is pretty excellent. If you have any questions seriously check it out. Most all of your questions will be answered there!
 
+- [Featured Image by Louis Reed](https://unsplash.com/photos/pwcKF7L4-no)
 - [Containerlab Documentation](https://containerlab.srlinux.dev/)
 - [Another Option: netsim-tools by Ivan Pepelnjak](https://netsim-tools.readthedocs.io/en/latest/)
 - [GitHub repository for code used in this blog](https://github.com/JulioPDX/gcl)

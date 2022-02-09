@@ -4,6 +4,7 @@ date: 2021-05-24T10:19:32-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/jason-leung.jpg
 tags:
   - Python
 ---
@@ -259,6 +260,7 @@ The rest of the code is boilerplate to execute the application and enable loggin
 
 ## Links
 
+- [Featured Image by Jason Leung](https://unsplash.com/photos/HBGYvOKXu8A)
 - [How To Build a Slackbot in Python on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-build-a-slackbot-in-python-on-ubuntu-20-04)
 - [Python Slack Bot Tutorial Playlist by Tech With Tim](https://www.youtube.com/playlist?list=PLzMcBGfZo4-kqyzTzJWCV6lyK-ZMYECDc)
 - [GitHub Repository](https://github.com/JulioPDX/ne_bot_example)

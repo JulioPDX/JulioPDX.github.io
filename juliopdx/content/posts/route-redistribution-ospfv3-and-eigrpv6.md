@@ -4,6 +4,7 @@ date: 2021-05-03
 draft: false
 toc: true
 images:
+  - /blog/images/ospftoeigrp.png
 tags:
   - Aruba
   - Cisco

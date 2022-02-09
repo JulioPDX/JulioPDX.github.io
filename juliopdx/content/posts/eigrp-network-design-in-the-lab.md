@@ -4,6 +4,7 @@ date: 2022-01-25T15:50:47-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/med-badr.jpg
 tags:
   - Cisco
   - EIGRP
@@ -377,4 +378,5 @@ core3#
 
 I originally planned to build this using FRR but it looks like EIGRP is in Alpha stage. I will play with FRR more in the future. Due to this, the topology wont be neatly packaged in a Containerlab file. I will include the configurations below. I hope you all learned something today and thank you for stopping by. We didn’t even go into the new style of configuring EIGRP but I hope you get the point. Named EIGRP just moves some options from the interface level to the af-interface level :). Stay tuned for the next episode of dragon bal…. wait this isn’t that show! In all seriousness, I have something pretty cool planned when we get to OSPF.
 
+- [Featured Image by Med Badr Chenmaoui](https://unsplash.com/photos/ZSPBhokqDMc)
 - [EIGRP Configurations zip](/blog/files/eigrp-configs.zip)

@@ -4,6 +4,7 @@ date: 2021-11-12T12:26:21-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/frederick-marschall.jpg
 tags:
   - CI/CD
   - Suzieq

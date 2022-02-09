@@ -4,6 +4,7 @@ date: 2021-09-23T10:06:16-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/mille-sanders.jpg
 tags:
   - Cisco
   - Network Automation
@@ -327,5 +328,6 @@ Below is a snip from the CSV example in the repo. If you want to test this out, 
 
 Thank you all for reading this far! This was a really fun tool to create and allowed me to learn a bit about the support APIs, working with CSVs (with Python), and using Dq! I hope you found this even a bit useful. Something that could be a possibility with a script like this is populating a tool like Netbox!
 
+- [Featured Image by Mille Sanders](https://unsplash.com/photos/EG2KcQn28RI)
 - [Git Repository](https://github.com/JulioPDX/auto_cisco_support_info)
 - [Information about the Cisco Support APIs](https://developer.cisco.com/docs/support-apis/#!introduction-to-cisco-support-apis)

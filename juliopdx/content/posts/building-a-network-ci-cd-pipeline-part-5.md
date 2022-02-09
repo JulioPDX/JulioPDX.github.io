@@ -4,6 +4,7 @@ date: 2021-11-08T11:58:46-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/david-clode.jpg
 tags:
   - CI/CD
   - Network Automation

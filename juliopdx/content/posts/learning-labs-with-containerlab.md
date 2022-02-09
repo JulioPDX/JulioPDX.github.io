@@ -18,6 +18,7 @@ I wanted to challenge myself and see if I could create something like this mysel
 
 Thank you and happy labbing/troubleshooting.
 
+- [Featured Image by Pete Pedroza](https://unsplash.com/photos/VyC0YSFRDTU)
 - [OSPF Troubleshooting Lab](https://github.com/JulioPDX/learning_labs/tree/main/labs/ospf_tshoot/arista)
 - [Nick Russo Troubleshooting OSPF (BRKRST-3310)](https://github.com/nickrusso42518/ospf_brkrst3310)
 - [CS50X by Harvard (free)](https://cs50.harvard.edu/x/2022/)

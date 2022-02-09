@@ -4,6 +4,7 @@ date: 2022-01-12T15:12:30-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/markus-spiske.jpg
 tags:
   - Python
 ---
@@ -240,6 +241,7 @@ Elapsed time: 0.0159 seconds
 
 Thank you all for reading this far, it really means a lot and please go vote for your favorite IT blogs.
 
+- [Featured Image by Markus Spiske](https://unsplash.com/photos/uPXs5Vx5bIg)
 - [CS50x Introduction to Computer Science](https://cs50.harvard.edu/x/2022/)
 - [GitHub Repository](https://github.com/JulioPDX/ne-algo-search)
 - [Cisco IT Blog Awards](https://www.cisco.com/c/en/us/training-events/events-webinars/influencer-hub/blog-awards.html)

@@ -4,6 +4,7 @@ date: 2021-03-29
 draft: false
 toc: true
 images:
+- /blog/images/leaf_spine_link_local.png
 tags:
   - IPv6
   - Aruba

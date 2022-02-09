@@ -4,6 +4,7 @@ date: 2021-09-01T18:52:28-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/michael-dziedzic.jpg
 tags:
   - Python
   - Nornir
@@ -123,6 +124,7 @@ async def get_config(hostname: str, getter: str):
 
 Thank you for reading this far, really means a lot. So much of this can be improved and I’m excited to keep learning about python and FastAPI. Please check out the links below for more information.
 
+- [Featured Image by Michael Dziedzic](https://unsplash.com/photos/gEN5Btvf2Eg)
 - [Real Python - Using FastAPI to Build Python Web APIs](https://realpython.com/fastapi-python-web-apis/)
 - [Nornir Documentation](https://nornir.readthedocs.io/en/latest/)
 - [NAPALM Getters](https://napalm.readthedocs.io/en/latest/support/#getters-support-matrix)

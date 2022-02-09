@@ -4,6 +4,7 @@ date: 2021-03-18
 draft: false
 toc: true
 images:
+  - /blog/images/aruba_spine_leaf.png
 tags:
   - IPv6
   - Aruba

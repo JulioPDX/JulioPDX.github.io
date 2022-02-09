@@ -4,6 +4,7 @@ date: 2021-11-22T13:18:29-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/brandon-green.jpg
 tags:
   - Python
   - PAN
@@ -354,6 +355,7 @@ This portion of the script will use the Rich Python Library from Will McGugan, l
 
 Thank you all for reading this post. Really means a lot and I hope you found something in here useful. Initially working with this SDK was a pain in the rear, but after digging into the configuration trees and inheritance it all clicked. Looking through some source code never hurt either! Please note, what’s included here and in the repository linked below is just a subset of what is possible using these tools. I wish you all the best and happy automating!
 
+- [Featured Image by Brandon Green](https://unsplash.com/photos/GEyXGTY2e9w)
 - [PAN Pluralsight Course by Craig Stansbury](https://www.pluralsight.com/courses/deploy-administer-secure-palo-alto-firewalls)
 - [PAN-OS Python SDK Documentation](https://pan-os-python.readthedocs.io/en/latest/readme.html)
 - [Object-Oriented Programming (OOP) in Python 3 by Real Python/David Amos](https://realpython.com/python3-object-oriented-programming/#what-is-object-oriented-programming-in-python)

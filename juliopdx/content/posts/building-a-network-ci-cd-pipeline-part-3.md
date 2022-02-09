@@ -4,6 +4,7 @@ date: 2021-10-20T11:05:49-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/ian-taylor.jpg
 tags:
   - CI/CD
   - Docker

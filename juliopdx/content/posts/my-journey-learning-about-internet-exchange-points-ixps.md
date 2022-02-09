@@ -4,6 +4,7 @@ date: 2021-08-29T18:04:42-08:00
 draft: false
 toc: true
 images:
+  - /blog/images/finn-whelen.jpg
 tags:
   - BGP
   - Cisco
@@ -518,6 +519,7 @@ cumulus@cumulus:mgmt:~$
 
 Thank you again for checking out this post, I really appreciate it. Please send over any tips or just ping me if something I mentioned is way out into left field. If you are curious about IXPs, please check out the links below! I will include all configurations for the devices in the topology on my GitHub (linked below). Thank you to all the IXP operators around the world!
 
+- [Featured Image by Finn Whelen](https://unsplash.com/photos/A7658fvN2cU)
 - [PACNOG – Internet Exchange Point Design](https://www.pacnog.org/pacnog6/IXP/IXP-design.pdf)
 - [Network Startup Resource Center – IXP Design and Implementation](https://learn.nsrc.org/bgp/ixp_history)
 - [EURO-IX – Internet Exchange Point Wishlist](https://www.euro-ix.net/media/filer_public/0a/5b/0a5b4a4e-e032-41f8-b0f7-43c1375c5442/ixp-wishlist.pdf)

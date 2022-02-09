@@ -4,6 +4,7 @@ date: 2021-04-16
 draft: false
 toc: true
 images:
+  - /blog/images/freeradius-new.png
 tags:
   - Cisco
   - EVE-NG

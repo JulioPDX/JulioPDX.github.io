@@ -4,6 +4,7 @@ date: 2022-01-22T15:25:24-08:00
 draft: falseS
 toc: true
 images:
+  - /blog/images/pat-krupa.jpg
 tags:
   - BGP
   - OSPF
@@ -576,5 +577,6 @@ R1#
 
 Thank you all for reading this far, seriously means a lot to me. I hope you found something useful or learned a bit along the way. If I have made any errors in the writing, please let me know! The goal is definitely to be technically accurate. Another option, grab the Github repository where this lab is stored (linked below) and run a pull request! I created a Containerlab repository for this lab and probably future labs I make with Containerlab. Happy labbing and thank you for stopping by!
 
+- [Featured Image by Pat Krupa](https://unsplash.com/photos/Of2rc0KOfVU)
 - [GitHub Repository](https://github.com/JulioPDX/learning_labs/tree/main/labs/mpoint_redis)
 - [Containerlab](https://containerlab.srlinux.dev/)
