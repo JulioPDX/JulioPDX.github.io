@@ -166,7 +166,7 @@ topology:
 
 ```
 
-This can then be used to run either `netlab up basic.yml` or `sudo containerlab deploy -t basic.yml`. One of the more interesting files created is the `host_vars/<device name>/topology.yml`. This gives you a great look at everything that will be deployed on the device with Ansible
+This can then be used to run either `netlab up basic.yml` or `sudo containerlab deploy -t clab.yml`. One of the more interesting files created is the `host_vars/<device name>/topology.yml`. This gives you a great look at everything that will be deployed on the device with Ansible
 
 ```yml
 # Ansible inventory created from ['basic.yml', 'package:topology-defaults.yml']
