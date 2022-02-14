@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction I&amp;rsquo;ve been progressing through a series of technical books, some of which I&amp;rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&amp;rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing." />
+<meta name="keywords" content=", Containerlab, OSPF, BGP, net-sim, Docker" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/" />
+
+
+    <title>
+        
+            Network Simulation Tools and Containerlab :: Welcome to the World of Tomorrow  — Welcome to my blog!
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="Network Simulation Tools and Containerlab">
+<meta itemprop="description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing.">
+<meta itemprop="datePublished" content="2022-02-13T21:07:43-08:00" />
+<meta itemprop="dateModified" content="2022-02-13T21:07:43-08:00" />
+<meta itemprop="wordCount" content="2817">
+<meta itemprop="image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg">
+
+
+
+<meta itemprop="keywords" content="Containerlab,OSPF,BGP,net-sim,Docker," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg"/>
+
+<meta name="twitter:title" content="Network Simulation Tools and Containerlab"/>
+<meta name="twitter:description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing."/>
+
+
+
+
+    <meta property="og:title" content="Network Simulation Tools and Containerlab" />
+<meta property="og:description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/" />
+<meta property="og:image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg" />
+<meta property="article:published_time" content="2022-02-13T21:07:43-08:00" />
+<meta property="article:modified_time" content="2022-02-13T21:07:43-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-02-13 21:07:43 -0800 PST" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">#</span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#41FF00;
+                   animation-duration:2s;">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        14 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/">Network Simulation Tools and Containerlab</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#net-sim-tools">net-sim tools</a>
+      <ul>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#defining-a-topology">Defining a Topology</a></li>
+        <li><a href="#deployments-and-how-it-all-works">Deployments and How It All Works</a></li>
+        <li><a href="#sample-use-cases">Sample Use Cases</a></li>
+      </ul>
+    </li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a <a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/bgp/arista">challenge lab</a>. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing. One brave soul(Jeroen van Bemmel) shared his <a href="https://github.com/jbemmel/netsim-examples/tree/evpn-vxlan-to-hosts/BGP/Julio-Challenge">solution</a>. I was fascinated on his solution and how he created his topology with Containerlab and net-sim tools.</p>
+<h2 id="net-sim-tools">net-sim tools</h2>
+<p>Network Simulation Tools was created by Ivan Pepelnjak of <a href="https://www.ipspace.net/Main_Page">ipspace.net</a>. I think Ivan was tired of the point and click required when making a lab topology with other tools. The aim of the tool is to take infrastructure as code principles and leverage them for the creation of network topologies. Topologies can be defined in a simple YAML file and net-sim will take care of link connections, addressing(IPv4/6), routing protocols, etc&hellip;</p>
+<p>Usually when creating a lab, there is a slow process of starting up nodes, connecting links, selecting address space, configuring hostname Rx, configuring ip add 10.x.x.x 255.255.255.0, no shut, and so on and so forth. At this point, I don&rsquo;t think I need to configure an IP address on an interface to know I&rsquo;ve mastered that skill :).</p>
+<h3 id="getting-started">Getting Started</h3>
+<p>In this post we will leverage Containerlab with net-sim tools and below are the requirements to get started.</p>
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">Install Docker</a></li>
+<li><a href="https://containerlab.srlinux.dev/install/">Install Containerlab</a></li>
+<li><a href="https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/">Import Docker Container Images</a></li>
+</ul>
+<p>There are a few options to get started with net-sim tools, but I think using a python virtualenv was fairly simple.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">python3 -m venv venv
+source venv/bin/activate
+pip install netsim-tools
+pip install ansible <span style="color:#75715e">#decided to use whatever was latest and it works just fine for me</span>
+</code></pre></div><p>I know this seems like a lot but the benefits are definitely worth it.</p>
+<h3 id="defining-a-topology">Defining a Topology</h3>
+<p>Let me share a basic topology and walk you through what will be created. Please note, some of the options I have defined are already defaults, I just decided to add them to the topology file for reader clarity.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
+<span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
+<span style="color:#f92672">defaults</span>:
+  <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">devices</span>:
+    <span style="color:#f92672">eos.clab.image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+
+<span style="color:#f92672">addressing</span>:
+  <span style="color:#f92672">loopback</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#ae81ff">200</span>::<span style="color:#ae81ff">/7</span>
+  <span style="color:#f92672">router_id</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">32</span>
+  <span style="color:#f92672">p2p</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">nodes</span>: [<span style="color:#ae81ff">R1, R2, R3]</span>
+
+<span style="color:#f92672">links</span>:
+  - <span style="color:#ae81ff">R1-R2</span>
+  - <span style="color:#ae81ff">R2-R3</span>
+
+</code></pre></div><p>This Topology will perform the following:</p>
+<ul>
+<li>Use Containerlab to deploy our nodes</li>
+<li>Sets a default image version for EOS devices(saves a lot of typing)</li>
+<li>Set prefix information for different connections, not required since net-sim will do this for you.</li>
+<li>Define how many nodes we want</li>
+<li>Define how we want the nodes connected.</li>
+</ul>
+<p>A few things to note. I defined the IP space but that is not required when creating lab topologies. No need to worry about interface names, the logic within net-sim tools will just increment over the next available interface.</p>
+<h4 id="providers">Providers</h4>
+<p>At the time of this writing, net-sim tools supports three popular providers; vagrant-libvirt, Vagrant VirtualBox, and Containerlab. As long as the user is familiar with their provider of choice, the interaction with net-sim tools is similar across the board. In the example topology file above, we defined Containerlab as our provider. This will cause net-sim tools to create a <code>clab.yml</code> file in the structure Containerlab is used to. This <code>clab.yml</code> file will then be used to deploy our network devices.</p>
+<h4 id="images">Images</h4>
+<p>Net-sim does not come pre packaged with any network operating systems(NOS) images. A few vendors have made their images publicly available(see Nokia/FRR) as a simple docker pull. For any other images, please see their documentation to obtain an image. For this example, I will be using some Arista cEOS nodes. They can be obtained by signing up to their support site(free).</p>
+<h4 id="networks">Networks</h4>
+<p>Net-sim gives you pretty much any option you could want for network addressing. You can either use built-in address pools, assign statics, or define your own pools. Net-sim will then handle the IP addressing for each network device and interface. Very simple example below, please check out their in-depth <a href="https://netsim-tools.readthedocs.io/en/latest/example/addressing-tutorial.html">addressing tutorial</a>!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">  <span style="color:#f92672">p2p</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">nodes</span>: [<span style="color:#ae81ff">R1, R2, R3]</span>
+
+<span style="color:#f92672">links</span>:
+  - <span style="color:#ae81ff">R1-R2</span>
+  - <span style="color:#ae81ff">R2-R3</span>
+</code></pre></div><p><img src="/blog/images/basic-net-sim.png" alt="Basic"></p>
+<p>Here we have three nodes with two point to point links. R1 will have node ID 1, R2 will be node ID 2, etc&hellip; The first <code>/30</code> prefix in the <code>10.1.0.0/16</code> network will be <code>10.1.0.0-3</code>. This will be assigned to the link between R1-R2. The next available <code>/30</code> will be <code>10.1.0.4-7</code>. Same as before, this network will be assigned to the R2-R3 link.</p>
+<h3 id="deployments-and-how-it-all-works">Deployments and How It All Works</h3>
+<p>The CLI has a few neat options, let me show you some I think will be used the most.</p>
+<p><code>netlab create</code></p>
+<p>This command will create any files necessary to deploy your cotnainers and configure devices with Ansible. Great if you would just like to view the data without actually performing any deployments.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab create basic.yml
+Created provider configuration file: clab.yml
+Created group_vars <span style="color:#66d9ef">for</span> all
+Created group_vars <span style="color:#66d9ef">for</span> eos
+Created host_vars <span style="color:#66d9ef">for</span> R1
+Created host_vars <span style="color:#66d9ef">for</span> R2
+Created host_vars <span style="color:#66d9ef">for</span> R3
+Created minimized Ansible inventory hosts.yml
+Created Ansible configuration file: ansible.cfg
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
+</code></pre></div><p>Lets take a look at the <code>clab.yml</code> file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
+
+<span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">R1</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+    <span style="color:#f92672">R2</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+    <span style="color:#f92672">R3</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+
+
+  <span style="color:#f92672">links</span>:
+  - <span style="color:#f92672">endpoints</span>:
+    - <span style="color:#e6db74">&#34;R1:eth1&#34;</span>
+    - <span style="color:#e6db74">&#34;R2:eth1&#34;</span>
+  - <span style="color:#f92672">endpoints</span>:
+    - <span style="color:#e6db74">&#34;R2:eth2&#34;</span>
+    - <span style="color:#e6db74">&#34;R3:eth1&#34;</span>
+
+</code></pre></div><p>This can then be used to run either <code>netlab up basic.yml</code> or <code>sudo containerlab deploy -t basic.yml</code>. One of the more interesting files created is the <code>host_vars/&lt;device name&gt;/topology.yml</code>. This gives you a great look at everything that will be deployed on the device with Ansible</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#75715e"># Ansible inventory created from [&#39;basic.yml&#39;, &#39;package:topology-defaults.yml&#39;]</span>
+<span style="color:#75715e">#</span>
+---
+<span style="color:#f92672">af</span>:
+  <span style="color:#f92672">ipv4</span>: <span style="color:#66d9ef">true</span>
+  <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+<span style="color:#f92672">box</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+<span style="color:#f92672">clab</span>:
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+<span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">clab-basic-R1</span>
+<span style="color:#f92672">interfaces</span>:
+- <span style="color:#f92672">clab</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">eth1</span>
+  <span style="color:#f92672">ifindex</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">ifname</span>: <span style="color:#ae81ff">Ethernet1</span>
+  <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.1</span><span style="color:#ae81ff">/30</span>
+  <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+  <span style="color:#f92672">linkindex</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R1 -&gt; R2</span>
+  <span style="color:#f92672">neighbors</span>:
+  - <span style="color:#f92672">ifname</span>: <span style="color:#ae81ff">Ethernet1</span>
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.2</span><span style="color:#ae81ff">/30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">node</span>: <span style="color:#ae81ff">R2</span>
+  <span style="color:#f92672">remote_id</span>: <span style="color:#ae81ff">2</span>
+  <span style="color:#f92672">remote_ifindex</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">p2p</span>
+<span style="color:#f92672">loopback</span>:
+  <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.1</span><span style="color:#ae81ff">/32</span>
+  <span style="color:#f92672">ipv6</span>: <span style="color:#ae81ff">200</span>:<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">1</span>::<span style="color:#ae81ff">1</span><span style="color:#ae81ff">/64</span>
+<span style="color:#f92672">mgmt</span>:
+  <span style="color:#f92672">ifname</span>: <span style="color:#ae81ff">Management0</span>
+  <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">192.168.121.101</span>
+  <span style="color:#f92672">mac</span>: <span style="color:#ae81ff">08</span>-<span style="color:#ae81ff">4F-A9-00-00-01</span>
+
+</code></pre></div><p><code>netlab up</code></p>
+<p>This command will actually deploy our nodes with Containerlab and configure the initial configuration with Ansible. You can use this command instead of using individual commands to deploy the topology.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up basic.yml
+Created provider configuration file: clab.yml
+Created group_vars <span style="color:#66d9ef">for</span> all
+Created group_vars <span style="color:#66d9ef">for</span> eos
+Created host_vars <span style="color:#66d9ef">for</span> R1
+Created host_vars <span style="color:#66d9ef">for</span> R2
+Created host_vars <span style="color:#66d9ef">for</span> R3
+Created minimized Ansible inventory hosts.yml
+Created Ansible configuration file: ansible.cfg
+
+Step 2: Checking virtualization provider installation
+<span style="color:#f92672">============================================================</span>
+.. all tests succeeded, moving on
+
+Step 3: starting the lab
+<span style="color:#f92672">============================================================</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Containerlab v0.23.0 started
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: clab.yml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating lab directory: /home/juliopdx/repos/cl-nst-demo/clab-basic
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating docker network: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;clab&#39;</span>, IPv4Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;172.20.20.0/24&#39;</span>, IPv6Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;2001:172:20:20::/64&#39;</span>, MTU<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1500&#39;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R2
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R1
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R3
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: R1:eth1 &lt;--&gt; R2:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: R2:eth2 &lt;--&gt; R3:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R1&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R2&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R3&#39;</span> node
+INFO<span style="color:#f92672">[</span>0053<span style="color:#f92672">]</span> Adding containerlab host entries to /etc/hosts file
++---+---------------+--------------+--------------+------+---------+----------------+----------------------+
+| <span style="color:#75715e"># |     Name      | Container ID |    Image     | Kind |  State  |  IPv4 Address  |     IPv6 Address     |</span>
++---+---------------+--------------+--------------+------+---------+----------------+----------------------+
+| <span style="color:#ae81ff">1</span> | clab-basic-R1 | ffb8857ca087 | ceos:4.27.2F | ceos | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
+| <span style="color:#ae81ff">2</span> | clab-basic-R2 | c533fc2411e0 | ceos:4.27.2F | ceos | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
+| <span style="color:#ae81ff">3</span> | clab-basic-R3 | da9fedb7ce7f | ceos:4.27.2F | ceos | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
++---+---------------+--------------+--------------+------+---------+----------------+----------------------+
+
+Step 4: deploying initial device configurations
+<span style="color:#f92672">============================================================</span>
+
+PLAY <span style="color:#f92672">[</span>Deploy device configuration<span style="color:#f92672">]</span> *************************************************************
+
+TASK <span style="color:#f92672">[</span>Find initial configuration template<span style="color:#f92672">]</span> *****************************************************
+skipping: <span style="color:#f92672">[</span>R1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">(</span>item<span style="color:#f92672">=</span>/home/juliopdx/repos/cl-nst-demo/venv/lib/python3.8/site-packages/netsim/ansible/templates/initial/eos.j2<span style="color:#f92672">)</span>
+skipping: <span style="color:#f92672">[</span>R1<span style="color:#f92672">]</span>
+skipping: <span style="color:#f92672">[</span>R3<span style="color:#f92672">]</span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">(</span>item<span style="color:#f92672">=</span>/home/juliopdx/repos/cl-nst-demo/venv/lib/python3.8/site-packages/netsim/ansible/templates/initial/eos.j2<span style="color:#f92672">)</span>
+skipping: <span style="color:#f92672">[</span>R3<span style="color:#f92672">]</span>
+skipping: <span style="color:#f92672">[</span>R2<span style="color:#f92672">]</span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">(</span>item<span style="color:#f92672">=</span>/home/juliopdx/repos/cl-nst-demo/venv/lib/python3.8/site-packages/netsim/ansible/templates/initial/eos.j2<span style="color:#f92672">)</span>
+skipping: <span style="color:#f92672">[</span>R2<span style="color:#f92672">]</span>
+
+TASK <span style="color:#f92672">[</span>Deploy initial device configuration<span style="color:#f92672">]</span> *****************************************************
+included: /home/juliopdx/repos/cl-nst-demo/venv/lib/python3.8/site-packages/netsim/ansible/tasks/deploy-config/eos.yml <span style="color:#66d9ef">for</span> R2, R1, R3 <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">(</span>item<span style="color:#f92672">=</span>/home/juliopdx/repos/cl-nst-demo/venv/lib/python3.8/site-packages/netsim/ansible/tasks/deploy-config/eos.yml<span style="color:#f92672">)</span>
+
+TASK <span style="color:#f92672">[</span>wait_for_connection<span style="color:#f92672">]</span> *********************************************************************
+ok: <span style="color:#f92672">[</span>R2<span style="color:#f92672">]</span>
+ok: <span style="color:#f92672">[</span>R1<span style="color:#f92672">]</span>
+ok: <span style="color:#f92672">[</span>R3<span style="color:#f92672">]</span>
+
+TASK <span style="color:#f92672">[</span>arista.eos.eos_config<span style="color:#f92672">]</span> *******************************************************************
+<span style="color:#f92672">[</span>WARNING<span style="color:#f92672">]</span>: To ensure idempotency and correct diff the input configuration lines should be
+similar to how they appear <span style="color:#66d9ef">if</span> present in the running configuration on device including the
+indentation
+changed: <span style="color:#f92672">[</span>R3<span style="color:#f92672">]</span>
+changed: <span style="color:#f92672">[</span>R1<span style="color:#f92672">]</span>
+changed: <span style="color:#f92672">[</span>R2<span style="color:#f92672">]</span>
+
+TASK <span style="color:#f92672">[</span>Deploy module-specific configurations<span style="color:#f92672">]</span> ***************************************************
+
+TASK <span style="color:#f92672">[</span>Deploy custom deployment templates<span style="color:#f92672">]</span> ******************************************************
+
+PLAY RECAP *************************************************************************************
+R1                         : ok<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>    changed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>    unreachable<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    skipped<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>    rescued<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    ignored<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+R2                         : ok<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>    changed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>    unreachable<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    skipped<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>    rescued<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    ignored<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+R3                         : ok<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>    changed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>    unreachable<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    skipped<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>    rescued<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>    ignored<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
+</code></pre></div><p>Checking the configuration on R1.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-basic-R1 Cli
+R1&gt;en
+R1#show run
+! Command: show running-config
+! device: R1 <span style="color:#f92672">(</span>cEOSLab, EOS-4.27.2F-26069621.4272F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">))</span>
+!
+no aaa root
+!
+username admin privilege <span style="color:#ae81ff">15</span> role network-admin secret sha512 $6$KKU2DJRmdlpXm3wG$dZKDhT4eC5ZcNcwyPtklQfNrOnUw28P4dNYTSDB5LiBp/gV0r24ET/D.4L9AeBLmCwcwyMsgtopRkaHigNkHC.
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname R1
+ip host R2 10.0.0.2 10.1.0.2 10.1.0.5
+ip host R3 10.0.0.3 10.1.0.6
+!
+spanning-tree mode mstp
+!
+management api http-commands
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+interface Ethernet1
+   description R1 -&gt; R2
+   mac-address 52:dc:ca:fe:01:01
+   no switchport
+   ip address 10.1.0.1/30
+   ipv6 enable
+!
+interface Loopback0
+   ip address 10.0.0.1/32
+   ipv6 address 200:0:0:1::1/64
+!
+interface Management0
+   ip address 172.20.20.2/24
+   ipv6 address 2001:172:20:20::2/64
+   no lldp transmit
+   no lldp receive
+!
+ip routing
+!
+ipv6 unicast-routing
+!
+end
+R1#
+</code></pre></div><p>I think that is pretty awesome. With one command we have, deployed nodes, set base parameters, and interface configurations. At this point someone could proceed to learn whatever the objective is for the day or test some design.</p>
+<p><code>netlab down</code></p>
+<p>This command will remove all containers and remove any directory created by Containerlab(startup configs). If you would like to keep startup configurations, I would recommend you shutdown the lab with Containerlab commands.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab down basic.yml
+
+Step 1: Checking virtualization provider installation
+<span style="color:#f92672">============================================================</span>
+.. all tests succeeded, moving on
+
+
+Step 2: stopping the lab
+<span style="color:#f92672">============================================================</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: clab.yml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Destroying lab: basic
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Removed container: clab-basic-R1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Removed container: clab-basic-R3
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Removed container: clab-basic-R2
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Removing containerlab host entries from /etc/hosts file
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
+</code></pre></div><h4 id="python-ansible-and-jinja">Python, Ansible, and Jinja</h4>
+<p>Behind the scenes Python is wrapping everything that has been defined into usable data. This can then be used with Ansible and Jinja to create vendor specific configurations. This could be interface settings, BGP, OSPF, and others. For a list of supported configurations by NOS, check it out <a href="https://netsim-tools.readthedocs.io/en/latest/platforms.html#supported-configuration-modules">here</a>. I have probably atrociously oversimplified this process, thankfully the creators made this <a href="https://netsim-tools.readthedocs.io/en/latest/dev/transform.html">in-depth guide</a> on the process.</p>
+<h3 id="sample-use-cases">Sample Use Cases</h3>
+<p>So far I think this is pretty neat. Similar to Containerlab, I think net-sim lends itself incredibly well in learning environments or testing solutions/designs. Let me walk you through some simple workflows someone might go through when learning a technology.</p>
+<h4 id="basic-lab-for-ospf-learning">Basic Lab for OSPF Learning</h4>
+<p>We have shown this topology already but bear with me. In this example we have three nodes that we would like to deploy to start learning some OSPF. The topology file can deploy nodes and configure all interface settings.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
+<span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
+<span style="color:#f92672">defaults</span>:
+  <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">devices</span>:
+    <span style="color:#f92672">eos.clab.image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+
+<span style="color:#f92672">addressing</span>:
+  <span style="color:#f92672">loopback</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#ae81ff">200</span>::<span style="color:#ae81ff">/7</span>
+  <span style="color:#f92672">router_id</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">32</span>
+  <span style="color:#f92672">p2p</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">nodes</span>: [<span style="color:#ae81ff">R1, R2, R3]</span>
+
+<span style="color:#f92672">links</span>:
+  - <span style="color:#ae81ff">R1-R2</span>
+  - <span style="color:#ae81ff">R2-R3</span>
+
+</code></pre></div><h4 id="multi-area-ospf">Multi Area OSPF</h4>
+<p>Maybe we want to deploy an OSPF topology with multiple areas. This could be used to get the concepts of IA vs O vs E vs N routes down. This file will deploy R2 in area 0. R1 will be in area 1, but the link between R1 and R2 will be in area 0. R3 will be in area 3, but the link between R2 and R3 will be in area 0.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">ospf</span>
+<span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
+<span style="color:#f92672">defaults</span>:
+  <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">devices</span>:
+    <span style="color:#f92672">eos.clab.image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+
+<span style="color:#f92672">addressing</span>:
+  <span style="color:#f92672">loopback</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#ae81ff">200</span>::<span style="color:#ae81ff">/7</span>
+  <span style="color:#f92672">router_id</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">32</span>
+  <span style="color:#f92672">p2p</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">module</span>: [<span style="color:#ae81ff">ospf]</span>
+<span style="color:#f92672">ospf</span>:
+  <span style="color:#f92672">area</span>: <span style="color:#ae81ff">0</span>
+
+<span style="color:#f92672">nodes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R1</span>
+    <span style="color:#f92672">ospf</span>:
+      <span style="color:#f92672">area</span>: <span style="color:#ae81ff">1</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R2</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R3</span>
+    <span style="color:#f92672">ospf</span>:
+      <span style="color:#f92672">area</span>: <span style="color:#ae81ff">3</span>
+
+<span style="color:#f92672">links</span>:
+  - <span style="color:#f92672">R1</span>:
+      <span style="color:#f92672">ospf.area</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">R2</span>:
+  - <span style="color:#f92672">R2</span>:
+    <span style="color:#f92672">R3</span>:
+      <span style="color:#f92672">ospf.area</span>: <span style="color:#ae81ff">0</span>
+
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up ospf.yml
+Created provider configuration file: clab.yml
+Created group_vars <span style="color:#66d9ef">for</span> all
+Created group_vars <span style="color:#66d9ef">for</span> eos
+Created host_vars <span style="color:#66d9ef">for</span> R1
+Created host_vars <span style="color:#66d9ef">for</span> R2
+Created host_vars <span style="color:#66d9ef">for</span> R3
+Created minimized Ansible inventory hosts.yml
+Created Ansible configuration file: ansible.cfg
+
+Step 2: Checking virtualization provider installation
+<span style="color:#f92672">============================================================</span>
+.. all tests succeeded, moving on
+
+Step 3: starting the lab
+<span style="color:#f92672">============================================================</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Containerlab v0.23.0 started
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: clab.yml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating lab directory: /home/juliopdx/repos/cl-nst-demo/clab-ospf
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating docker network: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;clab&#39;</span>, IPv4Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;172.20.20.0/24&#39;</span>, IPv6Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;2001:172:20:20::/64&#39;</span>, MTU<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1500&#39;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R1
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R2
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R3
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: R2:eth2 &lt;--&gt; R3:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: R1:eth1 &lt;--&gt; R2:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R3&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R2&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R1&#39;</span> node
+INFO<span style="color:#f92672">[</span>0054<span style="color:#f92672">]</span> Adding containerlab host entries to /etc/hosts file
++---+--------------+--------------+--------------+------+---------+----------------+----------------------+
+| <span style="color:#75715e"># |     Name     | Container ID |    Image     | Kind |  State  |  IPv4 Address  |     IPv6 Address     |</span>
++---+--------------+--------------+--------------+------+---------+----------------+----------------------+
+| <span style="color:#ae81ff">1</span> | clab-ospf-R1 | ba1c4a47b6cb | ceos:4.27.2F | ceos | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
+| <span style="color:#ae81ff">2</span> | clab-ospf-R2 | dbda30424bc2 | ceos:4.27.2F | ceos | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
+| <span style="color:#ae81ff">3</span> | clab-ospf-R3 | 3234e3265e9c | ceos:4.27.2F | ceos | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
++---+--------------+--------------+--------------+------+---------+----------------+----------------------+
+
+etc...
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-ospf-R1 Cli
+R1&gt;en
+R1#show ip ospf neighbor
+Neighbor ID     Instance VRF      Pri State                  Dead Time   Address         Interface
+10.0.0.2        <span style="color:#ae81ff">1</span>        default  <span style="color:#ae81ff">0</span>   FULL                   00:00:38    10.1.0.2        Ethernet1
+R1#show ip route ospf
+
+VRF: default
+
+ O        10.0.0.2/32 <span style="color:#f92672">[</span>110/20<span style="color:#f92672">]</span> via 10.1.0.2, Ethernet1
+ O IA     10.0.0.3/32 <span style="color:#f92672">[</span>110/30<span style="color:#f92672">]</span> via 10.1.0.2, Ethernet1
+ O        10.1.0.4/30 <span style="color:#f92672">[</span>110/20<span style="color:#f92672">]</span> via 10.1.0.2, Ethernet1
+
+R1#
+</code></pre></div><h4 id="ospf-lab-for-bgp-learning">OSPF Lab for BGP Learning</h4>
+<p>In this topology, the lab is predeployed with OSPF(area 0) and the students could then focus on the BGP learning.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basico</span>
+<span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
+<span style="color:#f92672">defaults</span>:
+  <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">devices</span>:
+    <span style="color:#f92672">eos.clab.image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+
+<span style="color:#f92672">addressing</span>:
+  <span style="color:#f92672">loopback</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#ae81ff">200</span>::<span style="color:#ae81ff">/7</span>
+  <span style="color:#f92672">router_id</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">32</span>
+  <span style="color:#f92672">p2p</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">module</span>: [<span style="color:#ae81ff">ospf]</span>
+
+<span style="color:#f92672">nodes</span>: [<span style="color:#ae81ff">R1, R2, R3]</span>
+
+<span style="color:#f92672">links</span>:
+  - <span style="color:#ae81ff">R1-R2</span>
+  - <span style="color:#ae81ff">R2-R3</span>
+
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up basic_ospf.yml
+Created provider configuration file: clab.yml
+Created group_vars <span style="color:#66d9ef">for</span> all
+Created group_vars <span style="color:#66d9ef">for</span> eos
+Created host_vars <span style="color:#66d9ef">for</span> R1
+Created host_vars <span style="color:#66d9ef">for</span> R2
+Created host_vars <span style="color:#66d9ef">for</span> R3
+Created minimized Ansible inventory hosts.yml
+Created Ansible configuration file: ansible.cfg
+
+Step 2: Checking virtualization provider installation
+<span style="color:#f92672">============================================================</span>
+.. all tests succeeded, moving on
+
+Step 3: starting the lab
+<span style="color:#f92672">============================================================</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Containerlab v0.23.0 started
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: clab.yml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating lab directory: /home/juliopdx/repos/cl-nst-demo/clab-basico
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating docker network: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;clab&#39;</span>, IPv4Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;172.20.20.0/24&#39;</span>, IPv6Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;2001:172:20:20::/64&#39;</span>, MTU<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1500&#39;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R2
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R1
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: R3
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: R1:eth1 &lt;--&gt; R2:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Creating virtual wire: R2:eth2 &lt;--&gt; R3:eth1
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R3&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R2&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Arista cEOS <span style="color:#e6db74">&#39;R1&#39;</span> node
+INFO<span style="color:#f92672">[</span>0055<span style="color:#f92672">]</span> Adding containerlab host entries to /etc/hosts file
++---+----------------+--------------+--------------+------+---------+----------------+----------------------+
+| <span style="color:#75715e"># |      Name      | Container ID |    Image     | Kind |  State  |  IPv4 Address  |     IPv6 Address     |</span>
++---+----------------+--------------+--------------+------+---------+----------------+----------------------+
+| <span style="color:#ae81ff">1</span> | clab-basico-R1 | f079a253b1d1 | ceos:4.27.2F | ceos | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
+| <span style="color:#ae81ff">2</span> | clab-basico-R2 | ed28240d8b0f | ceos:4.27.2F | ceos | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
+| <span style="color:#ae81ff">3</span> | clab-basico-R3 | 0f643cc95fc7 | ceos:4.27.2F | ceos | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
++---+----------------+--------------+--------------+------+---------+----------------+----------------------+
+etc...
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-basico-R1 Cli
+R1&gt;en
+R1#show ip route ospf
+
+VRF: default
+
+ O        10.0.0.2/32 <span style="color:#f92672">[</span>110/20<span style="color:#f92672">]</span> via 10.1.0.2, Ethernet1
+ O        10.0.0.3/32 <span style="color:#f92672">[</span>110/30<span style="color:#f92672">]</span> via 10.1.0.2, Ethernet1
+ O        10.1.0.4/30 <span style="color:#f92672">[</span>110/20<span style="color:#f92672">]</span> via 10.1.0.2, Ethernet1
+
+R1#
+</code></pre></div><h4 id="ospf-and-bgp-lab-complete">OSPF and BGP Lab Complete</h4>
+<p>In this topology, we have a complete OSPF deployment. R1 and R3 will be iBGP peers.</p>
+<p><img src="/blog/images/ospf-bgp.png" alt="OSPF BGP"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">bgp</span>
+<span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
+<span style="color:#f92672">defaults</span>:
+  <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">devices</span>:
+    <span style="color:#f92672">eos.clab.image</span>: <span style="color:#ae81ff">ceos:4.27.2F</span>
+
+
+<span style="color:#f92672">addressing</span>:
+  <span style="color:#f92672">loopback</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#ae81ff">200</span>::<span style="color:#ae81ff">/7</span>
+  <span style="color:#f92672">router_id</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.0.0.0</span><span style="color:#ae81ff">/24</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">32</span>
+  <span style="color:#f92672">p2p</span>:
+    <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
+    <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
+    <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">module</span>: [<span style="color:#ae81ff">ospf]</span>
+
+<span style="color:#f92672">nodes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R1</span>
+    <span style="color:#f92672">module</span>: [<span style="color:#ae81ff">ospf,bgp]</span>
+    <span style="color:#f92672">bgp.as</span>: <span style="color:#ae81ff">65000</span>
+  - <span style="color:#ae81ff">R2</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R3</span>
+    <span style="color:#f92672">module</span>: [<span style="color:#ae81ff">ospf,bgp]</span>
+    <span style="color:#f92672">bgp.as</span>: <span style="color:#ae81ff">65000</span>
+
+<span style="color:#f92672">links</span>:
+  - <span style="color:#ae81ff">R1-R2</span>
+  - <span style="color:#ae81ff">R2-R3</span>
+
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-bgp-R1 Cli
+R1&gt;en
+R1#show ip bgp summary
+BGP summary information <span style="color:#66d9ef">for</span> VRF default
+Router identifier 10.0.0.1, local AS number <span style="color:#ae81ff">65000</span>
+Neighbor Status Codes: m - Under maintenance
+  Description              Neighbor V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
+  R3                       10.0.0.3 <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">65000</span>             <span style="color:#ae81ff">10</span>        <span style="color:#ae81ff">10</span>    <span style="color:#ae81ff">0</span>    <span style="color:#ae81ff">0</span> 00:05:32 Estab   <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">1</span>
+R1#show ip bgp | b Network
+          Network                Next Hop              Metric  AIGP       LocPref Weight  Path
+ * &gt;      10.0.0.1/32            -                     -       -          -       <span style="color:#ae81ff">0</span>       i
+ * &gt;      10.0.0.3/32            10.0.0.3              <span style="color:#ae81ff">0</span>       -          <span style="color:#ae81ff">100</span>     <span style="color:#ae81ff">0</span>       i
+R1#
+</code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far. I really appreciate it! I am really looking forward to using net-sim tools to create future labs. I can already see the speed to create troubleshooting labs will be increased tremendously. Thank you, Ivan and team for all the work on this tool!</p>
+<ul>
+<li><a href="https://unsplash.com/photos/vS7LVkPyXJU">Featured Image Philip Swinburn</a></li>
+<li><a href="https://netsim-tools.readthedocs.io/en/latest/index.html">net-sim tools</a></li>
+<li><a href="https://containerlab.srlinux.dev/">Containerlab</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.com/tags/containerlab/">Containerlab</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/ospf/">OSPF</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/bgp/">BGP</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/net-sim/">net-sim</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/docker/">Docker</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        2817 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2022-02-13 21:07
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/">
+                    <span class="button__text">Learning Labs With Containerlab</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.com/"></a></span>
+            
+            <span><a href="https://juliopdx.com/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

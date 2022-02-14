@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>net-sim on Welcome to the World of Tomorrow</title>
+    <link>https://juliopdx.com/tags/net-sim/</link>
+    <description>Recent content in net-sim on Welcome to the World of Tomorrow</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 13 Feb 2022 21:07:43 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/net-sim/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Network Simulation Tools and Containerlab</title>
+      <link>https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/</guid>
+      <description>Introduction I&amp;rsquo;ve been progressing through a series of technical books, some of which I&amp;rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&amp;rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing.</description>
+    </item>
+    
+  </channel>
+</rss>

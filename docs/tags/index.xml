@@ -7,7 +7,52 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 28 Jan 2022 15:45:51 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Feb 2022 21:07:43 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>BGP</title>
+      <link>https://juliopdx.com/tags/bgp/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/bgp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Containerlab</title>
+      <link>https://juliopdx.com/tags/containerlab/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/containerlab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://juliopdx.com/tags/docker/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>net-sim</title>
+      <link>https://juliopdx.com/tags/net-sim/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/net-sim/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSPF</title>
+      <link>https://juliopdx.com/tags/ospf/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/ospf/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Network Automation</title>
       <link>https://juliopdx.com/tags/network-automation/</link>
@@ -45,56 +90,11 @@
     </item>
     
     <item>
-      <title>BGP</title>
-      <link>https://juliopdx.com/tags/bgp/</link>
-      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/bgp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Containerlab</title>
-      <link>https://juliopdx.com/tags/containerlab/</link>
-      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/containerlab/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>OSPF</title>
-      <link>https://juliopdx.com/tags/ospf/</link>
-      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/ospf/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Redistribution</title>
       <link>https://juliopdx.com/tags/redistribution/</link>
       <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/redistribution/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>SR Linux</title>
-      <link>https://juliopdx.com/tags/sr-linux/</link>
-      <pubDate>Sat, 22 Jan 2022 15:25:24 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/sr-linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Ansible</title>
-      <link>https://juliopdx.com/tags/ansible/</link>
-      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/ansible/</guid>
       <description></description>
     </item>
     
