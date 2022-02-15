@@ -347,7 +347,7 @@ end
 R1#
 ```
 
-I think that is pretty awesome. With one command we have, deployed nodes, set base parameters, and interface configurations. At this point someone could proceed to learn whatever the objective is for the day or test some design.
+I think that is pretty awesome. With one command we have deployed nodes, set base parameters, and interface configurations. At this point someone could proceed to learn whatever the objective is for the day or test some design.
 
 `netlab down`
 
