@@ -45,9 +45,9 @@ juliopdx@drone:~$
 
 ### Building the Inventory File
 
-At the moment Suzieq supports a built in yaml format as well as using a standard yaml Ansible inventory. For this scenario I kept things simple and used the built in format. Please note, there is word from the developers to add more dynamic inventory plugins, using Netbox for example. Below is the inventory I created for this deployment, more examples can be found in the Suzieq documentation.
+At the moment Suzieq supports a built in yaml format as well as using a standard yaml Ansible inventory. For this scenario I kept things simple and used the built in format. Please note, there is word from the developers to add more dynamic inventory plugins, using Netbox for example. Below is the inventory I created for this deployment, more examples can be found in the Suzieq documentation. Please note, there will be examples of old school(`0.15.0`) commands and new formats introduced in version `0.16.0`. If you are using a different version, please check out their [documentation](https://suzieq.readthedocs.io/en/latest/).
 
-`inv.yaml`
+`Version 0.15.0 inv.yaml`
 
 ```yaml
 - namespace: eos
@@ -56,6 +56,36 @@ At the moment Suzieq supports a built in yaml format as well as using a standard
     - url: ssh://192.168.10.122 username=suzie password=suzie
     - url: ssh://192.168.10.123 username=suzie password=suzie
     - url: ssh://192.168.10.124 username=suzie password=suzie
+```
+
+`Version 0.16.0 inv.yaml`
+
+```yaml
+sources:
+- name: eos-source
+  type: native
+  hosts:
+    - url: ssh://192.168.10.121
+    - url: ssh://192.168.10.122
+    - url: ssh://192.168.10.123
+    - url: ssh://192.168.10.124
+
+devices:
+- name: eos-devices
+  devtype: eos
+  ignore-known-hosts: true
+
+auths:
+- name: suzie-user
+  username: suzie
+  password: plain:suzie
+
+namespaces:
+- name: eos
+  source: eos-source
+  device: eos-devices
+  auth: suzie-user
+
 ```
 
 ### Installing the Docker Container/Poller
@@ -83,7 +113,8 @@ Now we will attach to the container and get the service running. To disconnect f
 
 ```shell
 juliopdx@drone:~$ docker attach sq-poller
-root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k
+root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k # version 0.15.0
+root@eceb70607520:/suzieq# sq-poller -I inv.yaml # version 0.16.0+
 ```
 
 ### Side Note, The Suzieq CLI
@@ -104,7 +135,14 @@ From the CLI we can quickly explore a ton of information about our network and r
 
 I think you get the idea. The Suzieq CLI is a quick way to explore not only the capabilities of Suzieq but also your network. At this point lets exit the CLI, restart the Poller, and exit from the container(CTRL + p, CTRL + q).
 
-![Exit Poller](/blog/images/exitpoller.png)
+
+```shell
+root> exit
+root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k # version 0.15.0
+root@eceb70607520:/suzieq# sq-poller -I inv.yaml # version 0.16.0+
+read escape sequence
+juliopdx@drone:~$
+```
 
 ### Directory Permissions
 

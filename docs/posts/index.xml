@@ -2865,14 +2865,40 @@ e5d807183f32   drone/drone-runner-docker:1   <span style="color:#e6db74">&#34;/b
 2df0b3ee02fb   batfish/batfish               <span style="color:#e6db74">&#34;java -XX:-UseCompre…&#34;</span>   batfish
 juliopdx@drone:~$
 </code></pre></div><h3 id="building-the-inventory-file">Building the Inventory File</h3>
-<p>At the moment Suzieq supports a built in yaml format as well as using a standard yaml Ansible inventory. For this scenario I kept things simple and used the built in format. Please note, there is word from the developers to add more dynamic inventory plugins, using Netbox for example. Below is the inventory I created for this deployment, more examples can be found in the Suzieq documentation.</p>
-<p><code>inv.yaml</code></p>
+<p>At the moment Suzieq supports a built in yaml format as well as using a standard yaml Ansible inventory. For this scenario I kept things simple and used the built in format. Please note, there is word from the developers to add more dynamic inventory plugins, using Netbox for example. Below is the inventory I created for this deployment, more examples can be found in the Suzieq documentation. Please note, there will be examples of old school(<code>0.15.0</code>) commands and new formats introduced in version <code>0.16.0</code>. If you are using a different version, please check out their <a href="https://suzieq.readthedocs.io/en/latest/">documentation</a>.</p>
+<p><code>Version 0.15.0 inv.yaml</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">eos</span>
   <span style="color:#f92672">hosts</span>:
     - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.121 username=suzie password=suzie</span>
     - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.122 username=suzie password=suzie</span>
     - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.123 username=suzie password=suzie</span>
     - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.124 username=suzie password=suzie</span>
+</code></pre></div><p><code>Version 0.16.0 inv.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sources</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">eos-source</span>
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">native</span>
+  <span style="color:#f92672">hosts</span>:
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.121</span>
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.122</span>
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.123</span>
+    - <span style="color:#f92672">url</span>: <span style="color:#ae81ff">ssh://192.168.10.124</span>
+
+<span style="color:#f92672">devices</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">eos-devices</span>
+  <span style="color:#f92672">devtype</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">ignore-known-hosts</span>: <span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">auths</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">suzie-user</span>
+  <span style="color:#f92672">username</span>: <span style="color:#ae81ff">suzie</span>
+  <span style="color:#f92672">password</span>: <span style="color:#ae81ff">plain:suzie</span>
+
+<span style="color:#f92672">namespaces</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">eos</span>
+  <span style="color:#f92672">source</span>: <span style="color:#ae81ff">eos-source</span>
+  <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos-devices</span>
+  <span style="color:#f92672">auth</span>: <span style="color:#ae81ff">suzie-user</span>
+
 </code></pre></div><h3 id="installing-the-docker-containerpoller">Installing the Docker Container/Poller</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run -d --restart always -itd <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>-v /home/juliopdx/suz/parquet-out:/suzieq/parquet <span style="color:#ae81ff">\
@@ -2888,7 +2914,8 @@ e5d807183f32   drone/drone-runner-docker:1   <span style="color:#e6db74">&#34;/b
 juliopdx@drone:~$
 </code></pre></div><p>Now we will attach to the container and get the service running. To disconnect from the Poller and leave the service running, type “CTRL + p, CTRL + q”</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@drone:~$ docker attach sq-poller
-root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k
+root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k <span style="color:#75715e"># version 0.15.0</span>
+root@eceb70607520:/suzieq# sq-poller -I inv.yaml <span style="color:#75715e"># version 0.16.0+</span>
 </code></pre></div><h3 id="side-note-the-suzieq-cli">Side Note, The Suzieq CLI</h3>
 <p>In my case I will be interacting with Suzieq using their Python library and the Poller, but you can interact with Suzieq using a CLI or GUI as well. For the moment, the Poller has most likely gathered some data about our network. Lets stop the Poller(CTRL + c) and connect to the CLI!</p>
 <p><img src="/blog/images/suziecli.png" alt="Suzie CLI"></p>
@@ -2898,8 +2925,12 @@ root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k
 <p><code>Assert Fail</code></p>
 <p><img src="/blog/images/routingassertfailed.png" alt="Assert Fail"></p>
 <p>I think you get the idea. The Suzieq CLI is a quick way to explore not only the capabilities of Suzieq but also your network. At this point lets exit the CLI, restart the Poller, and exit from the container(CTRL + p, CTRL + q).</p>
-<p><img src="/blog/images/exitpoller.png" alt="Exit Poller"></p>
-<h3 id="directory-permissions">Directory Permissions</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">root&gt; exit
+root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k <span style="color:#75715e"># version 0.15.0</span>
+root@eceb70607520:/suzieq# sq-poller -I inv.yaml <span style="color:#75715e"># version 0.16.0+</span>
+read escape sequence
+juliopdx@drone:~$
+</code></pre></div><h3 id="directory-permissions">Directory Permissions</h3>
 <p>You may not run into this but in my case I ran into an issue where I had to give more permissions to the directory on my host machine running the containers.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo chmod -R a+rwx suz/
 </code></pre></div><h2 id="the-challenge-getting-the-data-to-the-pipeline-runner">The Challenge: Getting the Data to the Pipeline Runner</h2>
