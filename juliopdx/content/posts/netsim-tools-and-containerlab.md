@@ -114,8 +114,8 @@ links:
 {{< mermaid >}}
 %%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
 graph LR
-  R1((R1)) --> R2((R2))
-  R2 --> R3((R3))
+  R1((R1)) --- R2((R2))
+  R2 --- R3((R3))
 {{< /mermaid >}}
 
 Here we have three nodes with two point to point links. R1 will have node ID 1, R2 will be node ID 2, etc... The first `/30` prefix in the `10.1.0.0/16` network will be `10.1.0.0-3`. This will be assigned to the link between R1-R2. The next available `/30` will be `10.1.0.4-7`. Same as before, this network will be assigned to the R2-R3 link.
