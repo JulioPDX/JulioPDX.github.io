@@ -44,7 +44,7 @@
 <meta itemprop="description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing.">
 <meta itemprop="datePublished" content="2022-02-13T21:07:43-08:00" />
 <meta itemprop="dateModified" content="2022-02-13T21:07:43-08:00" />
-<meta itemprop="wordCount" content="2843">
+<meta itemprop="wordCount" content="2877">
 <meta itemprop="image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg">
 
 
@@ -703,7 +703,28 @@ VRF: default
 R1#
 </code></pre></div><h4 id="ospf-and-bgp-lab-complete">OSPF and BGP Lab Complete</h4>
 <p>In this topology, we have a complete OSPF deployment. R1 and R3 will be iBGP peers.</p>
-<p><img src="/blog/images/ospf-bgp.png" alt="OSPF BGP"></p>
+<script async type="application/javascript" src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js">
+    var config = {
+        startOnLoad: true,
+        theme: 'dark',
+        align: 'center'
+    };
+    mermaid.initialize(config);
+</script>
+
+<div class="mermaid">
+    
+%%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
+flowchart TD
+  subgraph OSPF
+    subgraph AS 65000
+        1((R1)) -.iBGP.- 3((R3))
+    end
+  1 --- 2((R2))
+  3 --- 2((R2))
+  end
+
+</div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">bgp</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:
@@ -790,7 +811,7 @@ R1#
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        2843 Words
+        2877 Words
       </p>
 
       <p>

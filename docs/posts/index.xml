@@ -540,7 +540,28 @@ VRF: default
 R1#
 </code></pre></div><h4 id="ospf-and-bgp-lab-complete">OSPF and BGP Lab Complete</h4>
 <p>In this topology, we have a complete OSPF deployment. R1 and R3 will be iBGP peers.</p>
-<p><img src="/blog/images/ospf-bgp.png" alt="OSPF BGP"></p>
+<script async type="application/javascript" src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js">
+    var config = {
+        startOnLoad: true,
+        theme: 'dark',
+        align: 'center'
+    };
+    mermaid.initialize(config);
+</script>
+
+<div class="mermaid">
+    
+%%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
+flowchart TD
+  subgraph OSPF
+    subgraph AS 65000
+        1((R1)) -.iBGP.- 3((R3))
+    end
+  1 --- 2((R2))
+  3 --- 2((R2))
+  end
+
+</div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">bgp</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:

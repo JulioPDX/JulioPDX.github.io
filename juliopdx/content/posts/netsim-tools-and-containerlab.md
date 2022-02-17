@@ -618,7 +618,17 @@ R1#
 
 In this topology, we have a complete OSPF deployment. R1 and R3 will be iBGP peers.
 
-![OSPF BGP](/blog/images/ospf-bgp.png)
+{{< mermaid >}}
+%%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
+flowchart TD
+  subgraph OSPF
+    subgraph AS 65000
+        1((R1)) -.iBGP.- 3((R3))
+    end
+  1 --- 2((R2))
+  3 --- 2((R2))
+  end
+{{</ mermaid >}}
 
 ```yml
 name: bgp
