@@ -44,7 +44,7 @@
 <meta itemprop="description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing.">
 <meta itemprop="datePublished" content="2022-02-13T21:07:43-08:00" />
 <meta itemprop="dateModified" content="2022-02-13T21:07:43-08:00" />
-<meta itemprop="wordCount" content="2819">
+<meta itemprop="wordCount" content="2843">
 <meta itemprop="image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg">
 
 
@@ -250,7 +250,23 @@ pip install ansible <span style="color:#75715e">#decided to use whatever was lat
 <span style="color:#f92672">links</span>:
   - <span style="color:#ae81ff">R1-R2</span>
   - <span style="color:#ae81ff">R2-R3</span>
-</code></pre></div><p><img src="/blog/images/basic-net-sim.png" alt="Basic"></p>
+</code></pre></div><script async type="application/javascript" src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js">
+    var config = {
+        startOnLoad: true,
+        theme: 'dark',
+        align: 'center'
+    };
+    mermaid.initialize(config);
+</script>
+
+<div class="mermaid">
+    
+%%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
+graph LR
+  R1((R1)) --> R2((R2))
+  R2 --> R3((R3))
+
+</div>
 <p>Here we have three nodes with two point to point links. R1 will have node ID 1, R2 will be node ID 2, etc&hellip; The first <code>/30</code> prefix in the <code>10.1.0.0/16</code> network will be <code>10.1.0.0-3</code>. This will be assigned to the link between R1-R2. The next available <code>/30</code> will be <code>10.1.0.4-7</code>. Same as before, this network will be assigned to the R2-R3 link.</p>
 <h3 id="deployments-and-how-it-all-works">Deployments and How It All Works</h3>
 <p>The CLI has a few neat options, let me show you some I think will be used the most.</p>
@@ -774,7 +790,7 @@ R1#
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        2819 Words
+        2843 Words
       </p>
 
       <p>
