@@ -87,18 +87,8 @@ pip install ansible <span style="color:#75715e">#decided to use whatever was lat
 <span style="color:#f92672">links</span>:
   - <span style="color:#ae81ff">R1-R2</span>
   - <span style="color:#ae81ff">R2-R3</span>
-</code></pre></div><script async type="application/javascript" src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js">
-    var config = {
-        startOnLoad: true,
-        theme: 'dark',
-        align: 'center'
-    };
-    mermaid.initialize(config);
-</script>
-
-<div class="mermaid">
+</code></pre></div><div class="mermaid">
     
-%%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
 graph LR
   R1((R1)) --- R2((R2))
   R2 --- R3((R3))
@@ -540,15 +530,6 @@ VRF: default
 R1#
 </code></pre></div><h4 id="ospf-and-bgp-lab-complete">OSPF and BGP Lab Complete</h4>
 <p>In this topology, we have a complete OSPF deployment. R1 and R3 will be iBGP peers.</p>
-<script async type="application/javascript" src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js">
-    var config = {
-        startOnLoad: true,
-        theme: 'dark',
-        align: 'center'
-    };
-    mermaid.initialize(config);
-</script>
-
 <div class="mermaid">
     
 %%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%

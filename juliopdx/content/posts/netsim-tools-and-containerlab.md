@@ -3,6 +3,7 @@ title: "Network Simulation Tools and Containerlab"
 date: 2022-02-13T21:07:43-08:00
 draft: false
 toc: true
+mermaid: true
 images:
   - /blog/images/philip-swinburn.jpg
 tags:
@@ -112,7 +113,6 @@ links:
 ```
 
 {{< mermaid >}}
-%%{init: {'securityLevel': 'loose', 'theme':'dark'}}%%
 graph LR
   R1((R1)) --- R2((R2))
   R2 --- R3((R3))
