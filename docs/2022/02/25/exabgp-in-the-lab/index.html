@@ -47,7 +47,7 @@
 <meta itemprop="description" content="Intro I was recently working my way through Optimal Routing design by Cisco Press&hellip; Can you tell that I get through books very slowly? I&rsquo;ve probably used that sentence in my blog posts three or four times now! Either way, this chapter focused on scaling BGP and dealing with external connections. The section that really got me was external connections. The books goes over a lot, for example, handling inbound traffic, outbound traffic, full routes vs partial vs default.">
 <meta itemprop="datePublished" content="2022-02-25T15:06:14-08:00" />
 <meta itemprop="dateModified" content="2022-02-25T15:06:14-08:00" />
-<meta itemprop="wordCount" content="3848">
+<meta itemprop="wordCount" content="3849">
 <meta itemprop="image" content="https://juliopdx.com/blog/images/greg-rakozy.jpg">
 
 
@@ -512,7 +512,7 @@ neighbor 172.16.2.3 {
     peer-as 65002;
 }
 root@internet:/# exabgp bgp.cfg
-</code></pre></div><p>I&rsquo;ll save your eyes, the output is crazy! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.</p>
+</code></pre></div><p>I&rsquo;ll save your eyes, the output is a lot! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:ispa# show network-instance default protocols bgp summary
 ------------------------------------------------------------------------------------------------------------------------------------------------
 BGP is enabled and up in network-instance &#34;default&#34;
@@ -782,7 +782,7 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        3848 Words
+        3849 Words
       </p>
 
       <p>

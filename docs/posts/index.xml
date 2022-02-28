@@ -329,7 +329,7 @@ neighbor 172.16.2.3 {
     peer-as 65002;
 }
 root@internet:/# exabgp bgp.cfg
-</code></pre></div><p>I&rsquo;ll save your eyes, the output is crazy! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.</p>
+</code></pre></div><p>I&rsquo;ll save your eyes, the output is a lot! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:ispa# show network-instance default protocols bgp summary
 ------------------------------------------------------------------------------------------------------------------------------------------------
 BGP is enabled and up in network-instance &#34;default&#34;

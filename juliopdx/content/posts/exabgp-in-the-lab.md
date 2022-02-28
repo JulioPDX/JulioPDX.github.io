@@ -377,7 +377,7 @@ neighbor 172.16.2.3 {
 root@internet:/# exabgp bgp.cfg
 ```
 
-I'll save your eyes, the output is crazy! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.
+I'll save your eyes, the output is a lot! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.
 
 ```text
 A:ispa# show network-instance default protocols bgp summary
