@@ -371,7 +371,7 @@ Neighbor Status Codes: m - Under maintenance
   10.0.0.0 4 65001           8341      7566    0    0 00:31:11 Estab   18898  18898
   10.0.0.7 4 65003           8540      8454    0    0 00:31:11 Estab   1      1
 cmpa1#
-</code></pre></div><p>Now we are only receiving the default route from our iBGP neighbor! Maybe we want to filter the routes inbound from the ISPs.</p>
+</code></pre></div><p>Now we are only receiving the default route from our iBGP neighbor! This iBGP route map also has the benefit of preventing our AS from being a transit AS. Routes learned from one node will not be advertised to the other ISP and possibly severely hindering our edge devices. Maybe we want to filter the routes inbound from the ISPs.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 65003
    neighbor 10.0.0.0 route-map default in
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp sum

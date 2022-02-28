@@ -436,7 +436,7 @@ Neighbor Status Codes: m - Under maintenance
 cmpa1#
 ```
 
-Now we are only receiving the default route from our iBGP neighbor! Maybe we want to filter the routes inbound from the ISPs.
+Now we are only receiving the default route from our iBGP neighbor! This iBGP route map also has the benefit of preventing our AS from being a transit AS. Routes learned from one node will not be advertised to the other ISP and possibly severely hindering our edge devices. Maybe we want to filter the routes inbound from the ISPs.
 
 ```text
 router bgp 65003
