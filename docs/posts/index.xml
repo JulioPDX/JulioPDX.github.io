@@ -75,7 +75,7 @@ neighbor 172.16.2.2 {
 
 neighbor 172.16.2.3 {
     inherit AS_65000;
-    peer-as 65002
+    peer-as 65002;
 }
 
 </code></pre></div><p>This container is now on <a href="https://hub.docker.com/repository/docker/juliopdx/exabgp-irt">Docker Hub</a>, feel free to pull it down and check it out. After it was on Docker Hub, I had this random idea to automate the updates to the docker image. For example, the BGP view from RIPE is updated a decent amount throughout the day. I think it would be neat to grab the latest update at the end of the day and rebuild the docker image. This could then be tagged with <code>latest</code> and the <code>date</code> it was created.</p>

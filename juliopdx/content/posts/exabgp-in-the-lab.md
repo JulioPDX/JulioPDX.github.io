@@ -84,7 +84,7 @@ neighbor 172.16.2.2 {
 
 neighbor 172.16.2.3 {
     inherit AS_65000;
-    peer-as 65002
+    peer-as 65002;
 }
 
 ```
