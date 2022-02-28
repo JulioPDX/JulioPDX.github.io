@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 22 Jan 2022 15:25:24 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/sr-linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 25 Feb 2022 15:06:14 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/sr-linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ExaBGP in the Lab</title>
+      <link>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</link>
+      <pubDate>Fri, 25 Feb 2022 15:06:14 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</guid>
+      <description>Intro I was recently working my way through Optimal Routing design by Cisco Press&amp;hellip; Can you tell that I get through books very slowly? I&amp;rsquo;ve probably used that sentence in my blog posts three or four times now! Either way, this chapter focused on scaling BGP and dealing with external connections. The section that really got me was external connections. The books goes over a lot, for example, handling inbound traffic, outbound traffic, full routes vs partial vs default.</description>
+    </item>
+    
     <item>
       <title>Multipoint Redistribution and SR Linux</title>
       <link>https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/</link>

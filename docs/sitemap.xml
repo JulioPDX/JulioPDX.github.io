@@ -3,22 +3,52 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://juliopdx.com/tags/arista/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/bgp/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/docker/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/sr-linux/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://juliopdx.com/</loc>
+    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://juliopdx.com/tags/ansible/</loc>
     <lastmod>2022-02-13T21:07:43-08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://juliopdx.com/tags/bgp/</loc>
-    <lastmod>2022-02-13T21:07:43-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://juliopdx.com/tags/containerlab/</loc>
-    <lastmod>2022-02-13T21:07:43-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/docker/</loc>
     <lastmod>2022-02-13T21:07:43-08:00</lastmod>
   </url>
   
@@ -34,21 +64,6 @@
   
   <url>
     <loc>https://juliopdx.com/tags/ospf/</loc>
-    <lastmod>2022-02-13T21:07:43-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/posts/</loc>
-    <lastmod>2022-02-13T21:07:43-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2022-02-13T21:07:43-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/</loc>
     <lastmod>2022-02-13T21:07:43-08:00</lastmod>
   </url>
   
@@ -89,11 +104,6 @@
   
   <url>
     <loc>https://juliopdx.com/tags/redistribution/</loc>
-    <lastmod>2022-01-22T15:25:24-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/sr-linux/</loc>
     <lastmod>2022-01-22T15:25:24-08:00</lastmod>
   </url>
   
@@ -200,11 +210,6 @@
   <url>
     <loc>https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/</loc>
     <lastmod>2021-09-17T09:31:09-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://juliopdx.com/tags/arista/</loc>
-    <lastmod>2021-09-01T18:52:28-08:00</lastmod>
   </url>
   
   <url>

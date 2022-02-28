@@ -154,6 +154,7 @@ set()
 
 Thank you for staying this long. I hope you enjoyed the post and found something useful. As you can see I have a long way to go with network testing but it really is an important skill. I'll include some links below!
 
+- [Featured Image by Greg Rakozy](https://unsplash.com/photos/oMpAz-DN-9I)
 - [Featured Image by Ildefonso Polo](https://unsplash.com/photos/DX9X0g0Cg88)
 - [GitHub Repository](https://github.com/JulioPDX/auto_mpls_l3vpn)
 - [Nornir](https://nornir.readthedocs.io/en/latest/)
