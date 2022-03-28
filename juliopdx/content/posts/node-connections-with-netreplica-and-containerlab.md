@@ -107,7 +107,7 @@ Visualizing topology: simple.yaml
 +---+------------+--------------+-----------------------------+-------+---------+--------------------+--------------+
 ```
 
-Now the we have deployed the topology, we can go to `localhost:8080/graphite/`. In my case I'm running Containerlab on my local laptop. Depending on your Containerlab file, you should see something like below.
+Now that we have deployed the topology, we can go to `localhost:8080/graphite/`. In my case I'm running Containerlab on my local laptop. Depending on your Containerlab file, you should see something like below.
 
 ![Topology Sample](/blog/images/replicate-demo.png)
 
