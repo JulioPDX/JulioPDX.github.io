@@ -98,7 +98,7 @@ Visualizing topology: simple.yaml
 | <span style="color:#ae81ff">3</span> | pdx-rtr-03 | 4fe7e0beac6f | ghcr.io/nokia/srlinux       | srl   | running | 172.100.100.13/24  | N/A          |
 | <span style="color:#ae81ff">4</span> | ssh        | 3eb1e14ca34c | netreplica/graphite:webssh2 | linux | running | 172.100.100.100/24 | N/A          |
 +---+------------+--------------+-----------------------------+-------+---------+--------------------+--------------+
-</code></pre></div><p>Now that we have deployed the topology, we can go to <code>localhost:8080/graphite/</code>. In my case I&rsquo;m running Containerlab on my local laptop. Depending on your Containerlab file, you should see something like below.</p>
+</code></pre></div><p>Now that we&rsquo;ve deployed the topology, we can go to <code>localhost:8080/graphite/</code>. In my case I&rsquo;m running Containerlab on my local laptop. Depending on your Containerlab file, you should see something like below.</p>
 <p><img src="/blog/images/replicate-demo.png" alt="Topology Sample"></p>
 <p>Here&rsquo;s where it gets fun. Check out what happens when we click on one of the nodes.</p>
 <p><img src="/blog/images/replicate-click.png" alt="Replicate Click"></p>
