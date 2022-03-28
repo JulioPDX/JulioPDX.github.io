@@ -22,7 +22,7 @@ Some time ago Alex([@bortok](https://twitter.com/Bortok)) shared an example of u
 
 ## Netreplica Graphite
 
-I'll walk through an example to get going and current pros and cons. Please note, Graphite is on initial phases of development. Please reach out to the folks at Netreplica(GitHub link below) for any feedback. There's a couple options to get going with Graphite but I found standing up a container within a Containerlab file was the most simple. In the example below we are running 4 containers. I is a standalone container with no connections to the rest of the topology. The Graphite container is using a special tag with the webssh implementation.
+I'll walk through an example to get going and current pros and cons. Please note, Graphite is on initial phases of development. Please reach out to the folks at Netreplica(GitHub link below) for any feedback. There's a couple options to get going with Graphite but I found standing up a container within a Containerlab file was the most simple. In the example below we are running 4 containers. One is a standalone container(ssh) with no connections to the rest of the topology. The Graphite container is using a special tag with the webssh implementation.
 
 `simple.yaml`
 
