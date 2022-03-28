@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sun, 13 Feb 2022 21:07:43 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/containerlab/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 28 Mar 2022 12:08:20 -0700</lastBuildDate><atom:link href="https://juliopdx.com/tags/containerlab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Node Connections With Netreplica and Containerlab</title>
+      <link>https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/</link>
+      <pubDate>Mon, 28 Mar 2022 12:08:20 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/</guid>
+      <description>Introduction Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&amp;rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&amp;rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite.</description>
+    </item>
+    
     <item>
       <title>Network Simulation Tools and Containerlab</title>
       <link>https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/</link>

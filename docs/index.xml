@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 25 Feb 2022 15:06:14 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 28 Mar 2022 12:08:20 -0700</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Node Connections With Netreplica and Containerlab</title>
+      <link>https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/</link>
+      <pubDate>Mon, 28 Mar 2022 12:08:20 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/</guid>
+      <description>Introduction Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&amp;rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&amp;rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite.</description>
+    </item>
+    
     <item>
       <title>ExaBGP in the Lab</title>
       <link>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</link>
@@ -89,15 +98,6 @@ I have been working through the Introduction to Computer Science course by CS50x
       
       <guid>https://juliopdx.com/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</guid>
       <description>Introduction Hello and thank you for checking out another blog post. This one will be all about Python and Palo Alto Networks (PAN). I was recently going through a PAN Firewall course on Pluralsight by Craig Stansbury. Craig does an excellent job of walking learners through the process of administering and securing a PAN firewall. I wanted to take this opportunity to double dip and try to wrap my head around the PAN pan-os-python library.</description>
-    </item>
-    
-    <item>
-      <title>Building a Network CI/CD Pipeline Part 6</title>
-      <link>https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</link>
-      <pubDate>Fri, 12 Nov 2021 12:26:21 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/11/12/building-a-network-ci/cd-pipeline-part-6/</guid>
-      <description>Introduction Hello all and thank you for tuning in to the last part of the network CI/CD series. It really means a lot and I hope you have learned a bit along the way. In this post we will focus on testing after a change is made, more specifically, we will be looking at Suzieq. If you stick around until the end, we will look at maintaining a “golden state” of configuration using cron and a message from Rocky.</description>
     </item>
     
   </channel>

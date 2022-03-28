@@ -126,7 +126,7 @@ The CLI has a few neat options, let me show you some I think will be used the mo
 
 `netlab create`
 
-This command will create any files necessary to deploy your cotnainers and configure devices with Ansible. Great if you would just like to view the data without actually performing any deployments.
+This command will create any files necessary to deploy your containers and configure devices with Ansible. Great if you would just like to view the data without actually performing any deployments.
 
 ```shell
 (venv) juliopdx@containerlab:~/repos/cl-nst-demo$ netlab create basic.yml

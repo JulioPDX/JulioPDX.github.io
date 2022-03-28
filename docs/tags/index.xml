@@ -7,7 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 25 Feb 2022 15:06:14 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 28 Mar 2022 12:08:20 -0700</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Containerlab</title>
+      <link>https://juliopdx.com/tags/containerlab/</link>
+      <pubDate>Mon, 28 Mar 2022 12:08:20 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/tags/containerlab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Netreplica</title>
+      <link>https://juliopdx.com/tags/netreplica/</link>
+      <pubDate>Mon, 28 Mar 2022 12:08:20 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/tags/netreplica/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SR Linux</title>
+      <link>https://juliopdx.com/tags/sr-linux/</link>
+      <pubDate>Mon, 28 Mar 2022 12:08:20 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/tags/sr-linux/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Arista</title>
       <link>https://juliopdx.com/tags/arista/</link>
@@ -36,29 +63,11 @@
     </item>
     
     <item>
-      <title>SR Linux</title>
-      <link>https://juliopdx.com/tags/sr-linux/</link>
-      <pubDate>Fri, 25 Feb 2022 15:06:14 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/sr-linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Ansible</title>
       <link>https://juliopdx.com/tags/ansible/</link>
       <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/ansible/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Containerlab</title>
-      <link>https://juliopdx.com/tags/containerlab/</link>
-      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/containerlab/</guid>
       <description></description>
     </item>
     
@@ -86,15 +95,6 @@
       <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/network-automation/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Python</title>
-      <link>https://juliopdx.com/tags/python/</link>
-      <pubDate>Fri, 28 Jan 2022 15:45:51 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/python/</guid>
       <description></description>
     </item>
     

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author"
+    content="">
+<meta name="description"
+    content="Introduction Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&amp;rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&amp;rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite." />
+<meta name="keywords"
+    content=", Netreplica, Containerlab, SR Linux" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/" />
+
+
+<title>
+    
+    Node Connections With Netreplica and Containerlab :: Welcome to the World of Tomorrow  — Welcome to my blog!
+    
+</title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.57323f540d7cbe7c215b2d5060bc45c58f58b905f86869d7183bb27c42937f00.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Node Connections With Netreplica and Containerlab">
+<meta itemprop="description" content="Introduction Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite.">
+<meta itemprop="datePublished" content="2022-03-28T12:08:20-07:00" />
+<meta itemprop="dateModified" content="2022-03-28T12:08:20-07:00" />
+<meta itemprop="wordCount" content="709">
+<meta itemprop="image" content="https://juliopdx.com/blog/images/sudo-ubuntu.jpg">
+
+
+
+<meta itemprop="keywords" content="Netreplica,Containerlab,SR Linux," />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.com/blog/images/sudo-ubuntu.jpg"/>
+
+<meta name="twitter:title" content="Node Connections With Netreplica and Containerlab"/>
+<meta name="twitter:description" content="Introduction Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite."/>
+
+
+
+
+<meta property="og:title" content="Node Connections With Netreplica and Containerlab" />
+<meta property="og:description" content="Introduction Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/" />
+<meta property="og:image" content="https://juliopdx.com/blog/images/sudo-ubuntu.jpg" />
+<meta property="article:published_time" content="2022-03-28T12:08:20-07:00" />
+<meta property="article:modified_time" content="2022-03-28T12:08:20-07:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2022-03-28 12:08:20 -0700 PDT" />
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: 'dark', align: 'center' });</script>
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">#</span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#41FF00;
+                   animation-duration:2s;">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/">Node Connections With Netreplica and Containerlab</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#netreplica-graphite">Netreplica Graphite</a></li>
+    <li><a href="#final-thoughts-and-links">Final Thoughts and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>Thank you all for checking out another blog post. All the support for the blog has been tremendous and I can&rsquo;t thank you all enough. Packet Pushers invited me to write on their platform and it&rsquo;s been a pleasure working with Drew and team. If you would like to check those out, I will link them at the end of this post! Today we will focus on an interesting tool in the community, Netreplica, but specifically Graphite.</p>
+<p>Some time ago Alex(<a href="https://twitter.com/Bortok">@bortok</a>) shared an example of using NextUI to build a visual from a Containerlab file. I asked if there was a way to click on the icon and just open an SSH session. This could then open a terminal like SecureCRT, web page, or some other means of interacting with a session.</p>
+<p><img src="/blog/images/request-ssh.png" alt="Request"></p>
+<h2 id="netreplica-graphite">Netreplica Graphite</h2>
+<p>I&rsquo;ll walk through an example to get going and current pros and cons. Please note, Graphite is on initial phases of development. Please reach out to the folks at Netreplica(GitHub link below) for any feedback. There&rsquo;s a couple options to get going with Graphite but I found standing up a container within a Containerlab file was the most simple. In the example below we are running 4 containers. I is a standalone container with no connections to the rest of the topology. The Graphite container is using a special tag with the webssh implementation.</p>
+<p><code>simple.yaml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">simple</span>
+<span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
+
+<span style="color:#f92672">mgmt</span>:
+  <span style="color:#f92672">network</span>: <span style="color:#ae81ff">statics</span>
+  <span style="color:#f92672">ipv4_subnet</span>: <span style="color:#ae81ff">172.100.100.0</span><span style="color:#ae81ff">/24</span>
+
+<span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">kinds</span>:
+    <span style="color:#f92672">srl</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/nokia/srlinux</span>
+  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">pdx-rtr-01</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">srl</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.11</span>
+    <span style="color:#f92672">pdx-rtr-02</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">srl</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.12</span>
+    <span style="color:#f92672">pdx-rtr-03</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">srl</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.13</span>
+    <span style="color:#f92672">ssh</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">netreplica/graphite:webssh2</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.100</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">GRAPHITE_DEFAULT_TYPE</span>: <span style="color:#ae81ff">clab</span>
+        <span style="color:#f92672">GRAPHITE_DEFAULT_TOPO</span>: <span style="color:#ae81ff">simple</span>
+        <span style="color:#f92672">CLAB_SSH_CONNECTION</span>: <span style="color:#ae81ff">${SSH_CONNECTION}</span>
+      <span style="color:#f92672">binds</span>:
+        - <span style="color:#ae81ff">.:/var/www/localhost/htdocs/clab</span>
+      <span style="color:#f92672">ports</span>:
+        - <span style="color:#ae81ff">8080</span>:<span style="color:#ae81ff">80</span>
+      <span style="color:#f92672">exec</span>:
+        - <span style="color:#ae81ff">sh -c &#39;generate_offline_graph.sh&#39;</span>
+        - <span style="color:#ae81ff">sh -c &#39;graphite_motd.sh 8080&#39;</span>
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">graph-hide</span>: <span style="color:#66d9ef">yes</span>
+  <span style="color:#f92672">links</span>:
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-01:e1-1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-02:e1-1&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-01:e1-2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-03:e1-1&#34;</span>]
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-02:e1-2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-03:e1-2&#34;</span>]
+
+</code></pre></div><p>There&rsquo;s a couple things to note:</p>
+<ul>
+<li>Static IP addresses for management required.</li>
+<li>Topology file should be shorthand and use longer yaml syntax. For example <code>simple.clab.yml</code> will not work, but <code>simple.yaml</code> will.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ sudo -E containerlab deploy -t simple.yaml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Containerlab v0.25.1 started
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: simple.yaml
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating lab directory: /home/juliopdx/git/gcl/clab-simple
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating docker network: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;statics&#34;</span>, IPv4Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;172.100.100.0/24&#34;</span>, IPv6Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>, MTU<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1500&#34;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: <span style="color:#e6db74">&#34;ssh&#34;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: <span style="color:#e6db74">&#34;pdx-rtr-03&#34;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: <span style="color:#e6db74">&#34;pdx-rtr-02&#34;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating container: <span style="color:#e6db74">&#34;pdx-rtr-01&#34;</span>
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating virtual wire: pdx-rtr-01:e1-1 &lt;--&gt; pdx-rtr-02:e1-1
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating virtual wire: pdx-rtr-01:e1-2 &lt;--&gt; pdx-rtr-03:e1-1
+INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating virtual wire: pdx-rtr-02:e1-2 &lt;--&gt; pdx-rtr-03:e1-2
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Nokia SR Linux <span style="color:#e6db74">&#39;pdx-rtr-01&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Nokia SR Linux <span style="color:#e6db74">&#39;pdx-rtr-02&#39;</span> node
+INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span> Running postdeploy actions <span style="color:#66d9ef">for</span> Nokia SR Linux <span style="color:#e6db74">&#39;pdx-rtr-03&#39;</span> node
+INFO<span style="color:#f92672">[</span>0015<span style="color:#f92672">]</span> Adding containerlab host entries to /etc/hosts file
+INFO<span style="color:#f92672">[</span>0015<span style="color:#f92672">]</span> Executed command <span style="color:#e6db74">&#39;sh -c &#39;</span>generate_offline_graph.sh<span style="color:#e6db74">&#39;&#39;</span> on ssh. stdout:
+Visualizing topology: simple.yaml
+--truncated--
++---+------------+--------------+-----------------------------+-------+---------+--------------------+--------------+
+| <span style="color:#75715e"># |    Name    | Container ID |            Image            | Kind  |  State  |    IPv4 Address    | IPv6 Address |</span>
++---+------------+--------------+-----------------------------+-------+---------+--------------------+--------------+
+| <span style="color:#ae81ff">1</span> | pdx-rtr-01 | 81cd5aa9e62e | ghcr.io/nokia/srlinux       | srl   | running | 172.100.100.11/24  | N/A          |
+| <span style="color:#ae81ff">2</span> | pdx-rtr-02 | 29a158c32b37 | ghcr.io/nokia/srlinux       | srl   | running | 172.100.100.12/24  | N/A          |
+| <span style="color:#ae81ff">3</span> | pdx-rtr-03 | 4fe7e0beac6f | ghcr.io/nokia/srlinux       | srl   | running | 172.100.100.13/24  | N/A          |
+| <span style="color:#ae81ff">4</span> | ssh        | 3eb1e14ca34c | netreplica/graphite:webssh2 | linux | running | 172.100.100.100/24 | N/A          |
++---+------------+--------------+-----------------------------+-------+---------+--------------------+--------------+
+</code></pre></div><p>Now the we have deployed the topology, we can go to <code>localhost:8080/graphite/</code>. In my case I&rsquo;m running Containerlab on my local laptop. Depending on your Containerlab file, you should see something like below.</p>
+<p><img src="/blog/images/replicate-demo.png" alt="Topology Sample"></p>
+<p>Here&rsquo;s where it gets fun. Check out what happens when we click on one of the nodes.</p>
+<p><img src="/blog/images/replicate-click.png" alt="Replicate Click"></p>
+<p>Now if we click on that link within the node, you will get a new connection window. In this case, I get a new Chrome window to the selected device.</p>
+<p><img src="/blog/images/replicate-window.png" alt="Replicate Window"></p>
+<h2 id="final-thoughts-and-links">Final Thoughts and Links</h2>
+<p>I&rsquo;m a big fan of these tools that are making the lives easier for end users. Whether getting started with containers, learning network technologies, or just lowering the barrier of entry. Check out Graphite if you get a chance and reach out to the team on GitHub if you have any feedback or issues. Thank you for reading this far and I wish you all the best!</p>
+<ul>
+<li><a href="https://github.com/netreplica/graphite">netreplica/graphite</a></li>
+<li><a href="https://containerlab.dev/">Containerlab</a></li>
+<li><a href="https://unsplash.com/photos/4Mw7nkQDByk">Featured Image by Gabriel Heinzer</a></li>
+<li><a href="https://packetpushers.net/author/julio-perez/">Blogs on Packet Pushers!</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.com/tags/netreplica/">Netreplica</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/containerlab/">Containerlab</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/sr-linux/">SR Linux</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        709 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2022-03-28 12:08
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.com/2022/02/25/exabgp-in-the-lab/">
+                    <span class="button__text">ExaBGP in the Lab</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2022</span>
+            <span><a href="https://juliopdx.com/"></a></span>
+            
+            <span><a href="https://juliopdx.com/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+
+
+
+    </body>
+</html>
