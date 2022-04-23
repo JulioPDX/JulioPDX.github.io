@@ -53,7 +53,7 @@
         <span style="color:#f92672">GRAPHITE_DEFAULT_TOPO</span>: <span style="color:#ae81ff">simple</span>
         <span style="color:#f92672">CLAB_SSH_CONNECTION</span>: <span style="color:#ae81ff">${SSH_CONNECTION}</span>
       <span style="color:#f92672">binds</span>:
-        - <span style="color:#ae81ff">.:/var/www/localhost/htdocs/clab</span>
+        - <span style="color:#ae81ff">.:/htdocs/clab</span>
       <span style="color:#f92672">ports</span>:
         - <span style="color:#ae81ff">8080</span>:<span style="color:#ae81ff">80</span>
       <span style="color:#f92672">exec</span>:

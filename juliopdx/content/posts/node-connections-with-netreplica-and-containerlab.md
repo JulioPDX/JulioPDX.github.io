@@ -57,7 +57,7 @@ topology:
         GRAPHITE_DEFAULT_TOPO: simple
         CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
       binds:
-        - .:/var/www/localhost/htdocs/clab
+        - .:/htdocs/clab
       ports:
         - 8080:80
       exec:
