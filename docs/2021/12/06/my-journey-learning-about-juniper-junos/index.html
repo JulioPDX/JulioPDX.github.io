@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="My Journey Learning About Juniper Junos">
-<meta itemprop="description" content="Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.">
-<meta itemprop="datePublished" content="2021-12-06T13:57:09-08:00" />
+<meta itemprop="description" content="Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab."><meta itemprop="datePublished" content="2021-12-06T13:57:09-08:00" />
 <meta itemprop="dateModified" content="2021-12-06T13:57:09-08:00" />
-<meta itemprop="wordCount" content="2582">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/v2osk.jpg">
-
-
-
+<meta itemprop="wordCount" content="2582"><meta itemprop="image" content="https://juliopdx.com/blog/images/v2osk.jpg">
 <meta itemprop="keywords" content="Junos,Network Automation,Python," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/v2osk.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="My Journey Learning About Juniper Junos" />
 <meta property="og:description" content="Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/v2osk.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/" /><meta property="og:image" content="https://juliopdx.com/blog/images/v2osk.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-12-06T13:57:09-08:00" />
 <meta property="article:modified_time" content="2021-12-06T13:57:09-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -195,7 +189,7 @@
 <h2 id="reading-the-junos-cli">Reading the Junos CLI</h2>
 <p>When I first saw Junos CLI output… I’ll be honest, the first thought in my head was “WTF is that?”. Is it JSON? Is it a weird version of JSON? Most of my past experience was on the Cisco CLI and going from Cisco to this was a bit of a surprise. Below is a snippet from a Junos configuration (modified for brevity).</p>
 <p><code>Junos Config Snippet</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1&gt; show configuration
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1&gt; show configuration
 ## Last commit: 2021-12-06 11:19:02 PST by juliopdx
 version 18.2R1.9;
 system {
@@ -241,14 +235,14 @@ protocols {
 <h2 id="cli-modes">CLI Modes</h2>
 <p>I think I’m getting a bit ahead of myself. Lets talk about the CLI modes. Junos mainly uses two CLI modes; operational and configuration. The mode you see displayed above is operational mode. Think of this as the mode you would use to view items or perform some… wait for it… operational tasks (monitor, troubleshoot, connectivity… ping). The second mode, configuration, is used to perform any and all configuration tasks on a Junos device.</p>
 <p><code>Configuration Mode</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1&gt; configure
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1&gt; configure
 Entering configuration mode
 
 [edit]
 juliopdx@R1# &#34;Hi this is configuration mode&#34;
 </code></pre></div><p>Earlier I ran <strong>show configuration</strong> to view the configuration in operational mode. These commands can be executed in configuration mode as well by prepending <strong>run</strong> to the command. Please note, <strong>show</strong> works a bit differently when in configuration mode. Typing <strong>show</strong> will simply display the current configuration tree we are in (hold that thought for just a moment).</p>
 <p><code>Using ping with run</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# run ping 10.0.23.3
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# run ping 10.0.23.3
 PING 10.0.23.3 (10.0.23.3): 56 data bytes
 64 bytes from 10.0.23.3: icmp_seq=0 ttl=64 time=331.137 ms
 64 bytes from 10.0.23.3: icmp_seq=1 ttl=64 time=28.864 ms
@@ -264,7 +258,7 @@ round-trip min/avg/max/stddev = 28.864/469.646/1142.495/405.256 ms
 juliopdx@R1#
 </code></pre></div><h2 id="configuring-junos">Configuring Junos</h2>
 <p>At some point now we need to actually configure something. Let me just show you a small snippet of an interface configuration and we can walk through how the configuration goes.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interfaces {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interfaces {
     ge-0/0/0 {
         unit 0 {
             family inet {
@@ -273,27 +267,27 @@ juliopdx@R1#
         }
     }
 </code></pre></div><p>When you want to configure or remove something in Junos, the commands will start with either <strong>set</strong> or <strong>delete</strong>. If we wanted to configure interface ge-0/0/0 with IP address 10.0.12.1/24, the command below would do just that.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">set interfaces ge-0/0/0 unit 0 family inet address 10.0.12.1/24
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">set interfaces ge-0/0/0 unit 0 family inet address 10.0.12.1/24
 </code></pre></div><p>If you compare the configuration output to the command, its so similar, its basically the command in a tree format. You probably saw this and thought “What the heck is unit 0 and inet?”. Well <strong>unit 0</strong> will be used to create a sub-interface on the interface. Think of this as the default sub-interface that is created or all interfaces. Kind of how there is a secret default VRF in Cisco land but its not really displayed. The <strong>inet</strong> is essentially the IPv4 address family. Can you guess what <strong>inet6</strong> is?</p>
 <p>That command got a bit long and there is an option to shorten our commands. Lets say for example we were about to drop a long configuration stanza on interface ge-0/0/0 and we wanted to shorten the amount of typing. We can actually tell Junos what section of the configuration we would like to edit. Example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# edit interfaces ge-0/0/0 unit 0 family inet
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# edit interfaces ge-0/0/0 unit 0 family inet
 
 [edit interfaces ge-0/0/0 unit 0 family inet]
 juliopdx@R1#
 </code></pre></div><p>At this point we are in configuration mode and in the ge-0/0/0 interface hierarchy. Remember when I said hold that though on the <strong>show</strong> command? If we type <strong>show</strong> now, it will only display what section we are currently on. Another example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# show
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# show
 address 10.0.12.1/24;
 
 [edit interfaces ge-0/0/0 unit 0 family inet]
 juliopdx@R1
 </code></pre></div><p>Now if we wanted to configure that address, the command would be much shorter.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# set address 10.0.12.1/24
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# set address 10.0.12.1/24
 
 [edit interfaces ge-0/0/0 unit 0 family inet]
 juliopdx@R1#
 </code></pre></div><h2 id="replace-compare-and-commit">Replace, Compare, and Commit</h2>
 <p>I really like how Junos does this. If we were to make a change in Junos, it doesn’t immediately activate the change. It stores this in something called a candidate configuration. Lets test this. Currently interface ge-0/0/0 has an IP of 10.0.12.1, the remote side has an address of 10.0.12.2. Lets change the config and see if we can ping the remote side.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit interfaces ge-0/0/0 unit 0 family inet]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit interfaces ge-0/0/0 unit 0 family inet]
 juliopdx@R1# top
 
 [edit]
@@ -302,7 +296,7 @@ juliopdx@R1# replace pattern 10.0.12.1/24 with 10.0.50.1/24
 [edit]
 juliopdx@R1#
 </code></pre></div><p>I’ll walk through what is going on here. We entered <strong>top</strong> to return us to the highest level of the config hierarchy. We then execute another way of implementing a change, by using <strong>replace</strong>! This allows us to change a text patter with another, without stepping through the entire configuration. Lets check out the current state of our changes.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# show | compare
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# show | compare
 [edit interfaces ge-0/0/0 unit 0 family inet]
 +       address 10.0.50.1/24;
 -       address 10.0.12.1/24;
@@ -322,7 +316,7 @@ round-trip min/avg/max/stddev = 3.603/257.365/640.029/240.205 ms
 [edit]
 juliopdx@R1#
 </code></pre></div><p>At this point we can see that 10.0.12.1 has been replaced with 10.0.50.1 under the ge-0/0/0 interface. But we can still ping the remote side? This is because the change is only on the candidate configuration and not the running configuration. I’ll commit these changes and we should lose access to the remote side.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# commit comment &#34;This is a bad config&#34;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# commit comment &#34;This is a bad config&#34;
 commit complete
 
 [edit]
@@ -349,13 +343,13 @@ juliopdx@R1#
 </code></pre></div><h2 id="rollback-and-commit-confirmed">Rollback and Commit Confirmed</h2>
 <p>Clearly our change was not successful. Imagine this but at a grander scale than just my simple address change. Junos has a very simple option to go back to a previously working configuration. You may have noticed that we added a comment to our bad configuration change. Lets check out our previous commits.</p>
 <p><code>Previous Commits</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit]
 juliopdx@R1# run show system commit
 0   2021-12-06 14:32:57 PST by juliopdx via cli
     This is a bad config
 1   2021-12-06 13:41:27 PST by juliopdx via netconf
 </code></pre></div><p>I’m staying in configuration mode so some of these commands are prepended with <strong>run</strong>. It looks like commit 0, the latest commit is our bad commit. Commit 1 is our last known good state. Lets roll this back and see if that gets us operational.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# rollback 1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# rollback 1
 load complete
 
 [edit]
@@ -385,7 +379,7 @@ round-trip min/avg/max/stddev = 6.880/91.660/338.004/142.249 ms
 [edit]
 juliopdx@R1#
 </code></pre></div><p>Well that was easy! Another option for safety is commit confirmed. Basically, if you run commit confirmed, you will need to run commit again to make sure you want to implement the change. This is great in case you cut yourself off from the remote device. Example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# replace pattern 10.0.12.1/24 with 10.0.50.1/24
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@R1# replace pattern 10.0.12.1/24 with 10.0.50.1/24
 
 [edit]
 juliopdx@R1# commit confirmed 1
@@ -406,7 +400,7 @@ juliopdx@R1#
 </code></pre></div><p>Pretty neat right? Since we did not type <strong>commit</strong> again, the change was automatically discarded.</p>
 <h2 id="viewing-configuration-as-set-commands">Viewing Configuration as Set Commands</h2>
 <p>There is another really neat way of viewing what has been configured on the device, <strong>display set</strong>. Imagine every <strong>set</strong> command that has been executed on the device being stored in a nice format that can be reused again. Please see snippet below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[edit]
 juliopdx@R1# run show configuration | display set
 set interfaces ge-0/0/0 unit 0 family inet address 10.0.12.1/24
 set interfaces ge-0/0/1 unit 0 family inet address 10.0.13.1/24
@@ -438,7 +432,7 @@ juliopdx@R1#
 <p>I couldn’t help myself, I wanted to take a shot at automating some of the configuration during my Junos learning. I’ll keep this short and sweet but I stayed with the common tools of Nornir, NAPALM, and some neat Jinja2 templates. I have covered everything in the repository (linked below) before besides the Jinja2 templates. I’ll go over those and the script to close this one out.</p>
 <h3 id="junos-configuration-hierarchy-and-jinja2">Junos Configuration Hierarchy and jinja2</h3>
 <p>The Junos text output I showed you initially in this post really lends itself to being automated. Even from a text standpoint. Everything has really natural breaks in separation. I mentioned this before but if you wanted to modify interfaces, this would all be done under the interfaces level. I took that same approach and broke the Jinja templates out. We have a main <strong>base.j2</strong> template that will then call on the rest. This will then build the entire running configuration of a device.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/junos-auto$ tree templates/
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/junos-auto$ tree templates/
 templates/
 ├── base.j2
 ├── interfaces.j2
@@ -447,7 +441,7 @@ templates/
 ├── snmp.j2
 └── system.j2
 </code></pre></div><p><code>base.j2</code></p>
-<pre><code class="language-jinja2" data-lang="jinja2">version 18.2R1.9;
+<pre tabindex="0"><code class="language-jinja2" data-lang="jinja2">version 18.2R1.9;
 {% include 'system.j2' %}
 
 {% include 'interfaces.j2' %}
@@ -458,7 +452,7 @@ templates/
 
 {% include 'protocols.j2' %}
 </code></pre><p><code>interfaces.j2</code></p>
-<pre><code class="language-jinja2" data-lang="jinja2">interfaces {
+<pre tabindex="0"><code class="language-jinja2" data-lang="jinja2">interfaces {
 {% for interface in host.info.interfaces %}
     {{ interface.name }} {
         unit {{ interface.unit }} {
@@ -471,13 +465,13 @@ templates/
 }
 </code></pre><h3 id="defining-host-data">Defining Host Data</h3>
 <p>I kept it simple and used YAML files to store data about each node. Please note this is a very simple example. There are definitely more ways to improve this and remove some of the duplicate information.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/junos-auto$ tree host_vars/
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/junos-auto$ tree host_vars/
 host_vars/
 ├── R1.yaml
 ├── R2.yaml
 └── R3.yaml
 </code></pre></div><p><code>R1.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">interfaces</span>:
   - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ge-0/0/0</span>
     <span style="color:#f92672">unit</span>: <span style="color:#ae81ff">0</span>
@@ -522,7 +516,7 @@ host_vars/
 </code></pre></div><h3 id="nornir-and-napalm">Nornir and NAPALM</h3>
 <p>The script below was a mix of work I’ve done in the past and a great video by IPvZero (linked below). In the video John, demonstrates the use of the <strong>load_yaml</strong> and <strong>template_file</strong> methods in Nornir. The former will load YAML data that will then be assigned to the current host. This data can then be used by the <strong>template_file</strong> method to create configurations files for each host.</p>
 <p><code>junos_norn.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Script used to interfact with some Junos gear&#34;&#34;&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Script used to interfact with some Junos gear&#34;&#34;&#34;</span>
 <span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
 <span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
 <span style="color:#f92672">from</span> nornir_utils.plugins.functions <span style="color:#f92672">import</span> print_result
@@ -532,7 +526,7 @@ host_vars/
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">load_vars</span>(task):
     <span style="color:#e6db74">&#34;&#34;&#34;Loads data to be added to each host from vars files&#34;&#34;&#34;</span>
-    my_vars <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>load_yaml, file<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;./host_vars/{task.host}.yaml&#34;</span>)
+    my_vars <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>load_yaml, file<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;./host_vars/</span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">.yaml&#34;</span>)
     task<span style="color:#f92672">.</span>host[<span style="color:#e6db74">&#34;info&#34;</span>] <span style="color:#f92672">=</span> my_vars<span style="color:#f92672">.</span>result
     template_configurations(task)
 
@@ -552,16 +546,16 @@ host_vars/
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_configurations</span>(task, config):
     <span style="color:#e6db74">&#34;&#34;&#34;Loads device configurations&#34;&#34;&#34;</span>
     task<span style="color:#f92672">.</span>run(
-        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host}!&#34;</span>,
+        name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Configuring </span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">!&#34;</span>,
         task<span style="color:#f92672">=</span>napalm_configure,
         configuration<span style="color:#f92672">=</span>config,
-        replace<span style="color:#f92672">=</span>True,
+        replace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
     )
 
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
     <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
-    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: <span style="color:#66d9ef">True</span>})
     result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>load_vars)
     print_result(result)
 
@@ -692,7 +686,7 @@ host_vars/
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

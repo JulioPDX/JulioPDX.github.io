@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Building a Network CI/CD Pipeline Part 5">
-<meta itemprop="description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective.">
-<meta itemprop="datePublished" content="2021-11-08T11:58:46-08:00" />
+<meta itemprop="description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective."><meta itemprop="datePublished" content="2021-11-08T11:58:46-08:00" />
 <meta itemprop="dateModified" content="2021-11-08T11:58:46-08:00" />
-<meta itemprop="wordCount" content="1520">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/david-clode.jpg">
-
-
-
+<meta itemprop="wordCount" content="1520"><meta itemprop="image" content="https://juliopdx.com/blog/images/david-clode.jpg">
 <meta itemprop="keywords" content="CI/CD,Network Automation,Python," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/david-clode.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Building a Network CI/CD Pipeline Part 5" />
 <meta property="og:description" content="Introduction Hello all, thank you for reading the previous posts in this series. It has been fun interacting with all of you and see a few folks taking the challenge of standing this up on their own. In this post we will go over the framework that is performing our configuration deployments, Nornir and NAPALM. I will also provide an example worklflow on how this is all tied together and executed from a network engineers perspective." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/david-clode.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/11/08/building-a-network-ci/cd-pipeline-part-5/" /><meta property="og:image" content="https://juliopdx.com/blog/images/david-clode.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-11-08T11:58:46-08:00" />
 <meta property="article:modified_time" content="2021-11-08T11:58:46-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -189,12 +183,12 @@
 <p>My previous automation experience revolved heavily around Ansible for interacting with APIs or network nodes. I really like both tools and I feel each has their space in the network automation world. Where Ansible uses yaml for writing playbooks or steps to be executed on nodes, interacting with Nornir stays within the python ecosystem. This lends itself well to using an IDE like Visual Studio Code and all the other tools available within python (linting, debugging, tab completion).</p>
 <h3 id="init-nornir">Init Nornir</h3>
 <p>Lets get started with initializing Nornir and setting some of the configuration. A link to all the code used in this post will be at the end. Below we are importing the “InitNornir” function as well as a local function that is used to handle device credentials.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
 <span style="color:#f92672">from</span> tools <span style="color:#f92672">import</span> nornir_set_creds
 </code></pre></div><p>Below is the main function that is used to initialize Nornir and kick off any tasks that are defined within our deployment script.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
     <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
-    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: <span style="color:#66d9ef">True</span>})
     nornir_set_creds(norn)
     result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
     print_result(result)
@@ -203,13 +197,13 @@
 <span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
     main()
 </code></pre></div><p>At this point we are initializing Nornir with a file located at “configs/config.yaml”, lets take a look at that directory.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ tree configs/
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ tree configs/
 configs/
 ├── config.yaml
 ├── groups.yaml
 └── hosts.yaml
 </code></pre></div><p>This makes me chuckle a bit, I just mentioned that Nornir is pretty much all python and Ansible uses yaml for developing playbooks. Yet here we are making yaml files. Jokes aside, yaml is really good at being human readable and building configuration files. Lets take a look at the “config.yaml” file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">inventory</span>:
   <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">SimpleInventory</span>
   <span style="color:#f92672">options</span>:
@@ -220,11 +214,11 @@ configs/
   <span style="color:#f92672">options</span>:
     <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
 </code></pre></div><p>This file can be used to set all kinds of settings. I’ve tried to keep it fairly simple, we are using the “SimpleInventory” plugin. This can read in our hosts and groups file that I will go over in a bit. Other inventroy plugins (Ansible, Netbox, table_inventory) can also be used, check more out <a href="https://nornir.tech/nornir/plugins/">here</a>. The second half of the file is utilizing the built-in threaded runner. Nornir will spin up threads to allow task executions to multiple devices vs executed one by one. Next up lets check out the “groups.yaml” file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">eos</span>:
   <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">eos</span>
 </code></pre></div><p>As you can see I have barely used this file. If we were running multiple vendors or maybe devices located at different sites, they could be assigned different configuration options that would be added within this groups file. Below is an example of that concept in case my explanation is a bit terrible.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">eos</span>:
   <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">eos</span>
 <span style="color:#f92672">cisco_ios</span>:
@@ -238,7 +232,7 @@ configs/
   - <span style="color:#ae81ff">10.0.0.125</span>
   - <span style="color:#ae81ff">10.0.0.126</span>
 </code></pre></div><p>Last but not least the “hosts.yaml” file. For small deployments I can see how maintaining this file wouldn’t be the worst thing in the world. For scale, I would use something like Netbox to build your inventory file. All nodes in this case are assigned to the “eos” group and will inherit “eos” as the platform.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">pdx-rtr-eos-01</span>:
   <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">192.168.10.121</span>
   <span style="color:#f92672">groups</span>:
@@ -260,23 +254,23 @@ configs/
     - <span style="color:#ae81ff">eos</span>
 </code></pre></div><h3 id="deploy-configurations">Deploy Configurations</h3>
 <p>Earlier I showed you the main function which is calling on a certain task to be executed. Below is the main function again.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
     <span style="color:#e6db74">&#34;&#34;&#34;Used to run all the things&#34;&#34;&#34;</span>
-    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: True})
+    norn <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;configs/config.yaml&#34;</span>, core<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;raise_on_error&#34;</span>: <span style="color:#66d9ef">True</span>})
     nornir_set_creds(norn)
     result <span style="color:#f92672">=</span> norn<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>deploy_network)
     print_result(result)
 </code></pre></div><p>The main function will call the “deploy_network” function, which will be executed against our network devices in the inventory. Below is the “deploy_network” function.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_configure
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deploy_network</span>(task):
     <span style="color:#e6db74">&#34;&#34;&#34;Configures network with NAPALM&#34;&#34;&#34;</span>
     task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
-        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host.name}!&#34;</span>,
+        name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Configuring </span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">!&#34;</span>,
         task<span style="color:#f92672">=</span>napalm_configure,
-        filename<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;./snapshots/configs/{task.host.name}.txt&#34;</span>,
+        filename<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;./snapshots/configs/</span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">.txt&#34;</span>,
         dry_run<span style="color:#f92672">=</span>args<span style="color:#f92672">.</span>dry,
-        replace<span style="color:#f92672">=</span>True,
+        replace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
     )
 </code></pre></div><p>We are adding one more import to our script. The “napalm_configure” function is part of the nornir_napalm library. Under the hood it will use NAPALM to connect and configure network devices. The plugin options are pretty extensive depending on what your use case is (deploying entire config or just a subset). This function will look at the file name that matches our device hostname. It will then attempt to push the entire configuration to the device.</p>
 <h3 id="side-note-on-infrastructure-as-code">Side Note on Infrastructure as Code</h3>
@@ -286,15 +280,15 @@ configs/
 <p><img src="/blog/images/ci_cd_blog.png" alt="High Level Design"></p>
 <p>At the bottom of our diagram we have a simple OSPF and BGP network with four Arista devices. We have a task for our junior network engineer to add interface descriptions to all interfaces connected to networking nodes. Since this is a really safe change with no impact to the network, besides maybe confusing some operators if they are incorrect. This seems like a great learning opportunity for the junior engineer.</p>
 <p>The engineer starts by cloning the teams repository from GitHub.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/JulioPDX/ci_cd_dev.git
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/JulioPDX/ci_cd_dev.git
 </code></pre></div><p>Great, now the repository is local to our development environment. We would most likely have some standards to not allow direct commits to the main branch. All changes must be made to a separate branch and then merged by pull request to main. Main in this case will signal our production configuration state. Next up the junior engineer will create a dev branch named “add_interface_desc”.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git checkout -b add_interface_desc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git checkout -b add_interface_desc
 Switched to a new branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span>
 <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
 On branch add_interface_desc
 nothing to commit, working tree clean
 </code></pre></div><p>Now the engineer is on the new branch and can modify the configuration files in the snapshots directory. Lets look at what files have been modified.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git status
 On branch add_interface_desc
 Changes not staged <span style="color:#66d9ef">for</span> commit:
   <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style="color:#f92672">)</span>
@@ -306,7 +300,7 @@ Changes not staged <span style="color:#66d9ef">for</span> commit:
 
 no changes added to commit <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add&#34;</span> and/or <span style="color:#e6db74">&#34;git commit -a&#34;</span><span style="color:#f92672">)</span>
 </code></pre></div><p>Great, now lets push those changes up to the remote repository.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git add .
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git add .
 <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@juliopdx-pop:~/git/ci_cd_dev$ git commit -m <span style="color:#e6db74">&#34;Adding interface descriptions&#34;</span>
 <span style="color:#f92672">[</span>add_interface_desc 9b8d899<span style="color:#f92672">]</span> Adding interface descriptions
  <span style="color:#ae81ff">4</span> files changed, <span style="color:#ae81ff">6</span> insertions<span style="color:#f92672">(</span>+<span style="color:#f92672">)</span>
@@ -465,7 +459,7 @@ Branch <span style="color:#e6db74">&#39;add_interface_desc&#39;</span> set up to
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

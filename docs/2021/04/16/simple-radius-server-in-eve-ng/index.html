@@ -44,16 +44,10 @@ If we are in the process of testing AAA, we will need some form of TACACS or RAD
 
 <meta itemprop="name" content="Simple Radius Server in EVE-NG">
 <meta itemprop="description" content="Introduction I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.
-If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server.">
-<meta itemprop="datePublished" content="2021-04-16T00:00:00+00:00" />
+If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server."><meta itemprop="datePublished" content="2021-04-16T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-04-16T00:00:00+00:00" />
-<meta itemprop="wordCount" content="679">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/freeradius-new.png">
-
-
-
+<meta itemprop="wordCount" content="679"><meta itemprop="image" content="https://juliopdx.com/blog/images/freeradius-new.png">
 <meta itemprop="keywords" content="Cisco,EVE-NG,RADIUS," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/freeradius-new.png"/>
 
@@ -68,10 +62,10 @@ If we are in the process of testing AAA, we will need some form of TACACS or RAD
 <meta property="og:description" content="Introduction I was recently going through an advanced routing course on Pluralsight by Nick Russo, great course by the way. Check it out HERE. During the course we inevitably get to the services portion. The portion most of us dread as network engineers. This is all the extra stuff. Where the routing and switching might be the sexy topic, services is arguably not that exciting… but very much necessary.
 If we are in the process of testing AAA, we will need some form of TACACS or RADIUS server." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/freeradius-new.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/04/16/simple-radius-server-in-eve-ng/" /><meta property="og:image" content="https://juliopdx.com/blog/images/freeradius-new.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-04-16T00:00:00+00:00" />
 <meta property="article:modified_time" content="2021-04-16T00:00:00+00:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -194,12 +188,12 @@ If we are in the process of testing AAA, we will need some form of TACACS or RAD
 <p>If your topology already has internet access, you may be able to skip a few of these steps. In my case, this topology is isolated. Start by adding a network connection, this will connect the server to my internal network and give the server access to the internet.</p>
 <p>Within the VM console session, run the following commands:</p>
 <p><code>FreeRADIUS Install</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get update
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get update
 sudo apt-get install freeradius -y
 </code></pre></div><h2 id="static-ip-for-ubuntu-server">Static IP for Ubuntu Server</h2>
 <p>At this point, the server has FreeRADIUS installed. Now we connect the server as shown in the topology image above and assign a static IP address. In Ubuntu 18.04 this can be done by editing the /etc/netplan/01-netcfg.yaml file. You can edit this file using vi, vim, or nano. Doesn&rsquo;t really matter. I believe vi and nano come pre installed on this image. Edit that file and save. Example below.</p>
 <p><code>/etc/netplan/01-netcfg.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">network</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">network</span>:
    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">2</span>
    <span style="color:#f92672">renderer</span>: <span style="color:#ae81ff">networkd</span>
    <span style="color:#f92672">ethernets</span>:
@@ -209,11 +203,11 @@ sudo apt-get install freeradius -y
          - <span style="color:#ae81ff">192.168.2.2</span><span style="color:#ae81ff">/24</span>
        <span style="color:#f92672">gateway4</span>: <span style="color:#ae81ff">192.168.2.1</span>
 </code></pre></div><p>Once that file is saved, run the command below to apply the configuration.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo netplan apply
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo netplan apply
 </code></pre></div><h2 id="add-clients-and-users">Add Clients and Users</h2>
 <p>The next step isn’t too bad. You essentially have to modify two files. One for user logins and the other for clients (network devices). The files have a lot of examples and working options. Most all of it is commented out. I’ll include just the portions that are active. Again, feel free to modify this with whatever editor you are comfortable with.</p>
 <p><code>/etc/freeradius/3.0/clients.conf</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">client vIOS1 {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">client vIOS1 {
     ipaddr = 10.0.0.1
     secret = freeradius
 }
@@ -222,11 +216,11 @@ client vIOS2 {
     secret = freeradius
 }
 </code></pre></div><p><code>/etc/freeradius/3.0/mods-config/files/authorize</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Julio    Cleartext-Password := &#34;PDX&#34;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Julio    Cleartext-Password := &#34;PDX&#34;
          Reply-Message = &#34;Welcome to the world of tomorrow&#34;,
          cisco-avpair := &#34;shell:priv-lvl=15&#34;
 </code></pre></div><p>Once that is completed, run the following commands to activate FreeRADIUS:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo service freeradius stop
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo service freeradius stop
 sudo freeradius -X
 </code></pre></div><h2 id="ssh-validation">SSH Validation</h2>
 <p><img src="/blog/images/ssh_test_radius.png" alt="SSH Test"></p>
@@ -355,7 +349,7 @@ sudo freeradius -X
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Multipoint Redistribution and SR Linux">
-<meta itemprop="description" content="Introduction I’ve been working my way through Optimal Routing Design by Russ White, Don Slice, and Alvaro Retana. It has been a great read so far and I highly recommend it. When I work through a book I usually try and lab up any concept I can, this helps me make it stick as much as possible. Early on in the book the authors mention redistribution and possible issues that can come with doing it at more than one point in the network.">
-<meta itemprop="datePublished" content="2022-01-22T15:25:24-08:00" />
+<meta itemprop="description" content="Introduction I’ve been working my way through Optimal Routing Design by Russ White, Don Slice, and Alvaro Retana. It has been a great read so far and I highly recommend it. When I work through a book I usually try and lab up any concept I can, this helps me make it stick as much as possible. Early on in the book the authors mention redistribution and possible issues that can come with doing it at more than one point in the network."><meta itemprop="datePublished" content="2022-01-22T15:25:24-08:00" />
 <meta itemprop="dateModified" content="2022-01-22T15:25:24-08:00" />
-<meta itemprop="wordCount" content="3026">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/pat-krupa.jpg">
-
-
-
+<meta itemprop="wordCount" content="3026"><meta itemprop="image" content="https://juliopdx.com/blog/images/pat-krupa.jpg">
 <meta itemprop="keywords" content="BGP,OSPF,Redistribution,Containerlab,SR Linux," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/pat-krupa.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Multipoint Redistribution and SR Linux" />
 <meta property="og:description" content="Introduction I’ve been working my way through Optimal Routing Design by Russ White, Don Slice, and Alvaro Retana. It has been a great read so far and I highly recommend it. When I work through a book I usually try and lab up any concept I can, this helps me make it stick as much as possible. Early on in the book the authors mention redistribution and possible issues that can come with doing it at more than one point in the network." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/pat-krupa.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/" /><meta property="og:image" content="https://juliopdx.com/blog/images/pat-krupa.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-01-22T15:25:24-08:00" />
 <meta property="article:modified_time" content="2022-01-22T15:25:24-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -202,7 +196,7 @@
 <h3 id="multipoint-redistribution-topology">Multipoint Redistribution Topology</h3>
 <p><img src="/blog/images/mredis.png" alt="M REDIS"></p>
 <p>Above we have 8 SR Linux nodes with the left portion of the network running OSPF as well as the right portion of the network. In the middle everything is running eBGP, each router has an autonomous system of 6500X, where X is the router number. R1 is advertising the network of “10.1.1.0/24” and R8 is advertising network “8.8.8.8/32”. Routers R3, R4, R6, and R7 are redistributing routes between the protocols. I added a simple filter to only advertise the network mentioned in each domain. For example, R3 and R4 will only advertise the network “10.1.1.0/24” into BGP. Example configurations of R3 are below. Please note; R3, R4, R6, and R7 have very similar policies.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R3# info routing-policy
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R3# info routing-policy
     routing-policy {
         prefix-set FILTER {
             prefix 10.1.1.0/24 mask-length-range exact {
@@ -231,7 +225,7 @@
             }
         }
     }
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ running }--[ network-instance default protocols ]--
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ running }--[ network-instance default protocols ]--
 A:R3# info
     bgp {
         autonomous-system 65003
@@ -265,7 +259,7 @@ A:R3# info
     }
 </code></pre></div><h3 id="checking-routes-at-r5">Checking Routes at R5</h3>
 <p>You probably noticed R5 is at the center of this mess, so lets check the routing table from that perspective. Remember R5 is only running BGP.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R5# show network-instance default protocols bgp routes ipv4 summary
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R5# show network-instance default protocols bgp routes ipv4 summary
 -------------------------------------------------------------------------------------------------------------------------------
 Show report for the BGP route table of network-instance &#34;default&#34;
 -------------------------------------------------------------------------------------------------------------------------------
@@ -294,7 +288,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 A:R5#
 </code></pre></div><p>So far this looks great, R5 learned about the “8.8.8.8/32” network from R6(10.5.6.1) and R7(10.5.7.1). We can see that R5 also learned about the “10.1.1.0/24” network from R3(10.3.5.0) and R4(10.4.5.0). Lets see if R1 can reach the remote network!</p>
 <h3 id="r1-reachability-to-888832">R1 Reachability to 8.8.8.8/32</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R1# ping network-instance default -c 4 -I 10.1.1.1 8.8.8.8
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R1# ping network-instance default -c 4 -I 10.1.1.1 8.8.8.8
 Using network instance default
 PING 8.8.8.8 (8.8.8.8) from 10.1.1.1 : 56(84) bytes of data.
 From 10.2.3.1 icmp_seq=1 Time to live exceeded
@@ -307,7 +301,7 @@ From 10.2.3.1 icmp_seq=3 Time to live exceeded
 --{ running }--[  ]--
 A:R1#
 </code></pre></div><p>Hmm, that doesn’t look good. Lets try a trace and maybe we can see whats going on!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R1# traceroute network-instance default 8.8.8.8
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R1# traceroute network-instance default 8.8.8.8
 Using network instance default
 traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
  1  10.1.2.1 (10.1.2.1)  15.831 ms * *
@@ -343,7 +337,7 @@ traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
 --{ running }--[  ]--
 A:R1#
 </code></pre></div><p>It seems like we reached the max hops, by default 30. At this point, we can most likely come to the conclusion that we have a routing loop. Lets check a few routes and see what they think the best path to reach the “8.8.8.8/32” network is.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># Nothing crazy here, R1 will send traffic towards R2(10.1.2.1)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># Nothing crazy here, R1 will send traffic towards R2(10.1.2.1)
 A:R1# show network-instance default route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -363,7 +357,7 @@ Next hops: 1 entries
 -------------------------------------------------------------------------------------------------------------------------------
 --{ running }--[  ]--
 A:R1#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># Again nothing weird, R2 will go to R3(10.2.3.1) to reach this route
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># Again nothing weird, R2 will go to R3(10.2.3.1) to reach this route
 A:R2# show network-instance default route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -383,7 +377,7 @@ Next hops: 1 entries
 -------------------------------------------------------------------------------------------------------------------------------
 --{ running }--[  ]--
 A:R2#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># Thats odd, R3 is sending the route back to R2(10.2.3.0)
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># Thats odd, R3 is sending the route back to R2(10.2.3.0)
 A:R3# show network-instance default route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -411,7 +405,7 @@ A:R3#
 <h4 id="solve-with-filtering-and-preference">Solve With Filtering and Preference</h4>
 <p><img src="/blog/images/mredis-allo.png" alt="Allow"></p>
 <p>We mentioned before that we are only sending “10.1.1.0/24” into BGP and “8.8.8.8/32” for the other end of the network. We can add a filter to only allow the remote network from BGP into OSPF. Example of configuration below!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R3# info routing-policy
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R3# info routing-policy
     routing-policy {
         prefix-set ALLOW {
             prefix 8.8.8.8/32 mask-length-range exact {
@@ -433,7 +427,7 @@ A:R3#
             }
         }
 </code></pre></div><p>We added a default action reject statement on the policy used to redistribute routes from BGP into OSPF. This will basically deny any routes not matching this policy. Similar statement was added to each router running redistribution. Lets check the connectivity from R3 and R4 standpoint.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
 A:R3# show route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -454,7 +448,7 @@ Next hops: 1 entries
 --{ + running }--[ network-instance default ]--
 A:R3#
 </code></pre></div><p>Interesting, R3 is preferring a route to “8.8.8.8/32” with a preference of 150 towards R2. What about R4?</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
 A:R4# show route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -475,7 +469,7 @@ Next hops: 1 entries
 --{ + running }--[ network-instance default ]--
 A:R4#
 </code></pre></div><p>R4 is also preferring a route towards R2. At this point it seems like a race condition on who wins the route, BGP will see an internal route to reach that network and pick that over an eBGP route. Lets update the preference for external OSPF routes to be worse than 170. Why 170? Lets shutdown OSPF on R3 and see what route R4 uses to reach “8.8.8.8/32”.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
 A:R4# show route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -497,7 +491,7 @@ Next hops: 1 entries
 --{ + running }--[ network-instance default ]--
 A:R4#
 </code></pre></div><p>We will change the external OSPF preference to be 175 and test if this allows R3 and R4 to prefer the BGP route.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ +* candidate shared default }--[ network-instance default protocols ospf ]--
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ +* candidate shared default }--[ network-instance default protocols ospf ]--
 A:R3# info
     instance v2 {
         admin-state disable
@@ -514,7 +508,7 @@ A:R3# info
         }
     }
 </code></pre></div><p>We can see below that R3 now prefers the BGP route to reach “8.8.8.8/32”!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">--{ + running }--[ network-instance default ]--
 A:R3# show route-table ipv4-unicast prefix 8.8.8.8/32 detail
 -------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -550,7 +544,7 @@ Next hops: 1 entries
 A:R3#
 </code></pre></div><p>The rest of the redistribution nodes have been configured to match these preferences. Lets test connectivity from R1 again!</p>
 <h5 id="validating-from-r1">Validating from R1</h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R1# ping network-instance default -c 4 -I 10.1.1.1 8.8.8.8
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:R1# ping network-instance default -c 4 -I 10.1.1.1 8.8.8.8
 Using network instance default
 PING 8.8.8.8 (8.8.8.8) from 10.1.1.1 : 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=60 time=6.39 ms
@@ -576,7 +570,7 @@ A:R1#
 <p>The solution above works but route tags would definitely scale more. A route tag is just a numerical value that can be assigned to routes. The strength comes in when you can query those tags to perform redistribution or policy enforcement. I could not find documentation for tagging routes using SR Linux at the time of this writing, not a knock on them I’m just very new to the NOS. In this case I’ll show some example from Cisco IOS and a high level diagram.</p>
 <p><img src="/blog/images/mredis-tag.png" alt="Route Tags"></p>
 <p>Bear with me, I know SR Linux does not run EIGRP :). Here we have the same topology but Cisco nodes are in place. From R3s perspective, when redistributing routes from OSPF to EIGRP, R3 will deny any routes tagged with 444 and set any routes not matching that to 333. In the opposite direction, routes from EIGRP to OSPF with a tag of 444 will be denied, and anything left will be tagged with 333. R4 essentially does the reverse to make sure anything from 333 is not sent to EIGRP or OSPF. Example configurations below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!R3 Config
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!R3 Config
 router eigrp 34567
  default-metric 1 1 1 1 1
  network 10.3.5.0 0.0.0.0
@@ -592,7 +586,7 @@ route-map filter-tags deny 10
 !
 route-map filter-tags permit 20
  set tag 333
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!R4 Config
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!R4 Config
 router eigrp 34567
  default-metric 1 1 1 1 1
  network 10.4.5.0 0.0.0.0
@@ -608,7 +602,7 @@ route-map filter-tags deny 10
 !
 route-map filter-tags permit 20
  set tag 444
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R5#show ip route 10.1.1.0
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R5#show ip route 10.1.1.0
 Routing entry for 10.1.1.0/24
   Known via &#34;eigrp 34567&#34;, distance 170, metric 2560025856
   Tag 444, type external
@@ -630,7 +624,7 @@ Routing entry for 10.1.1.0/24
 R5#
 </code></pre></div><p>Here we can see the “10.1.1.0” network from each node with the appropriate tag.</p>
 <h5 id="validating-from-r1-again">Validating from R1 Again</h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#ping 8.8.8.8 source 10.1.1.1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#ping 8.8.8.8 source 10.1.1.1
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
 Packet sent with a source address of 10.1.1.1
@@ -770,7 +764,7 @@ R1#
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

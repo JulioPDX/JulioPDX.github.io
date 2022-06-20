@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Creating List of IP Addresses With Ansible Filter Plugin">
-<meta itemprop="description" content="Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.">
-<meta itemprop="datePublished" content="2021-02-02T00:00:00+00:00" />
+<meta itemprop="description" content="Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters."><meta itemprop="datePublished" content="2021-02-02T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-02-02T00:00:00+00:00" />
-<meta itemprop="wordCount" content="500">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/router_pool_large.png">
-
-
-
+<meta itemprop="wordCount" content="500"><meta itemprop="image" content="https://juliopdx.com/blog/images/router_pool_large.png">
 <meta itemprop="keywords" content="Ansible,Python,Network Automation," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/router_pool_large.png"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Creating List of IP Addresses With Ansible Filter Plugin" />
 <meta property="og:description" content="Intro I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/router_pool_large.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/02/02/creating-list-of-ip-addresses-with-ansible-filter-plugin/" /><meta property="og:image" content="https://juliopdx.com/blog/images/router_pool_large.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-02-02T00:00:00+00:00" />
 <meta property="article:modified_time" content="2021-02-02T00:00:00+00:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -177,7 +171,7 @@
 <h2 id="intro">Intro</h2>
 <p>I recently had a use case where I needed a list of IP addresses from a prefix. My first step was to go through Ansible documentation on current filters to see if something would match my need. Long story short, there wasn’t. At least, nothing I could find which honestly is probably a huge possibility, and in that case this post is pointless. Ansible does have IP address filters but I noticed most all of the examples assume you already have a list of IP addresses to pass to the filters.</p>
 <p>I should probably explain what a filter does just in case the reader isn’t aware. Filters allow you to transform data from something to something else. The simplest example being, turn this lower case string to upper case. See example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Filter Test</span>
   <span style="color:#f92672">connection</span>: <span style="color:#ae81ff">local</span>
   <span style="color:#f92672">hosts</span>: <span style="color:#ae81ff">localhost</span>
@@ -191,14 +185,14 @@
         <span style="color:#f92672">msg</span>: <span style="color:#e6db74">&#34;{{ my_variable | upper }}&#34;</span>
 
 ...
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PLAY <span style="color:#f92672">[</span>Filter Test<span style="color:#f92672">]</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PLAY <span style="color:#f92672">[</span>Filter Test<span style="color:#f92672">]</span>
  TASK <span style="color:#f92672">[</span>Turning lower <span style="color:#66d9ef">case</span> string to UPPER CASE<span style="color:#f92672">]</span>
  ok: <span style="color:#f92672">[</span>localhost<span style="color:#f92672">]</span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">{</span>
      <span style="color:#e6db74">&#34;msg&#34;</span>: <span style="color:#e6db74">&#34;MYLOWERCASESTRING&#34;</span>
  <span style="color:#f92672">}</span>
 </code></pre></div><p>As you can see, filters are pretty neat ways to transform data. So there I was trying to create a list of IP addresses from a prefix, with no end in sight, and Google-fu failing me. I’m sure there is some whacky ways to make it happen, like a jinja template and reading a file or using some kind of range/with sequence option. In the end I came up with the following python script. This can be placed in the /filter_plugins directory where your playbook is stored.</p>
 <p><code>ip_list.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/python</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/python</span>
 
 <span style="color:#f92672">from</span> netaddr <span style="color:#f92672">import</span> IPNetwork
 
@@ -214,7 +208,7 @@
         <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#39;ip_list&#39;</span>: ip_stuff}
 </code></pre></div><p>Breaking down the code, we first import one library, I know some folks aren’t a fan of this on filters but oh well. Then we create an empty list called ips, we then trigger a for loop to each individual entry under the prefix that will be passed in. Each entry will be added to the ips list. After that is all done we return the final list. Shout out to the oddbit blog for giving me a place to start on creating this filter.</p>
 <p><code>ip_list_test.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">IP List Test</span>
   <span style="color:#f92672">connection</span>: <span style="color:#ae81ff">local</span>
   <span style="color:#f92672">hosts</span>: <span style="color:#ae81ff">localhost</span>
@@ -232,7 +226,7 @@
         <span style="color:#f92672">msg</span>: <span style="color:#e6db74">&#34;{{ my_ip_addresses }}&#34;</span>
 
 ...
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PLAY <span style="color:#f92672">[</span>IP List Test<span style="color:#f92672">]</span> *
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PLAY <span style="color:#f92672">[</span>IP List Test<span style="color:#f92672">]</span> *
  TASK <span style="color:#f92672">[</span>Setting a fact <span style="color:#66d9ef">for</span> my list of IP addresses<span style="color:#f92672">]</span> ***
  ok: <span style="color:#f92672">[</span>localhost<span style="color:#f92672">]</span>
  TASK <span style="color:#f92672">[</span>Print list of IP addresses<span style="color:#f92672">]</span> *
@@ -357,7 +351,7 @@
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

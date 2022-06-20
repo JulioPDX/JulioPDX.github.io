@@ -44,16 +44,10 @@
 
 <meta itemprop="name" content="Aruba Spine Leaf Deployment With OSPFv3 and Link Local Addresses">
 <meta itemprop="description" content="Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
- You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links.">
-<meta itemprop="datePublished" content="2021-03-29T00:00:00+00:00" />
+ You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links."><meta itemprop="datePublished" content="2021-03-29T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-03-29T00:00:00+00:00" />
-<meta itemprop="wordCount" content="1432">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/leaf_spine_link_local.png">
-
-
-
+<meta itemprop="wordCount" content="1432"><meta itemprop="image" content="https://juliopdx.com/blog/images/leaf_spine_link_local.png">
 <meta itemprop="keywords" content="IPv6,Aruba,Data Center,OSPFv3," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/leaf_spine_link_local.png"/>
 
@@ -68,10 +62,10 @@
 <meta property="og:description" content="Introduction I was recently on my way to finishing IPv6 Fundamentals by Rick Graziani. I will admit I’m not the fastest reader! In the book Rick mentions the following:
  You could configure router R2’s interfaces with only link-local addresses, no global unicast addresses. This is because R2 has no end user interfaces. RFC 7404, Using Only Link-Local Addressing inside an IPv6 Network, discusses implementing routing protocols using only link-local addresses on infrastructure links." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/leaf_spine_link_local.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/" /><meta property="og:image" content="https://juliopdx.com/blog/images/leaf_spine_link_local.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-03-29T00:00:00+00:00" />
 <meta property="article:modified_time" content="2021-03-29T00:00:00+00:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -198,7 +192,7 @@
 <h2 id="simple-address-management">Simple Address Management</h2>
 <p>If you recall from the previous post, we had to assign the IPv6 equivalent of a point to point address on each spine to leaf connections. This would increase the amount of IP addresses used as well as burden the operator to maintain these configurations. When assigning a link local address on a router, we can essentially assign the same address to each interface. One note as well, I mentioned that Aruba did not support IP unnumbered in the last post. If you are assigning the same address to each interface, we are essentially arriving at the same objective. Below is a sample configuration of a leaf and spine router. Please be aware that we are still configuring a global unicast address (GUA) on a loopback for these devices. This can also be used for device connections (SSH) or handling traffic to NMS.</p>
 <p><code>Spine01 Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface 1/1/1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface 1/1/1
      no shutdown
      description link to leaf01
      ipv6 address link-local fe80:face:cafe::1/64
@@ -241,7 +235,7 @@
      area 0.0.0.0
 </code></pre></div><p>Only the loopback 0 interface on spine01 has a GUA. Essentially, every interface connected to the leaf nodes has the exact same configuration. Easy win for our automation folks!</p>
 <p><code>Leaf01 Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">lan 1,10
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">lan 1,10
  interface mgmt
      no shutdown
      ip dhcp
@@ -284,7 +278,7 @@
 <h2 id="lower-configuration-complexity">Lower Configuration Complexity</h2>
 <p>My main background on automation is around Ansible. I will provide some basic YAML variable file as an idea on how the configuration has been simplified. I’ll use spine01 for this example.</p>
 <p><code>Spine01 variables with GUA addresses</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">spine01</span>
 <span style="color:#f92672">link_local</span>: <span style="color:#ae81ff">fe80:face:cafe::1/64</span>
 <span style="color:#f92672">interfaces</span>:
@@ -303,7 +297,7 @@
   <span style="color:#f92672">loopback0</span>:
     <span style="color:#f92672">ipv6_address</span>: <span style="color:#ae81ff">2001</span>:<span style="color:#ae81ff">db8:cafe:ffff::1/128</span>
 </code></pre></div><p><code>Spine01 variables with only link-local</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">spine01</span>
 <span style="color:#f92672">link_local</span>: <span style="color:#ae81ff">fe80:face:cafe::1/64</span>
 <span style="color:#f92672">interfaces</span>:
@@ -321,7 +315,7 @@
 <h2 id="smaller-routing-tables">Smaller Routing Tables</h2>
 <p>Since we are using link local addresses, they have a scope that is… local to the link. The routing protocols will not propagate this as reachable networks, this in turn will reduce the total size of our routing tables. This has a great benefit of saving memory and speeding up convergence times. For comparison, check out the routing table on leaf01 when using GUA addresses and only using link local.</p>
 <p><code>Using GUA /127 addresses</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
   2001:db8:cafe:a::/64 (i) area:0.0.0.0
        directly attached to interface vlan10, cost 100 distance 110
   2001:db8:cafe:14::/64 (i) area:0.0.0.0
@@ -369,7 +363,7 @@
   2001:db8:cafe:ffff::2/128 (i) area:0.0.0.0
        via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
 </code></pre></div><p><code>Only link local addresses</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01#   show ipv6 ospfv3 routes | b 2001
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01#   show ipv6 ospfv3 routes | b 2001
  2001:db8:cafe:a::/64 (i) area:0.0.0.0
       directly attached to interface vlan10, cost 100 distance 110
  2001:db8:cafe:14::/64 (i) area:0.0.0.0
@@ -401,7 +395,7 @@
  2001:db8:cafe:ffff::2/128 (i) area:0.0.0.0
       via fe80:face:cafe::2 interface 1/1/2, cost 100 distance 110
 </code></pre></div><p><code>Trace from leaf01 and linux04</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# traceroute6 2001:db8:cafe:28:5200:ff:fe0a:0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# traceroute6 2001:db8:cafe:28:5200:ff:fe0a:0
  traceroute to 2001:db8:cafe:28:5200:ff:fe0a:0 (2001:db8:cafe:28:5200:ff:fe0a:0) from 2001:db8:cafe:a::1, 30 hops max, 3 sec. timeout, 3 probes, 24 byte packets
   1  2001:db8:cafe:ffff::1 (2001:db8:cafe:ffff::1)  4.712 ms  70.151 ms  24.438 ms
   2  2001:db8:cafe:28::1 (2001:db8:cafe:28::1)  18.437 ms  58.055 ms  17.812 ms
@@ -529,7 +523,7 @@
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

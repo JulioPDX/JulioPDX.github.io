@@ -44,16 +44,10 @@ The Pipeline Server and Runners Now that we have docker installed, we need somet
 
 <meta itemprop="name" content="Building a Network CI/CD Pipeline Part 2">
 <meta itemprop="description" content="Introduction Thank you for checking out part two of this series. The last post went through installing docker on an Ubuntu server to begin our journey to building a CI/CD pipeline. In this post it will be all about connecting Drone to our code repository, in this case GitHub. From our reference diagram below, we will be focusing on the connections from GitHub to the Drone runners.
-The Pipeline Server and Runners Now that we have docker installed, we need something to test our code or execute it.">
-<meta itemprop="datePublished" content="2021-10-20T10:41:26-08:00" />
+The Pipeline Server and Runners Now that we have docker installed, we need something to test our code or execute it."><meta itemprop="datePublished" content="2021-10-20T10:41:26-08:00" />
 <meta itemprop="dateModified" content="2021-10-20T10:41:26-08:00" />
-<meta itemprop="wordCount" content="1103">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/jonathan-lampel.jpg">
-
-
-
+<meta itemprop="wordCount" content="1103"><meta itemprop="image" content="https://juliopdx.com/blog/images/jonathan-lampel.jpg">
 <meta itemprop="keywords" content="CI/CD,Network Automation,Docker,NGROK,Drone," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/jonathan-lampel.jpg"/>
 
@@ -68,10 +62,10 @@ The Pipeline Server and Runners Now that we have docker installed, we need somet
 <meta property="og:description" content="Introduction Thank you for checking out part two of this series. The last post went through installing docker on an Ubuntu server to begin our journey to building a CI/CD pipeline. In this post it will be all about connecting Drone to our code repository, in this case GitHub. From our reference diagram below, we will be focusing on the connections from GitHub to the Drone runners.
 The Pipeline Server and Runners Now that we have docker installed, we need something to test our code or execute it." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/jonathan-lampel.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-2/" /><meta property="og:image" content="https://juliopdx.com/blog/images/jonathan-lampel.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-10-20T10:41:26-08:00" />
 <meta property="article:modified_time" content="2021-10-20T10:41:26-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -195,7 +189,7 @@ The Pipeline Server and Runners Now that we have docker installed, we need somet
 <p>From the diagram above you may have seen NGROK and thought, “what the heck is that?”. Since we will be integrating GitHub with Drone, GitHub needs a public URL or address to hit when making webhook calls to the Drone server. This is more than suitable for our testing purposes. NGROK will form a secure tunnel between your node and their service. All requests that hit this URL will then be forwarded to your application or web server for example. Please note NGROK has free and paid versions. The free version is more than what we need for testing.</p>
 <h2 id="installing-ngrok">Installing NGROK</h2>
 <p>Login to Ubuntu Server and run the following commands:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkdir temp <span style="color:#f92672">&amp;&amp;</span> cd temp
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkdir temp <span style="color:#f92672">&amp;&amp;</span> cd temp
 wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
 sudo apt install unzip
 unzip ngrok-stable-linux-amd64.zip
@@ -211,10 +205,10 @@ unzip ngrok-stable-linux-amd64.zip
 <h2 id="installing-drone-server">Installing Drone Server</h2>
 <p>One more credential needs to be created, the shared secret (RPC_SECRET) between the drone server and runners. Execute the command below from the Ubuntu server.</p>
 <p><code>Example from drone.io</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ openssl rand -hex <span style="color:#ae81ff">16</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ openssl rand -hex <span style="color:#ae81ff">16</span>
 bea26a2221fd8090ea38720fc445eca6
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker pull drone/drone:2
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run <span style="color:#ae81ff">\
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker pull drone/drone:2
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --volume<span style="color:#f92672">=</span>/var/lib/drone:/data <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_GITHUB_CLIENT_ID<span style="color:#f92672">={{</span>DRONE_GITHUB_CLIENT_ID<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_GITHUB_CLIENT_SECRET<span style="color:#f92672">={{</span>DRONE_GITHUB_CLIENT_SECRET<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
@@ -231,8 +225,8 @@ bea26a2221fd8090ea38720fc445eca6
 </code></pre></div><p>Feel free to set environment variables or just replace the {{}} settings with the values you have gathered so far. If you want a more in depth breakdown of all the variables, please check out the Drone docs!</p>
 <h2 id="installing-drone-runners">Installing Drone Runners</h2>
 <p>The runners are interesting, there’s a few versions of the runners depending on what type of environment you are working with. For example, the exec runner will execute pipelines directly on the host, no isolation provided. Useful if you are in an environment that cant utilize containers. This really didn’t seem like a good idea to me especially as I was testing and destroying things all the time. Drone recommends starting with the docker runner if you are new to Drone and I would echo that. For more info on the Drone runner install, check out their <a href="https://docs.drone.io/runner/docker/installation/linux/">docs</a>!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker pull drone/drone-runner-docker:1
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run --detach <span style="color:#ae81ff">\
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker pull drone/drone-runner-docker:1
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run --detach <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --volume<span style="color:#f92672">=</span>/var/run/docker.sock:/var/run/docker.sock <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_PROTO<span style="color:#f92672">=</span>https <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --env<span style="color:#f92672">=</span>DRONE_RPC_HOST<span style="color:#f92672">={{</span>123456.ngrok.io<span style="color:#f92672">}}</span> <span style="color:#ae81ff">\
@@ -379,7 +373,7 @@ bea26a2221fd8090ea38720fc445eca6
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

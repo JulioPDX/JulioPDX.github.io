@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Basic Network Testing With Nornir and NTC Templates">
-<meta itemprop="description" content="Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&rsquo;ll share with you.">
-<meta itemprop="datePublished" content="2021-08-15T11:12:03-08:00" />
+<meta itemprop="description" content="Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&rsquo;ll share with you."><meta itemprop="datePublished" content="2021-08-15T11:12:03-08:00" />
 <meta itemprop="dateModified" content="2021-08-15T11:12:03-08:00" />
-<meta itemprop="wordCount" content="1063">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/ildefonso-polo.jpg">
-
-
-
+<meta itemprop="wordCount" content="1061"><meta itemprop="image" content="https://juliopdx.com/blog/images/ildefonso-polo.jpg">
 <meta itemprop="keywords" content="Cisco,Network Automation," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/ildefonso-polo.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Basic Network Testing With Nornir and NTC Templates" />
 <meta property="og:description" content="Introduction Hello everyone and thank you for checking out another blog post. This time looking at testing the network. In my previous post, I mentioned testing could be a really neat and much needed addition to the code base. I had some spare time this weekend and couldn’t wait. Ill be honest, I consider myself a novice in python and programming in general. There is definitely many ways to accomplish a task and I’m sure there are plenty of more efficient ways to perform the actions I&rsquo;ll share with you." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/ildefonso-polo.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/08/15/basic-network-testing-with-nornir-and-ntc-templates/" /><meta property="og:image" content="https://juliopdx.com/blog/images/ildefonso-polo.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-15T11:12:03-08:00" />
 <meta property="article:modified_time" content="2021-08-15T11:12:03-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -183,30 +177,30 @@
 <p>Initially I wanted to incorporate pytest for this weekend project. It generally made sense and experienced folks working in python use this to test anything from simple functions to extremely large code bases. I ran into a few issues when trying to incorporate pytest. Again, I’m fairly inexperienced in this realm and I’m sure a more experienced person would not run into these issues. The main issue I had with pytest was jobs failing after the first failed assert. Even when explicitly setting the <em>–maxfail</em> option. Overall I thought working with pytest was really fun and I cant wait to dig into it more.</p>
 <p>Phase two of network testing had me working with Nornir and Netmiko to send a command, set <code>use_textfsm=True</code>, and then run a few if statements to check matching configuration. I&rsquo;ll include a portion of what that looked like below.</p>
 <p><code>Nornir and Netmiko</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">result <span style="color:#f92672">=</span> nornir<span style="color:#f92672">.</span>run(
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">result <span style="color:#f92672">=</span> nornir<span style="color:#f92672">.</span>run(
     name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;GET VRF&#34;</span>,
     task<span style="color:#f92672">=</span>netmiko_send_command,
     command_string<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show vrf&#34;</span>,
-    use_textfsm<span style="color:#f92672">=</span>True,
+    use_textfsm<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
 )
 
 <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
     vrf_parsed <span style="color:#f92672">=</span> result[host]<span style="color:#f92672">.</span>result
     list_of_vrf_values <span style="color:#f92672">=</span> [value <span style="color:#66d9ef">for</span> elem <span style="color:#f92672">in</span> vrf_parsed <span style="color:#66d9ef">for</span> value <span style="color:#f92672">in</span> elem<span style="color:#f92672">.</span>values()]
 
-    <span style="color:#66d9ef">print</span>()
+    print()
 
     <span style="color:#66d9ef">for</span> value <span style="color:#f92672">in</span> main_vrfs:
         <span style="color:#66d9ef">if</span> value <span style="color:#f92672">in</span> list_of_vrf_values:
-            pretty(f<span style="color:#e6db74">&#34;[bold blue]{value} VRF is configured on {host}[/bold blue]&#34;</span>)
+            pretty(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[bold blue]</span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74"> VRF is configured on </span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">[/bold blue]&#34;</span>)
         <span style="color:#66d9ef">else</span>:
-            pretty(f<span style="color:#e6db74">&#34;[bold red]{value} VRF is not configured on {host}[/bold red]&#34;</span>)
+            pretty(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[bold red]</span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74"> VRF is not configured on </span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">[/bold red]&#34;</span>)
 </code></pre></div><p>This approach generally worked but I had an issue in my lab. I’m not sure if it was a Netmiko issue or just my lab being weird and getting connection timeouts. In the end I decided to use Nornir with Scrapli to send the commands. Connections when using Scrapli seemed to just work, great job Carl! Once this was retrieved, I could then use the <em>parse_output</em> function from the <em>ntc_templates</em> library. Feel free to check out the repository with the test script (linked below).</p>
 <h2 id="vrf-validation">VRF Validation</h2>
 <p><code>Imports</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
 <span style="color:#f92672">import</span> yaml
-<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> <span style="color:#66d9ef">print</span> <span style="color:#66d9ef">as</span> pretty
+<span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> print <span style="color:#66d9ef">as</span> pretty
 <span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
 <span style="color:#f92672">from</span> nornir_scrapli.tasks <span style="color:#f92672">import</span> send_command
 <span style="color:#f92672">from</span> ntc_templates.parse <span style="color:#f92672">import</span> parse_output
@@ -220,7 +214,7 @@
 <li>parse_output – Great library for turning output into structured data</li>
 </ul>
 <p><code>load yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">main_vrfs <span style="color:#f92672">=</span> []
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">main_vrfs <span style="color:#f92672">=</span> []
 
 <span style="color:#75715e"># Create list of VRFs defined in groups.yaml</span>
 <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;groups.yaml&#34;</span>) <span style="color:#66d9ef">as</span> f:
@@ -229,7 +223,7 @@
         main_vrfs<span style="color:#f92672">.</span>append(vrf[<span style="color:#e6db74">&#34;name&#34;</span>])
 </code></pre></div><p>I thought this was pretty slick. We are opening the <em>groups.yaml</em> file seen from the previous post. This file lists all of our VRFs to be configured on the PE devices. Why not reuse it and save some typing? Once that is done we set the VRF portion of the yaml file to a variable called <em>data</em>. After this we loop over all the VRFs and add just the name to our empty list above. Hold that thought as this list will be used later in the script.</p>
 <p><code>test_vrf function intro</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_vrf</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_vrf</span>():
 
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    Main VRF test
@@ -247,7 +241,7 @@
     )
 </code></pre></div><p>If any of you have worked with pytest, you can tell by the function naming that I was serious about incorporating it. I will in the future! Most of this has been shown in previous posts but one little difference is that <em>os.environ section</em>. When I was building this, the script couldn’t locate the <em>ntc_templates</em>. Essentially, we are just telling the script where to find the templates. You will probably have to update this for your environment.</p>
 <p><code>For all the hosts</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
         remote_vrfs <span style="color:#f92672">=</span> []
         vrf_parsed <span style="color:#f92672">=</span> parse_output(
             platform<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cisco_ios&#34;</span>, command<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;show vrf&#34;</span>, data<span style="color:#f92672">=</span>result[host]<span style="color:#f92672">.</span>result
@@ -258,17 +252,17 @@
             remote_vrfs<span style="color:#f92672">.</span>append(remote_vrf[<span style="color:#e6db74">&#34;name&#34;</span>])
 </code></pre></div><p>I really love this about python and programming in general, what you see above is fairly basic and learned pretty early on in programming studies. But the power it can demonstrate is really neat to me. At this point in the script, all hosts have been connected to and information captured. We are using this initial for loop to loop over the data that was gathered from the <em>show vrf</em> command. We create an empty list called <em>remote_vrfs</em>, then run the <em>parse_output</em> function from the <em>ntc_templates</em> library to get data in a structured format. Once that is done we run another for loop to add VRF names gathered from PE routers to our previously empty list. At this point we now have two lists created. One for VRFs we want configured on devices and one from the actual VRFs already configured on the PE routers.</p>
 <p><code>Set Theory</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">        set_diff <span style="color:#f92672">=</span> set(main_vrfs) <span style="color:#f92672">-</span> set(remote_vrfs)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">        set_diff <span style="color:#f92672">=</span> set(main_vrfs) <span style="color:#f92672">-</span> set(remote_vrfs)
 
         <span style="color:#75715e"># If a set difference is found, print the nice red output!</span>
         <span style="color:#66d9ef">if</span> set_diff:
             pretty(
-                f<span style="color:#e6db74">&#34;[bold red]The following VRFs are not configured on {host}: {set_diff [/bold red]&#34;</span>
+                <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[bold red]The following VRFs are not configured on </span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>set_diff [<span style="color:#f92672">/</span>bold red]<span style="color:#e6db74">&#34;</span>
             )
         <span style="color:#66d9ef">else</span>:
-            pretty(f<span style="color:#e6db74">&#34;[bold blue]All VRF tests passed on router {host}[/bold blue]&#34;</span>)
+            pretty(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[bold blue]All VRF tests passed on router </span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">[/bold blue]&#34;</span>)
 </code></pre></div><p>Good old set theory to the rescue. I learned this a while back from a course by… who other than Nick Russo. Discrete mathematics in high school may have helped but that was way too long ago. We take the two lists we have already created, then convert them to sets. From there we just look for the difference between <em>main_vrfs</em> set and the <em>remote_vrfs</em> set. Below is an example on the interpreter of what I hope to accomplish.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> main_vrfs <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;CUSTOMER_777&#34;</span>,<span style="color:#e6db74">&#34;CUSTOMER_789&#34;</span>}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> main_vrfs <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;CUSTOMER_777&#34;</span>,<span style="color:#e6db74">&#34;CUSTOMER_789&#34;</span>}
 <span style="color:#f92672">&gt;&gt;&gt;</span> remote_vrfs <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;CUSTOMER_777&#34;</span>,<span style="color:#e6db74">&#34;CUSTOMER_789&#34;</span>,<span style="color:#e6db74">&#34;MGMT&#34;</span>}
 <span style="color:#f92672">&gt;&gt;&gt;</span> main_vrfs <span style="color:#f92672">-</span> remote_vrfs
 set()
@@ -313,7 +307,7 @@ set()
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1063 Words
+        1061 Words
       </p>
 
       <p>
@@ -401,7 +395,7 @@ set()
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

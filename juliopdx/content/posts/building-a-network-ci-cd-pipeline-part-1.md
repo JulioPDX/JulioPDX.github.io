@@ -9,6 +9,8 @@ tags:
   - CI/CD
   - Network Automation
   - Docker
+aliases:
+    - /2021/10/20/building-a-network-ci-cd-pipeline-part-1/
 ---
 
 ![Featured Image](/blog/images/selim.jpg)

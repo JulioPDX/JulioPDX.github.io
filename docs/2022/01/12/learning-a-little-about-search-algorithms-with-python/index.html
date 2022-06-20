@@ -44,16 +44,10 @@ I have been working through the Introduction to Computer Science course by CS50x
 
 <meta itemprop="name" content="Learning a Little About Search Algorithms With Python">
 <meta itemprop="description" content="Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
-I have been working through the Introduction to Computer Science course by CS50x (Harvard).">
-<meta itemprop="datePublished" content="2022-01-12T15:12:30-08:00" />
+I have been working through the Introduction to Computer Science course by CS50x (Harvard)."><meta itemprop="datePublished" content="2022-01-12T15:12:30-08:00" />
 <meta itemprop="dateModified" content="2022-01-12T15:12:30-08:00" />
-<meta itemprop="wordCount" content="1299">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/markus-spiske.jpg">
-
-
-
+<meta itemprop="wordCount" content="1297"><meta itemprop="image" content="https://juliopdx.com/blog/images/markus-spiske.jpg">
 <meta itemprop="keywords" content="Python," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/markus-spiske.jpg"/>
 
@@ -68,10 +62,10 @@ I have been working through the Introduction to Computer Science course by CS50x
 <meta property="og:description" content="Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
 I have been working through the Introduction to Computer Science course by CS50x (Harvard)." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/markus-spiske.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/" /><meta property="og:image" content="https://juliopdx.com/blog/images/markus-spiske.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-01-12T15:12:30-08:00" />
 <meta property="article:modified_time" content="2022-01-12T15:12:30-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -195,7 +189,7 @@ I have been working through the Introduction to Computer Science course by CS50x
 <h2 id="creating-the-data">Creating the Data</h2>
 <p>I decided to create a big list of subnets with some Python. The code below will produce three files that can be used for testing.</p>
 <p><code>ip_create.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Small script to create test files&#34;&#34;&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Small script to create test files&#34;&#34;&#34;</span>
 <span style="color:#f92672">import</span> ipaddress
 <span style="color:#f92672">import</span> random
 
@@ -206,21 +200,21 @@ networks <span style="color:#f92672">=</span> [str(n<span style="color:#f92672">
 <span style="color:#75715e"># Ordered list of subnets</span>
 <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;ordered_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
     <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
-        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>net<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
 
 <span style="color:#75715e"># Reversed list of subnets</span>
 networks<span style="color:#f92672">.</span>reverse()
 <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;reverse_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
     <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
-        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>net<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
 
 <span style="color:#75715e"># Random list of subnets</span>
 random<span style="color:#f92672">.</span>shuffle(networks)
 <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;random_ip.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
     <span style="color:#66d9ef">for</span> net <span style="color:#f92672">in</span> networks:
-        file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;{net}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>net<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
 </code></pre></div><p><code>ordered_ip.txt</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.0.0.0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.0.0.0
 10.0.1.0
 10.0.2.0
 10.0.3.0
@@ -232,7 +226,7 @@ random<span style="color:#f92672">.</span>shuffle(networks)
 10.0.9.0
 ...
 </code></pre></div><p><code>random_ip.txt</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.44.148.0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.44.148.0
 10.47.64.0
 10.166.151.0
 10.139.81.0
@@ -244,7 +238,7 @@ random<span style="color:#f92672">.</span>shuffle(networks)
 10.12.255.0
 ...
 </code></pre></div><p><code>reverse_ip.txt</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.255.255.0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">10.255.255.0
 10.255.254.0
 10.255.253.0
 10.255.252.0
@@ -256,26 +250,26 @@ random<span style="color:#f92672">.</span>shuffle(networks)
 ...
 </code></pre></div><h2 id="linear-search">Linear Search</h2>
 <p>Linear search is fairly simple in nature. We take a list or array and check one by one until we find our desired value.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
 Index:  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
 </code></pre></div><p>For example, using the data above. If we wanted to check for the value of 70, we would first have to check 10 then 20 then 30 and so on. This means it would take us “n” steps. Think of “n” as the size of the array. In our example the array is of size 7. Worst case scenario would be 7 checks. This can then be referenced as “O(n)” or O of n. Now what about the best case scenario? Well, if we are looking for the 10 in this array, then it only requires one step. This is known as “Ω(1)” or Omega of one.</p>
 <h2 id="binary-search">Binary Search</h2>
 <p>Binary search works a bit differently than linear search. Binary search does have one additional requirement, the array must be sorted. If not, the algorithm breaks. Binary search works by continuously making the size of the array smaller. Essentially making the search size smaller on each iteration.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># First Check</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># First Check</span>
 Value: <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">40</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
 Index:  <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
 Start: <span style="color:#ae81ff">0</span>
 End: <span style="color:#ae81ff">6</span>
 Midpoint: <span style="color:#ae81ff">3</span>
 </code></pre></div><p>Same array as above but with additional information. We have the start of the array at 0 and the end of the array at 6. The midpoint is found by (start + end) / 2. In this case we are looking for 70. The midpoint(40) is lower than our target(70) so the start will shift to midpoint + 1.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Second Check</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Second Check</span>
 Value: <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span>
 Index:  <span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">6</span>
 Start: <span style="color:#ae81ff">4</span>
 End: <span style="color:#ae81ff">6</span>
 Midpoint: <span style="color:#ae81ff">5</span>
 </code></pre></div><p>On the second check we are searching through a smaller piece of the array. Midpoint is found by (6 + 4) / 2 = 5. The target is higher than our midpoint of 70. So again we will shift the start to midpoint (5) + 1.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Third Check</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Third Check</span>
 Value: <span style="color:#ae81ff">70</span>
 Index:  <span style="color:#ae81ff">6</span>
 Start: <span style="color:#ae81ff">6</span>
@@ -286,7 +280,7 @@ Midpoint: <span style="color:#ae81ff">6</span>
 </code></pre></div><p>On this third check the midpoint is equal to our target, the value is found! This will also work in the opposite, but we will decrease the end to (midpoint – 1). Whats the big deal? In binary search, when the size of the array increases, the amount of steps will not grow as large as linear search. Making the algorithm much more efficient. Best case scenario, on the initial midpoint we find our target. This is similar to linear search, Ω(1). What about worst case? That is known as O(log n). Long story short, much faster.</p>
 <h2 id="comparing-with-subnets">Comparing With Subnets</h2>
 <p>We will be working with subnets as our data. To make things more simple, I will convert these to their decimal equivalent. What do I mean by this? Please see example below!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> ipaddress <span style="color:#f92672">import</span> ip_address
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> ipaddress <span style="color:#f92672">import</span> ip_address
 <span style="color:#f92672">&gt;&gt;&gt;</span> int(ip_address(<span style="color:#e6db74">&#34;0.0.0.1&#34;</span>))
 <span style="color:#ae81ff">1</span>
 <span style="color:#f92672">&gt;&gt;&gt;</span> int(ip_address(<span style="color:#e6db74">&#34;0.0.1.0&#34;</span>))
@@ -294,7 +288,7 @@ Midpoint: <span style="color:#ae81ff">6</span>
 <span style="color:#f92672">&gt;&gt;&gt;</span>
 </code></pre></div><p>When I run the comparisons, in reality they will be comparing integer values vs strings of subnets.</p>
 <h3 id="linear-seach-in-code">Linear Seach in Code</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> open(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> open(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
     data <span style="color:#f92672">=</span> [int(ip_address(line<span style="color:#f92672">.</span>strip())) <span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> file<span style="color:#f92672">.</span>readlines()]
 
 my_target <span style="color:#f92672">=</span> int(
@@ -304,49 +298,49 @@ my_target <span style="color:#f92672">=</span> int(
 <span style="color:#66d9ef">for</span> prefix <span style="color:#f92672">in</span> data:
     time<span style="color:#f92672">.</span>sleep(DELAY)
     <span style="color:#66d9ef">if</span> prefix <span style="color:#f92672">==</span> my_target:
-        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Found: {ip_address(my_target)} with linear search&#34;</span>)
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found: </span><span style="color:#e6db74">{</span>ip_address(my_target)<span style="color:#e6db74">}</span><span style="color:#e6db74"> with linear search&#34;</span>)
         <span style="color:#66d9ef">break</span>
 </code></pre></div><p>Initially we open one of the text files and use some list comprehension to create our list of integers that represent different subnets. Then we ask the user to enter a subnet, for example, “10.80.40.0”. We will then compare each prefix or subnet against our target. If we find it, we will convert the integer back to a cleaner format. You may have caught the sleep setting in the code. Well it turns out computers are really fast, so we will add some artificial delay. This is used in both search algorithms.</p>
 <h3 id="binary-search-in-code">Binary Search in Code</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bin_search</span>(some_array: list, target: int):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bin_search</span>(some_array: list, target: int):
     <span style="color:#e6db74">&#34;&#34;&#34;Simple binary search function&#34;&#34;&#34;</span>
     array <span style="color:#f92672">=</span> sorted(some_array)
     start <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
     end <span style="color:#f92672">=</span> len(array) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
-    found <span style="color:#f92672">=</span> False
+    found <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
     <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> found <span style="color:#f92672">and</span> start <span style="color:#f92672">&lt;=</span> end:
         time<span style="color:#f92672">.</span>sleep(DELAY)
         middle <span style="color:#f92672">=</span> int((start <span style="color:#f92672">+</span> end) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
         <span style="color:#66d9ef">if</span> int(array[middle]) <span style="color:#f92672">==</span> target:
-            found <span style="color:#f92672">=</span> True
-            <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Found: {ip_address(target)} with binary search&#34;</span>)
+            found <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found: </span><span style="color:#e6db74">{</span>ip_address(target)<span style="color:#e6db74">}</span><span style="color:#e6db74"> with binary search&#34;</span>)
         <span style="color:#66d9ef">elif</span> int(array[middle]) <span style="color:#f92672">&gt;</span> target:
             end <span style="color:#f92672">=</span> middle <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
         <span style="color:#66d9ef">else</span>:
             start <span style="color:#f92672">=</span> middle <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
 </code></pre></div><p>I wrapped this in a function and set it to accept two parameters, some array and a target. We will first sort the array since that is required in binary search. We then set our start and end values. Once that is done, we will run a while loop and keep making the search smaller and smaller until the target is found. Lets check out some examples!</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Best case scenario for Linear</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Best case scenario for Linear</span>
 <span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py ordered_ip<span style="color:#f92672">.</span>txt
-What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
-Found: <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">with</span> linear search
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0.0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.0.0.0</span>
+Found: <span style="color:#ae81ff">10.0.0.0</span> <span style="color:#66d9ef">with</span> linear search
 Elapsed time: <span style="color:#ae81ff">0.0801</span> seconds
-Found: <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">with</span> binary search
+Found: <span style="color:#ae81ff">10.0.0.0</span> <span style="color:#66d9ef">with</span> binary search
 Elapsed time: <span style="color:#ae81ff">0.0045</span> seconds
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Worst case scenario for Linear</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Worst case scenario for Linear</span>
 <span style="color:#75715e"># Binary did not increase much at all!</span>
 <span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py ordered_ip<span style="color:#f92672">.</span>txt
-What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
-Found: <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span> <span style="color:#66d9ef">with</span> linear search
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0.0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.255.255.0</span>
+Found: <span style="color:#ae81ff">10.255.255.0</span> <span style="color:#66d9ef">with</span> linear search
 Elapsed time: <span style="color:#ae81ff">11.0045</span> seconds
-Found: <span style="color:#ae81ff">10.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span> <span style="color:#66d9ef">with</span> binary search
+Found: <span style="color:#ae81ff">10.255.255.0</span> <span style="color:#66d9ef">with</span> binary search
 Elapsed time: <span style="color:#ae81ff">0.0050</span> seconds
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Random list of subnets</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Random list of subnets</span>
 <span style="color:#960050;background-color:#1e0010">❯</span> python algo<span style="color:#f92672">.</span>py random_ip<span style="color:#f92672">.</span>txt
-What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span>
-Found: <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span> <span style="color:#66d9ef">with</span> linear search
+What <span style="color:#f92672">/</span><span style="color:#ae81ff">24</span> prefix <span style="color:#f92672">in</span> <span style="color:#ae81ff">10.0.0.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> are you looking <span style="color:#66d9ef">for</span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">10.80.40.0</span>
+Found: <span style="color:#ae81ff">10.80.40.0</span> <span style="color:#66d9ef">with</span> linear search
 Elapsed time: <span style="color:#ae81ff">10.6104</span> seconds
-Found: <span style="color:#ae81ff">10.80</span><span style="color:#f92672">.</span><span style="color:#ae81ff">40.0</span> <span style="color:#66d9ef">with</span> binary search
+Found: <span style="color:#ae81ff">10.80.40.0</span> <span style="color:#66d9ef">with</span> binary search
 Elapsed time: <span style="color:#ae81ff">0.0159</span> seconds
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
 <p>Thank you all for reading this far, it really means a lot and please go vote for your favorite IT blogs.</p>
@@ -381,7 +375,7 @@ Elapsed time: <span style="color:#ae81ff">0.0159</span> seconds
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1299 Words
+        1297 Words
       </p>
 
       <p>
@@ -469,7 +463,7 @@ Elapsed time: <span style="color:#ae81ff">0.0159</span> seconds
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

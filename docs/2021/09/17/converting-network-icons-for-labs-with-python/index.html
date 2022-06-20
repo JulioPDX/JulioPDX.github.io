@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Converting Network Icons for Labs With Python">
-<meta itemprop="description" content="Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively.">
-<meta itemprop="datePublished" content="2021-09-17T09:31:09-08:00" />
+<meta itemprop="description" content="Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively."><meta itemprop="datePublished" content="2021-09-17T09:31:09-08:00" />
 <meta itemprop="dateModified" content="2021-09-17T09:31:09-08:00" />
-<meta itemprop="wordCount" content="1552">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/topo_wasif_bhatti.png">
-
-
-
+<meta itemprop="wordCount" content="1552"><meta itemprop="image" content="https://juliopdx.com/blog/images/topo_wasif_bhatti.png">
 <meta itemprop="keywords" content="Network Automation,Python," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/topo_wasif_bhatti.png"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Converting Network Icons for Labs With Python" />
 <meta property="og:description" content="Introduction First of all, the diagrams used in this post and repository were originally created by ecceman. Please head over to the original repository and show some love by giving it a star! When going through studies or testing a solution, I tend to lab a lot. On top of that I usually try and make my labs and topologies look pretty. I like to tell myself if the topology looks good, then I will learn more effectively." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/topo_wasif_bhatti.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/09/17/converting-network-icons-for-labs-with-python/" /><meta property="og:image" content="https://juliopdx.com/blog/images/topo_wasif_bhatti.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-09-17T09:31:09-08:00" />
 <meta property="article:modified_time" content="2021-09-17T09:31:09-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -203,12 +197,12 @@
 <p>I started where most of us start. Just heading to a web browser and typing “how to convert SVG to PNG using python”. While there were a lot of decent examples, folks new to programming may find some of them overwhelming. Luckily for you and I, stack overflow is a thing and the community usually post awesome answers to questions like the one I had. If you would like to check out the post on stack, check it out <a href="https://stackoverflow.com/questions/51450134/how-to-convert-svg-to-png-or-jpeg-in-python">here</a>!</p>
 <h3 id="libvips-and-pyvips">libvips and pyvips</h3>
 <p>I wont go too much into detail on these libraries. The short of it is, libvips is an image processing library that can do a heck of a lot more than what I’m using it for. If you would like to check out their docs, <a href="https://www.libvips.org/API/current/">click here</a>. I like to think of pyvips as an entry point that leverages libvips under the hood. Write program in python and then it will call functions from libvips to execute.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get install libvips
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get install libvips
 pip3 install pyvips
 </code></pre></div><h3 id="interating-over-folders-and-files">Interating Over Folders and Files</h3>
 <p>Now that I had tools that looked promising for our end goal, I needed a way to iterate over all folders and SVG files within them. Initially I figured the script could just create a PNG folder under the shape and color. This way users could go to svg &gt; circle &gt; blue &gt; PNG, and all the PNG files would be available for circle icons that were blue. Below is an example of what I had to work with. Please note this is just a snippet.</p>
 <p><code>SVG Folder Structure</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">├── svg
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">├── svg
 │   ├── circle
 │   │   ├── blue
 │   │   │   ├── c_bug.svg
@@ -249,12 +243,12 @@ pip3 install pyvips
 │           ├── sq_camera_dome_red.svg
 │           ├── sq_camera_red.svg
 </code></pre></div><p>Iterating over this structure initially seemed very complex but python makes this fairly simple. I leveraged <a href="https://www.geeksforgeeks.org/os-walk-python/">“walk” from “os”</a>. This was a bit of trial and error but when I was able to print the correct files, I could proceed with converting them. Small example below of printing root and files. I pass in a PATH variable to walk as a starting point.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> os <span style="color:#f92672">import</span> walk
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">from</span> os <span style="color:#f92672">import</span> walk
 <span style="color:#f92672">&gt;&gt;&gt;</span> PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;svg/&#34;</span>
 <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">for</span> (root, dirs, files) <span style="color:#f92672">in</span> walk(PATH):
 <span style="color:#f92672">...</span>     <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> files:
 <span style="color:#f92672">...</span>         <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;.svg&#34;</span> <span style="color:#f92672">in</span> f:
-<span style="color:#f92672">...</span>             <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;{root}/{f}&#34;</span>)
+<span style="color:#f92672">...</span>             print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 <span style="color:#f92672">...</span>
 svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_bug<span style="color:#f92672">.</span>svg
 svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_camera_blue<span style="color:#f92672">.</span>svg
@@ -263,15 +257,15 @@ svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span
 svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span>blue<span style="color:#f92672">/</span>c_client_vm_blue<span style="color:#f92672">.</span>svg
 </code></pre></div><p>If you notice, root is the same for all the files shown above, “svg/circle/blue/”. All that I needed now from my initial thinking was to add a PNG folder at the end of that root. Then all the shapes and colors would have a PNG folder for the images to be converted. Please see one solution below.</p>
 <p><code>Creating PNG Folder</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">try</span>:
-    mkdir(path<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{root}/png/&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">try</span>:
+    mkdir(path<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/png/&#34;</span>)
 <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">OSError</span> <span style="color:#66d9ef">as</span> error:
     <span style="color:#66d9ef">pass</span>
 </code></pre></div><p>This isn’t the best solution at all or even the most efficient. This is basically using “mkdir” to create a directory under the root and adding png. The negative here is that it will throw an error after the first time it is created. I just handle it by setting the script to continue after running into this error.</p>
 <h3 id="converting-all-the-things">Converting All the Things</h3>
 <p>The conversion wasnt too bad at all. I’ll explain the code upfront this time. pyvips has a function to create a thumbnail based off of a file. In this case we are looping over every single file that ends with “.svg”. We size the thumbnail as a height and width of 52. I believe these are recommended from the EVE-NG import icons guide. After that we write the file, when doing this we will place each new file under the root we are iterating over, for example “svg/circle/blue/”, appending “/png/” and ending it by changing the extension name from “svg” to “png”. Clear as mud right?</p>
 <p><code>Itsy Bitys Function</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
 
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    All the action
@@ -281,11 +275,11 @@ svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span
         <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> files:
             <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;.svg&#34;</span> <span style="color:#f92672">in</span> f:
                 <span style="color:#66d9ef">try</span>:
-                    mkdir(path<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{root}/png/&#34;</span>)
+                    mkdir(path<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/png/&#34;</span>)
                 <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">OSError</span> <span style="color:#66d9ef">as</span> error:
                     <span style="color:#66d9ef">pass</span>
-                convert_file <span style="color:#f92672">=</span> pyvips<span style="color:#f92672">.</span>Image<span style="color:#f92672">.</span>thumbnail(f<span style="color:#e6db74">&#34;{root}/{f}&#34;</span>, <span style="color:#ae81ff">52</span>, height<span style="color:#f92672">=</span><span style="color:#ae81ff">52</span>)
-                convert_file<span style="color:#f92672">.</span>write_to_file(f<span style="color:#e6db74">&#34;{root}/png/{f.replace(&#39;svg&#39;, &#39;png&#39;)}&#34;</span>)
+                convert_file <span style="color:#f92672">=</span> pyvips<span style="color:#f92672">.</span>Image<span style="color:#f92672">.</span>thumbnail(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, <span style="color:#ae81ff">52</span>, height<span style="color:#f92672">=</span><span style="color:#ae81ff">52</span>)
+                convert_file<span style="color:#f92672">.</span>write_to_file(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/png/</span><span style="color:#e6db74">{</span>f<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;svg&#39;</span>, <span style="color:#e6db74">&#39;png&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 </code></pre></div><h2 id="importing-to-eve-ng">Importing to EVE-NG</h2>
 <p>At this point all the SVG files have been converted to PNG format. If you would like to add these icons to EVE-NG, you can use something like <a href="https://winscp.net/eng/index.php">winscp</a> or build some automation to send them to your EVE-NG server. The path you will need to store them in is “/opt/unetlab/html/images/icons/”.</p>
 <h2 id="bonus-automating-the-reference-file">Bonus, Automating the Reference File</h2>
@@ -295,7 +289,7 @@ svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span
 <p>I’ve worked with markdown before and adding image URLs. At this point we had every PNG file sized and ready to go. Why not just write a script that could build this markdown file for us. I ended up using “walk” again since I now needed to loop over every single PNG image. We decided on three icons per row, with name on the right side of the icon. I played with a bit of simple math in the loop to tell the program when to drop to the next line. If you have any questions on the process feel free to ping me. If you want to see the file in the raw <a href="https://raw.githubusercontent.com/JulioPDX/affinity/master/reference.md">click here</a>, crazy right? Rendered version below!</p>
 <p><img src="/blog/images/ref_mark.png" alt="Reference File Rendered"></p>
 <p><code>ref_build.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
 
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    All the action
@@ -316,11 +310,11 @@ svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span
                     <span style="color:#75715e"># counter on third entry</span>
                     count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
                     <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-                        my_file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;|![{f}]({root}/{f})|{f.replace(&#39;.png&#39;, &#39;&#39;)}|&#34;</span>)
+                        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;|![</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">](</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">)|</span><span style="color:#e6db74">{</span>f<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;.png&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">|&#34;</span>)
                     <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>:
-                        my_file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;![{f}]({root}/{f})|{f.replace(&#39;.png&#39;, &#39;&#39;)}|&#34;</span>)
+                        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;![</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">](</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">)|</span><span style="color:#e6db74">{</span>f<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;.png&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">|&#34;</span>)
                     <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">3</span>:
-                        my_file<span style="color:#f92672">.</span>write(f<span style="color:#e6db74">&#34;![{f}]({root}/{f})|{f.replace(&#39;.png&#39;, &#39;&#39;)}|</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+                        my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;![</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">](</span><span style="color:#e6db74">{</span>root<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>f<span style="color:#e6db74">}</span><span style="color:#e6db74">)|</span><span style="color:#e6db74">{</span>f<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;.png&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">|</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
                         count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
         my_file<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
 </code></pre></div><h2 id="outro-and-links">Outro and Links</h2>
@@ -445,7 +439,7 @@ svg<span style="color:#f92672">/</span>circle<span style="color:#f92672">/</span
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

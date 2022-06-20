@@ -44,16 +44,10 @@ In the topology you see below. We have three routing devices. One running only E
 
 <meta itemprop="name" content="Route Redistribution OSPFv3 and EIGRPv6">
 <meta itemprop="description" content="Introduction Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.
-In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols.">
-<meta itemprop="datePublished" content="2021-05-03T00:00:00+00:00" />
+In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols."><meta itemprop="datePublished" content="2021-05-03T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-05-03T00:00:00+00:00" />
-<meta itemprop="wordCount" content="959">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/ospftoeigrp.png">
-
-
-
+<meta itemprop="wordCount" content="959"><meta itemprop="image" content="https://juliopdx.com/blog/images/ospftoeigrp.png">
 <meta itemprop="keywords" content="Aruba,Cisco,EIGRPv6,IPv6,OSPFv3," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/ospftoeigrp.png"/>
 
@@ -68,10 +62,10 @@ In the topology you see below. We have three routing devices. One running only E
 <meta property="og:description" content="Introduction Hello and thank you for checking out this post. I was recently working through OSPF and EIGRP for ENARSI studies and something came up on a lab I was building. Redistributing routes between OSPFv3 and EIGRPv6. I am specifically speaking of the IPv6 variant of these protocols.
 In the topology you see below. We have three routing devices. One running only EIGRPv6, one running OSPFv3 (Aruba CX), and the redistribution node running both protocols." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/ospftoeigrp.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/05/03/route-redistribution-ospfv3-and-eigrpv6/" /><meta property="og:image" content="https://juliopdx.com/blog/images/ospftoeigrp.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-05-03T00:00:00+00:00" />
 <meta property="article:modified_time" content="2021-05-03T00:00:00+00:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -190,7 +184,7 @@ In the topology you see below. We have three routing devices. One running only E
 <h2 id="ospfv3">OSPFv3</h2>
 <p>The OSPFv3 node is an Aruba CX switch running …OSPFv3! I have a few loopbacks configured so we can add some networks for testing. All of OSPF will be in area 0 for simplicity. We set all interfaces to passive besides the uplink to REDIS. Configuration snippet is below.</p>
 <p><code>OSPFv3 Node Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname OSPFv3
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname OSPFv3
 !
 interface 1/1/1
     no shutdown
@@ -220,7 +214,7 @@ router ospfv3 1
 </code></pre></div><h2 id="eigrpv6">EIGRPv6</h2>
 <p>In the case of EIGRPv6, we will be using named EIGRP with an address family of IPv6. We add a few loopbacks for testing as well. One difference you’ll see in the configurations, EIGRPv6 is enabled on all interfaces with IPv6 addresses. There is no specific enablement of an interface to run EIGRPv6 or network statements. Configuration snippet is below.</p>
 <p><code>EIGRPv6 Node Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname EIGRPv6
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname EIGRPv6
 !
 ipv6 unicast-routing
 !
@@ -255,7 +249,7 @@ router eigrp JULIOPDX
 </code></pre></div><h2 id="redis">REDIS</h2>
 <p>This node is special, it gets to run two routing protocols and perform redistribution between them! The configuration is very basic indeed. Only two interfaces set for link local addresses. Oh remember when I mentioned EIGRPv6 is enabled for all IPv6 interfaces? I will shutdown the interface towards OSPFv3. Good to reduce all the chatter. Configuration snippet is below.</p>
 <p><code>REDIS Node Initial Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname REDIS
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">hostname REDIS
 !
 ipv6 unicast-routing
 !
@@ -293,7 +287,7 @@ router ospfv3 1
  exit-address-family
 </code></pre></div><h2 id="neighbors-and-routes">Neighbors and Routes</h2>
 <p><code>EIGRPv6 Neighbor</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 eigrp neighbors
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 eigrp neighbors
 EIGRP-IPv6 VR(JULIOPDX) Address-Family Neighbors for AS(123)
 H   Address                 Interface              Hold Uptime   SRTT   RTO  Q  Seq
                                                     (sec)         (ms)       Cnt Num
@@ -301,7 +295,7 @@ H   Address                 Interface              Hold Uptime   SRTT   RTO  Q  
      FE80::1
 REDIS#
 </code></pre></div><p><code>EIGRPv6 Routes</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 route eigrp
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 route eigrp
 D   2001:DB8:123:1::/64 [90/10880]
      via FE80::1, GigabitEthernet0/0
 D   2001:DB8:123:2::/64 [90/10880]
@@ -310,14 +304,14 @@ D   2001:DB8:123:3::/64 [90/10880]
      via FE80::1, GigabitEthernet0/0
 REDIS#
 </code></pre></div><p><code>OSPFv3 Neighbor</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 ospf neighbor
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 ospf neighbor
         OSPFv3 Router with ID (2.2.2.2) (Process ID 1)
 Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
 3.3.3.3           0   FULL/  -        00:00:35    1360007168      GigabitEthernet0/1
 REDIS#
 #### Notice, no DR or BDR due to the point to point network
 </code></pre></div><p><code>OSPFv3 Routes</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 route ospf
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show ipv6 route ospf
 O   2001:DB8:456:4::1/128 [110/1]
      via FE80::3, GigabitEthernet0/1
 O   2001:DB8:456:5::1/128 [110/1]
@@ -327,7 +321,7 @@ O   2001:DB8:456:6::1/128 [110/1]
 REDIS#
 </code></pre></div><p>I wont bother sharing the neighbor states of EIGRPv6 or OSPFv3, but below you will see their routes before redistribution.</p>
 <p><code>Routes on Nodes</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">#### EIGRPv6 node first
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">#### EIGRPv6 node first
 EIGRPv6#show ipv6 route eigrp
 EIGRPv6#
 ##### Now for OSPFv3 node
@@ -335,7 +329,7 @@ OSPFv3# show ipv6 route ospf
 No ipv6 routes configured
 OSPFv3#
 </code></pre></div><h2 id="the-redistribution">The Redistribution</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show run | s router
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">REDIS#show run | s router
 router eigrp JULIOPDX
  !
  address-family ipv6 unicast autonomous-system 123
@@ -349,7 +343,7 @@ router ospfv3 1
   redistribute eigrp 123
  exit-address-family
 </code></pre></div><p><code>New Routes on OSPFv3 and EIGRPv6</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">EIGRPv6#show ipv6 route eigrp
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">EIGRPv6#show ipv6 route eigrp
 EX  2001:DB8:456:4::1/128 [170/15360]
      via FE80::2, GigabitEthernet0/0
 EX  2001:DB8:456:5::1/128 [170/15360]
@@ -367,7 +361,7 @@ OSPFv3# show ipv6 route ospf
         via  fe80::2%1/1/1,  [110/20],  ospf
 OSPFv3#
 </code></pre></div><h2 id="simple-ping-and-trace">Simple Ping and Trace</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">EIGRPv6#ping 2001:db8:456:4::1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">EIGRPv6#ping 2001:db8:456:4::1
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 2001:DB8:456:4::1, timeout is 2 seconds:
 !!!!!
@@ -509,7 +503,7 @@ OSPFv3#
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

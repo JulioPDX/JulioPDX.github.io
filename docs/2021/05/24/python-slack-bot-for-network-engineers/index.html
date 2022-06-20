@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Python Slack Bot for Network Engineers">
-<meta itemprop="description" content="Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one.">
-<meta itemprop="datePublished" content="2021-05-24T10:19:32-08:00" />
+<meta itemprop="description" content="Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one."><meta itemprop="datePublished" content="2021-05-24T10:19:32-08:00" />
 <meta itemprop="dateModified" content="2021-05-24T10:19:32-08:00" />
-<meta itemprop="wordCount" content="1674">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/jason-leung.jpg">
-
-
-
+<meta itemprop="wordCount" content="1674"><meta itemprop="image" content="https://juliopdx.com/blog/images/jason-leung.jpg">
 <meta itemprop="keywords" content="Python," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/jason-leung.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Python Slack Bot for Network Engineers" />
 <meta property="og:description" content="Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/05/24/python-slack-bot-for-network-engineers/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/jason-leung.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/05/24/python-slack-bot-for-network-engineers/" /><meta property="og:image" content="https://juliopdx.com/blog/images/jason-leung.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-05-24T10:19:32-08:00" />
 <meta property="article:modified_time" content="2021-05-24T10:19:32-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -192,7 +186,7 @@
 </ul>
 <p>Lets walk through some code and I hope to answer how those goals were met. I’ll try not to repeat information that was already shared in Masons post. The initial code from Masons example has you create a class called CoinBot. It only made sense to me to create a separate class to define our network engineering bot. In this case we will call it NetBot, but you can name your bot whatever you like.</p>
 <p><code>get_network.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> json
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> json
 <span style="color:#f92672">from</span> napalm <span style="color:#f92672">import</span> get_network_driver
 <span style="color:#f92672">from</span> yaml <span style="color:#f92672">import</span> safe_load
 <span style="color:#f92672">import</span> urllib3
@@ -226,7 +220,7 @@ urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="
 </code></pre></div><p>A few things to note. The variables you see in all caps are called class attributes/constants. Essentially things in the program that wont change. I kept it simple and created some credentials for authentication as class attributes. In reality this would be an environment variable or pulled from a secure source. The NET_BLOCK class attribute is just there so the bot can respond with some generic message to the user.</p>
 <p>One of the first things that came to mind when building the bot is how will users know how to run the bot? I created the following method to solve that little problem. We are basically reading the readme file in our root directory and then returning all the data required to compose a message in slack. The following is added under our NetBot class from above.</p>
 <p><code>get_network.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_help</span>(self):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_help</span>(self):
         <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">        Sending all the help
 </span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
@@ -241,13 +235,13 @@ urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="
 </code></pre></div><p><img src="/blog/images/netbot_help.png" alt="netbot help"></p>
 <h2 id="interacting-with-network-devices">Interacting With Network Devices</h2>
 <p>I mentioned before I wanted this to be multi-vendor. In this case we are going to use the popular NAPALM library!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install napalm
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install napalm
 pip install pyaoscx
 pip install napalm-aruba-cx
 </code></pre></div><p>In theory you can use whatever you are comfortable with; Netmiko, NAPALM, Nornir, or Ansible. As long as the end result returns data in a format we can use to craft a Slack message. For our networking example, we will use NAPALM to retrieve the network interfaces from two devices. One being a Cisco IOL router and the other an Aruba CX switch. Below you will see the two methods used to put this all together. The first is pretty standard syntax to connect to device, run the get_interfaces function, and return as pretty JSON.</p>
 <p>Quick deviation, I almost forgot to mention the inventory. In a grander scale, you would most likely have some dynamic inventory that is cached to the app running or the code actually interacts with your inventory source to pull the correct information. Think Netbox API call to get device information for a device named XYZ. This would then have management IP, platform, and whatever else would be needed to connect using NAPALM. In our case we are using a very simple YAML file with the two hosts mentioned earlier.</p>
 <p><code>hosts.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 ---
 <span style="color:#f92672">R1</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">R1</span>
@@ -259,16 +253,16 @@ pip install napalm-aruba-cx
   <span style="color:#f92672">mgmt</span>: <span style="color:#e6db74">&#34;192.168.10.169&#34;</span>
 </code></pre></div><p>As promised, here is the code that interacts with our network devices.</p>
 <p><code>get_network.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_get_facts</span>(self):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_get_facts</span>(self):
         <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">        Method that will retrieve host facts
 </span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
         <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;hosts.yaml&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> handle:
             host_root <span style="color:#f92672">=</span> safe_load(handle)
 
-        driver <span style="color:#f92672">=</span> get_network_driver(host_root[f<span style="color:#e6db74">&#34;{self.device_name}&#34;</span>][<span style="color:#e6db74">&#34;platform&#34;</span>])
+        driver <span style="color:#f92672">=</span> get_network_driver(host_root[<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>device_name<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>][<span style="color:#e6db74">&#34;platform&#34;</span>])
         conn <span style="color:#f92672">=</span> driver(
-            hostname<span style="color:#f92672">=</span>host_root[f<span style="color:#e6db74">&#34;{self.device_name}&#34;</span>][<span style="color:#e6db74">&#34;mgmt&#34;</span>],
+            hostname<span style="color:#f92672">=</span>host_root[<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>device_name<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>][<span style="color:#e6db74">&#34;mgmt&#34;</span>],
             username<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>USERNAME,
             password<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>PASSWORD,
         )
@@ -278,7 +272,7 @@ pip install napalm-aruba-cx
         <span style="color:#66d9ef">return</span> my_file
 </code></pre></div><p>The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The _get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.</p>
 <p><code>get_network.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_file_payload</span>(self):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_file_payload</span>(self):
         <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">        Method used to post files from data gathered on device
 </span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
@@ -286,12 +280,12 @@ pip install napalm-aruba-cx
             <span style="color:#e6db74">&#34;channels&#34;</span>: self<span style="color:#f92672">.</span>channel,
             <span style="color:#e6db74">&#34;filetype&#34;</span>: <span style="color:#e6db74">&#34;javascript&#34;</span>,
             <span style="color:#e6db74">&#34;content&#34;</span>: self<span style="color:#f92672">.</span>_get_facts(),
-            <span style="color:#e6db74">&#34;filename&#34;</span>: f<span style="color:#e6db74">&#34;{self.device_name}-interfaces.json&#34;</span>,
+            <span style="color:#e6db74">&#34;filename&#34;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>device_name<span style="color:#e6db74">}</span><span style="color:#e6db74">-interfaces.json&#34;</span>,
         }
 </code></pre></div><h2 id="running-the-application">Running the Application</h2>
 <p>As mentioned previously, this code is heavily borrowed from Masons post! So much so that I left in the CoinBot learnings because it is an amazing reference and the code comments are great for learners. Ill cut out some of the extra information to just focus on the action, full code is available on my GitHub (linked below).</p>
 <p><code>app.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
 <span style="color:#f92672">import</span> logging
 <span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
 <span style="color:#f92672">from</span> slack <span style="color:#f92672">import</span> WebClient
@@ -314,7 +308,7 @@ slack_web_client <span style="color:#f92672">=</span> WebClient(token<span style
 BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#f92672">.</span>api_call(<span style="color:#e6db74">&#34;auth.test&#34;</span>)[<span style="color:#e6db74">&#34;user_id&#34;</span>]
 </code></pre></div><p>Lets break that code down a bit. We will be utilizing Flask to do most of the heavy lifting. The imports mentioned above will import the required Flask, Slack, and NetBot packages. We utilize two environment variables for authentication. The BOT_ID constant is used in code later on to make sure the bot does not respond to itself. The next portions actually perform the execution of all of our code. I will break down one portion to keeps things short and sweet, but most all of them follow the same workflow.</p>
 <p><code>app.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_network_info</span>(channel, device_name):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_network_info</span>(channel, device_name):
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    run the get_message_payload and get_file_upload method
 </span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
@@ -326,9 +320,9 @@ BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#
 </code></pre></div><p>We are creating a function called get_network_info that takes in two parameters. When this function is executed, it will instantiate an instance of NetBot, send a generic message, and upload the file created from the get_file_payload method.</p>
 <p>The next portion of the code is used to handle how the bot interacts with messages seen or what is executed when a certain message is seen. From part one of Masons post, we subscribed the bot to events (and we filter on messages). Once we get a message we strip out certain portions that can then be reused to respond in the proper channel, react to a specific message (timestamp), and make sure the bot does not respond to itself.</p>
 <p><code>app.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># When a &#39;message&#39; event is detected by the events adapter, forward that payload</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># When a &#39;message&#39; event is detected by the events adapter, forward that payload</span>
 <span style="color:#75715e"># to this function.</span>
-<span style="color:#a6e22e">@slack_events_adapter.on</span>(<span style="color:#e6db74">&#34;message&#34;</span>)
+<span style="color:#a6e22e">@slack_events_adapter</span><span style="color:#f92672">.</span>on(<span style="color:#e6db74">&#34;message&#34;</span>)
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">message</span>(payload):
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    Parse the message event, and if the activation string is in the text,
@@ -346,7 +340,7 @@ BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#
     <span style="color:#66d9ef">if</span> BOT_ID <span style="color:#f92672">!=</span> user_id:
 </code></pre></div><p>The next piece of code is used to parse the messages that are seen by the bot. If a string matches one of the if clauses, some code will be executed. In this case we are looking for “netbot get network interfaces”. If you noticed in the readme, we are asking users to enter “netbot get network interfaces device=something”. The code will parse this output and strip “device=” to get the final device name. This will then be passed into the get_network_info function and execute the program.</p>
 <p><code>app.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">        <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;netbot get network interfaces&#34;</span> <span style="color:#f92672">in</span> text<span style="color:#f92672">.</span>lower():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">        <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;netbot get network interfaces&#34;</span> <span style="color:#f92672">in</span> text<span style="color:#f92672">.</span>lower():
             full_text <span style="color:#f92672">=</span> text<span style="color:#f92672">.</span>split()
             device <span style="color:#f92672">=</span> full_text[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
             my_device <span style="color:#f92672">=</span> device<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34;device=&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
@@ -485,7 +479,7 @@ BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Building a Network CI/CD Pipeline Part 3">
-<meta itemprop="description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?">
-<meta itemprop="datePublished" content="2021-10-20T11:05:49-08:00" />
+<meta itemprop="description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?"><meta itemprop="datePublished" content="2021-10-20T11:05:49-08:00" />
 <meta itemprop="dateModified" content="2021-10-20T11:05:49-08:00" />
-<meta itemprop="wordCount" content="1066">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/ian-taylor.jpg">
-
-
-
+<meta itemprop="wordCount" content="1066"><meta itemprop="image" content="https://juliopdx.com/blog/images/ian-taylor.jpg">
 <meta itemprop="keywords" content="CI/CD,Docker,DockerHub,Drone," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/ian-taylor.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Building a Network CI/CD Pipeline Part 3" />
 <meta property="og:description" content="Introduction Thank you for checking out part three in this series, it really means a lot! So far we have installed Docker on an Ubuntu host machine and the Drone server/runners. In this post we will go over the .drone.yml file and why I decided to create my first Docker container image. Stick around after the break…. who am I kidding there is no break, what is this an infomercial?" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/ian-taylor.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-3/" /><meta property="og:image" content="https://juliopdx.com/blog/images/ian-taylor.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-10-20T11:05:49-08:00" />
 <meta property="article:modified_time" content="2021-10-20T11:05:49-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -185,7 +179,7 @@
 <h2 id="droneyml-or-droneyaml-or--something">.drone.yml or .drone.yaml or .. something?</h2>
 <p>Pretty much all CI systems use some kind of configuration file, essentially the steps you want performed on your pipeline run. They all have their own flavor, but essentially walk the same line. My only previous experience was with Azure Devops pipelines. The <em>.drone.yml</em> file should be placed at the root of your directory structure of the project. Below is one of the first versions of the configuration file in my repository.</p>
 <p><code>Initial .drone.yml file</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">pipeline</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">pipeline</span>
 <span style="color:#f92672">type</span>: <span style="color:#ae81ff">docker</span>
 <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Testing Python CI/CD</span>
 
@@ -215,14 +209,14 @@
 <p>Google then led me to this incredible write up by Samuel James, check it out <a href="https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/">here</a>. We already had Docker installed on our Ubuntu server so that wasn’t required. I did have to create a Docker Hub account and run “docker login”. Once logged in I proceeded with creating the Dockerfile.</p>
 <h2 id="dockerfile">Dockerfile</h2>
 <p>The Dockerfile essentially describes how you want to build your image. Check out my example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.9.7-slim</span><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.9.7-slim</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Install dependencies:</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> requirements.txt .<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> pip install -r requirements.txt<span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><p>That’s about it… no, I’m kidding. The FROM statement is telling docker if we want to base our image from any other image. For this example we are using the python 3.9.7-slim variant. After that I have a requirements.txt file locally that will be copied to the container. Then RUN will execute that command on the container, which will install our dependencies.</p>
 <p><code>requirements.txt</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">netmiko
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">netmiko
 rich
 black
 pybatfish
@@ -232,11 +226,11 @@ nornir
 nornir-utils
 nornir-napalm
 </code></pre></div><h2 id="build-container-and-publish">Build Container and Publish</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker build -t juliopdx/netauto .
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker build -t juliopdx/netauto .
 docker push juliopdx/netauto:latest
 </code></pre></div><p>Now that we have a new container image we can use this in our <em>.drone.yml</em> file. If you are really curious check out the docker hub page <a href="https://hub.docker.com/r/juliopdx/netauto">here</a>. Isn’t it pretty? Check out the updated configuration file below.</p>
 <p><code>.drone.yml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">pipeline</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">pipeline</span>
 <span style="color:#f92672">type</span>: <span style="color:#ae81ff">docker</span>
 <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Testing Python CI/CD</span>
 
@@ -398,7 +392,7 @@ docker push juliopdx/netauto:latest
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

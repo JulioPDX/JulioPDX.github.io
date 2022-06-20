@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Automating MPLS L3VPNs With Nornir">
-<meta itemprop="description" content="Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment.">
-<meta itemprop="datePublished" content="2021-08-14T10:38:25-08:00" />
+<meta itemprop="description" content="Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment."><meta itemprop="datePublished" content="2021-08-14T10:38:25-08:00" />
 <meta itemprop="dateModified" content="2021-08-14T10:38:25-08:00" />
-<meta itemprop="wordCount" content="3174">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/auto_mpls.png">
-
-
-
+<meta itemprop="wordCount" content="3174"><meta itemprop="image" content="https://juliopdx.com/blog/images/auto_mpls.png">
 <meta itemprop="keywords" content="Cisco,L3VPN,MPLS,Network Automation,Python," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/auto_mpls.png"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Automating MPLS L3VPNs With Nornir" />
 <meta property="og:description" content="Introduction Hello all and thank you for checking out another one of my blog posts. It really means a lot. I recently completed the Cisco ENARSI exam after a few months of studying. It was honestly pretty difficult for me but the pass was worth it! I may have to write a blog post on studying for and passing that exam. In this post I will break down how I automated some parts of an MPLS L3VPN deployment." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/auto_mpls.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/08/14/automating-mpls-l3vpns-with-nornir/" /><meta property="og:image" content="https://juliopdx.com/blog/images/auto_mpls.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-14T10:38:25-08:00" />
 <meta property="article:modified_time" content="2021-08-14T10:38:25-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -191,7 +185,7 @@
 <h2 id="topology-brief">Topology Brief</h2>
 <p>As you can see by the featured image in this post, we have four provider edge (PE) routers and four customer edge (CE) routes. Each PE device connects to one CE device, and all PE routers connect to the provider (P) router, also acting as our BGP route reflector. You might be thinking, why the route reflector? You could run iBGP sessions between all PE devices but down the road that can lead to a lot of overhead. In this case all PE devices only have one internal BGP relationship between the P router and one external BGP peering with the CE routers. This also makes the iBGP configuration on the PE routers very cookie cutter. In this case we are pretending not to have control of the CE devices, so those will already be preconfigured. I will include the configurations on the nodes so you can see what is all preconfigured.</p>
 <h2 id="ce-routers-configuration-example">Ce Routers Configuration Example</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">interface Loopback0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">interface Loopback0
  ip address 172.16.1.1 255.255.255.0
 !
 interface Ethernet0/0
@@ -205,7 +199,7 @@ router bgp <span style="color:#ae81ff">789</span>
  neighbor 10.0.11.1 allowas-in
 </code></pre></div><p>Every CE router looks very similar, one lookback interface to be advertised to the PE router and a small bit of BGP configuration. You could use different autonomous system (AS) numbers between customer routers, in this case I used the same AS for the same customer. In BGP this would introduce a loop since the router will see its own AS in the path. This design option adds the command of <em>allowas-in</em> to our BGP configuration. This feature allows a route to be received even if the routers own AS is in path.</p>
 <h2 id="pe-routers-configuration-example">PE Routers Configuration Example</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Ethernet0/1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Ethernet0/1
  ip address 10.0.15.1 255.255.255.0
  ip ospf network point-to-point
  mpls ip
@@ -233,7 +227,7 @@ router bgp 12345
 !
 </code></pre></div><p>Internally we are running OSPF to give MPLS all the paths to work with. Every PE device has essentially the same iBGP configuration towards the P router. If you look closely we are not even bringing up the peering relationship with the IPv4 address family. Only the VPNv4 address family will be used. This is due to the BGP peering only being used to distribute the VPNv4 routes across the PE routers.</p>
 <h2 id="prr-router-configuration-example">P/RR Router Configuration Example</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Loopback0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface Loopback0
  ip address 5.5.5.5 255.255.255.255
 !
 interface Ethernet0/0
@@ -287,7 +281,7 @@ router bgp 12345
 <h2 id="introduction-to-nornir">Introduction to Nornir</h2>
 <p>I will break down the structure of the repository I made but I wont go too deep into details. Mainly because there’s a lot of great resources out there to check out (will link at the bottom of the post), and I want to try and keep this post some what short. Nornir is a network automation framework that is written in Python. This allows developers and engineers to build automation and tools with a very powerful programming language. This also allows individuals to easily extend the functionality of the framework to meet their needs.</p>
 <p><code>config.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">inventory</span>:
   <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">SimpleInventory</span>
   <span style="color:#f92672">options</span>:
@@ -299,7 +293,7 @@ router bgp 12345
     <span style="color:#f92672">num_workers</span>: <span style="color:#ae81ff">10</span>
 </code></pre></div><p>The <code>config.yaml</code> file is pretty important in Nornir. In the sample above we are using the <code>SimpleInventory</code> plugin and specifying where the host and group files are located. I am using 10 workers but my lab is fairly small so I could have used less here.</p>
 <p><code>hosts.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">PE1</span>:
   <span style="color:#f92672">hostname</span>: <span style="color:#e6db74">&#34;192.168.10.176&#34;</span>
   <span style="color:#f92672">groups</span>:
@@ -316,7 +310,7 @@ router bgp 12345
           <span style="color:#f92672">remote_as</span>: <span style="color:#ae81ff">789</span>
 </code></pre></div><p>I included the setup for our PE1 router, the rest follow a similar structure. Anything host specific I set at the <code>host.yaml</code> file and anything group specific is set at the <code>groups.yaml</code> file you will see shortly. I assign all PE routers to the <code>pe</code> group and set certain interface parameters as well as BGP information that will be used in the future.</p>
 <p><code>groups.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">pe</span>:
   <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ios</span>
   <span style="color:#f92672">username</span>: <span style="color:#ae81ff">cisco</span>
@@ -335,7 +329,7 @@ router bgp 12345
 </code></pre></div><p>The groups file is pretty neat, since all of my routers are part of the pe group and have a similar platform as well as authentication parameters, I decided to include all of that information under the group. In this automation example I wanted all VRFs to be included on all PE routers. Therefore I also added the VRF information under the group file vs under the host data.</p>
 <h2 id="breaking-down-script">Breaking Down Script</h2>
 <p><code>l3vpn_deploy.py snippet</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
 <span style="color:#f92672">from</span> nornir_scrapli.tasks <span style="color:#f92672">import</span> send_configs
 <span style="color:#f92672">from</span> nornir_jinja2.plugins.tasks <span style="color:#f92672">import</span> template_file
 <span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get
@@ -344,16 +338,16 @@ router bgp 12345
 <span style="color:#f92672">from</span> net_utils <span style="color:#f92672">import</span> address, mask
 </code></pre></div><p>The portion above is essentially importing any tasks or functions we will need to run Nornir. Whether its importing <em>InitNornir</em> or plugins used to connect to devices and send commands. To learn more about plugins that can be used with Nornir please check out the <a href="https://nornir.tech/nornir/plugins/">nornir.tech</a> site.</p>
 <p><code>l3vpn_deploy.py snippet</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
 
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    Main that calls l3vpn function
 </span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
 
     nornir <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config.yaml&#34;</span>)
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Nornir initialized with the following hosts:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+    print(<span style="color:#e6db74">&#34;Nornir initialized with the following hosts:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
     <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> nornir<span style="color:#f92672">.</span>inventory<span style="color:#f92672">.</span>hosts<span style="color:#f92672">.</span>keys():
-        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;{host}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
 
     result <span style="color:#f92672">=</span> nornir<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>l3vpn)
 
@@ -368,13 +362,13 @@ router bgp 12345
 </ul>
 <p>Now that we have the main portions required for our build, it was just a matter of converting the manual configurations into simple Jinja templates. I will spare you from reading about every task since they all follow the same pattern; create commands from Jinja template, split commands, send commands to PE routers. Here is a snippet below of what I mean.</p>
 <p><code>l3vpn_deploy.py snippet</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">l3vpn</span>(task):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">l3vpn</span>(task):
 
     <span style="color:#e6db74">&#34;&#34;&#34;
 </span><span style="color:#e6db74">    Main function built for L3VPN deployment tasks
 </span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
     task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
-        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{task.host.name}: Creating VRFs Configuration&#34;</span>,
+        name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">: Creating VRFs Configuration&#34;</span>,
         task<span style="color:#f92672">=</span>template_file,
         template<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;vrf.j2&#34;</span>,
         path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;templates/&#34;</span>,
@@ -383,12 +377,12 @@ router bgp 12345
     vrf_config <span style="color:#f92672">=</span> task1_result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>result
 
     task2_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
-        name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{task.host.name}: Configuring VRFs on PE Nodes&#34;</span>,
+        name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">: Configuring VRFs on PE Nodes&#34;</span>,
         task<span style="color:#f92672">=</span>send_configs,
         configs<span style="color:#f92672">=</span>vrf_config<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>),
     )
 </code></pre></div><p>I name the tasks for clarity when seeing the job output. Initially we run a <em>template_file</em> task that will create commands from a template. Then its a matter of pointing it to our specific template and feeding it data. Once that is done I set the output of that task to a variable called <em>vrf_config</em>, this can then be fed into the next task to push the commands to our PE routers.</p>
-<pre><code class="language-jinja2" data-lang="jinja2">{% for vrf in data %}
+<pre tabindex="0"><code class="language-jinja2" data-lang="jinja2">{% for vrf in data %}
 vrf definition {{ vrf.name }}
  rd {{ vrf.rd }}
  route-target export {{ vrf.rt_export }}
@@ -398,7 +392,7 @@ vrf definition {{ vrf.name }}
  exit-address-family
 {% endfor %}
 </code></pre><p>Example of the VRF Jinja template above. The rest of the items for L3VPNs use the same structure. Feel free to check out the git repository linked below to see the rest. Ill show the output from a few PE and CE routers before and after the changes.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">PE1#show vrf brief
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">PE1#show vrf brief
   Name                             Default RD            Protocols   Interfaces
   MGMT                             &lt;not set&gt;             ipv4        Et0/3
 PE1#
@@ -444,7 +438,7 @@ CE4#show ip bgp | b Network
  *&gt;  172.16.2.0/24    0.0.0.0                  0         32768 i
 CE4#
 </code></pre></div><h2 id="script-output">Script Output</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">(venv) [juliopdx<span style="color:#a6e22e">@pbpro</span> auto_mpls_l3vpn]<span style="color:#960050;background-color:#1e0010">$</span> time python l3vpn_deploy<span style="color:#f92672">.</span>py
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">(venv) [juliopdx<span style="color:#a6e22e">@pbpro</span> auto_mpls_l3vpn]<span style="color:#960050;background-color:#1e0010">$</span> time python l3vpn_deploy<span style="color:#f92672">.</span>py
 Nornir initialized <span style="color:#66d9ef">with</span> the following hosts:
 
 PE1
@@ -456,9 +450,9 @@ PE3
 PE4
 
 l3vpn<span style="color:#f92672">***************************************************************************</span>
-<span style="color:#f92672">*</span> PE1 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
-vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> PE1: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">*</span> PE1 <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE1: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -474,7 +468,7 @@ vrf definition CUSTOMER_777
  address<span style="color:#f92672">-</span>family ipv4
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE1: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">----</span> PE1: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -491,38 +485,38 @@ vrf definition CUSTOMER_777
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
-<span style="color:#f92672">----</span> PE1: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+<span style="color:#f92672">----</span> PE1: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_789
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.11.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
-<span style="color:#f92672">----</span> PE1: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+<span style="color:#f92672">----</span> PE1: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_789
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.11.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
 
-<span style="color:#f92672">----</span> PE1: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+<span style="color:#f92672">----</span> PE1: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.11.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0.11.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE1: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+<span style="color:#f92672">----</span> PE1: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">11.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.11.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0.11.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
 <span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> PE2 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
-vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> PE2: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">*</span> PE2 <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE2: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -538,7 +532,7 @@ vrf definition CUSTOMER_777
  address<span style="color:#f92672">-</span>family ipv4
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE2: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">----</span> PE2: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -555,38 +549,38 @@ vrf definition CUSTOMER_777
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
-<span style="color:#f92672">----</span> PE2: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+<span style="color:#f92672">----</span> PE2: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_777
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.22.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
-<span style="color:#f92672">----</span> PE2: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+<span style="color:#f92672">----</span> PE2: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_777
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.22.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
 
-<span style="color:#f92672">----</span> PE2: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+<span style="color:#f92672">----</span> PE2: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.22.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0.22.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE2: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+<span style="color:#f92672">----</span> PE2: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">22.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.22.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0.22.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
 <span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> PE3 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
-vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> PE3: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">*</span> PE3 <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE3: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -602,7 +596,7 @@ vrf definition CUSTOMER_777
  address<span style="color:#f92672">-</span>family ipv4
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE3: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">----</span> PE3: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -619,38 +613,38 @@ vrf definition CUSTOMER_777
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
-<span style="color:#f92672">----</span> PE3: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+<span style="color:#f92672">----</span> PE3: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_777
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.33.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
-<span style="color:#f92672">----</span> PE3: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+<span style="color:#f92672">----</span> PE3: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_777
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.33.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
 
-<span style="color:#f92672">----</span> PE3: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+<span style="color:#f92672">----</span> PE3: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.33.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0.33.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE3: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+<span style="color:#f92672">----</span> PE3: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_777
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">33.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.33.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">777</span>
+  neighbor <span style="color:#ae81ff">10.0.33.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
 <span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> PE4 <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">********************************************************</span>
-vvvv l3vpn <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> PE4: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">*</span> PE4 <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">********************************************************</span>
+vvvv l3vpn <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> PE4: Creating VRFs Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -666,7 +660,7 @@ vrf definition CUSTOMER_777
  address<span style="color:#f92672">-</span>family ipv4
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE4: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">-----------------------</span> INFO
+<span style="color:#f92672">----</span> PE4: Configuring VRFs on PE Nodes <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">-----------------------</span> INFO
 vrf definition CUSTOMER_789
  rd <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
  route<span style="color:#f92672">-</span>target export <span style="color:#ae81ff">789</span>:<span style="color:#ae81ff">1</span>
@@ -683,42 +677,42 @@ vrf definition CUSTOMER_777
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
-<span style="color:#f92672">----</span> PE4: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">------------</span> INFO
+<span style="color:#f92672">----</span> PE4: Create VRF to Interfaces Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_789
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.44.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
-<span style="color:#f92672">----</span> PE4: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------------</span> INFO
+<span style="color:#f92672">----</span> PE4: Configuring VRFs on Interfaces <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------------</span> INFO
 interface Ethernet0<span style="color:#f92672">/</span><span style="color:#ae81ff">0</span>
  vrf forwarding CUSTOMER_789
- ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.1</span> <span style="color:#ae81ff">255.255</span><span style="color:#f92672">.</span><span style="color:#ae81ff">255.0</span>
+ ip address <span style="color:#ae81ff">10.0.44.1</span> <span style="color:#ae81ff">255.255.255.0</span>
 <span style="color:#960050;background-color:#1e0010">!</span>
 
 
-<span style="color:#f92672">----</span> PE4: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">-----------------</span> INFO
+<span style="color:#f92672">----</span> PE4: Create BGP Neighbor Configuration <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">-----------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.44.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0.44.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
-<span style="color:#f92672">----</span> PE4: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">---------------</span> INFO
+<span style="color:#f92672">----</span> PE4: Configuring BGP Neighbors under VRFs <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">---------------</span> INFO
 router bgp <span style="color:#ae81ff">12345</span>
   address<span style="color:#f92672">-</span>family ipv4 vrf CUSTOMER_789
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
-  neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">44.2</span> activate
+  neighbor <span style="color:#ae81ff">10.0.44.2</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">789</span>
+  neighbor <span style="color:#ae81ff">10.0.44.2</span> activate
  exit<span style="color:#f92672">-</span>address<span style="color:#f92672">-</span>family
 
 
 <span style="color:#f92672">^^^^</span> END l3vpn <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
 
-real    <span style="color:#ae81ff">0</span>m9<span style="color:#f92672">.</span><span style="color:#ae81ff">216</span>s
-user    <span style="color:#ae81ff">0</span>m6<span style="color:#f92672">.</span><span style="color:#ae81ff">683</span>s
-sys     <span style="color:#ae81ff">0</span>m1<span style="color:#f92672">.</span><span style="color:#ae81ff">07</span><span style="color:#ae81ff">9</span>s
+real    <span style="color:#ae81ff">0</span>m9<span style="color:#ae81ff">.216</span>s
+user    <span style="color:#ae81ff">0</span>m6<span style="color:#ae81ff">.683</span>s
+sys     <span style="color:#ae81ff">0</span>m1<span style="color:#ae81ff">.079</span>s
 (venv) [juliopdx<span style="color:#a6e22e">@pbpro</span> auto_mpls_l3vpn]<span style="color:#960050;background-color:#1e0010">$</span>
 </code></pre></div><h2 id="vrf-creation-validation">VRF Creation Validation</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">PE1#show ip vrf
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">PE1#show ip vrf
   Name                             Default RD            Interfaces
   CUSTOMER_777                     777:1
   CUSTOMER_789                     789:1                 Et0/0
@@ -743,7 +737,7 @@ PE4#show ip vrf
   MGMT                             &lt;not set&gt;             Et0/3
 PE4#
 </code></pre></div><h2 id="bgp-peers-and-routes-on-ce-routers">BGP Peers and Routes on CE Routers</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">CE1#show ip bgp  summary | b Neigh
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">CE1#show ip bgp  summary | b Neigh
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 10.0.11.1       4        12345      19      20        3    0    0 00:13:17        1
 CE1#show ip bgp | b Network
@@ -906,7 +900,7 @@ CE3#
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

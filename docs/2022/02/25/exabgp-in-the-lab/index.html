@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="ExaBGP in the Lab">
-<meta itemprop="description" content="Intro I was recently working my way through Optimal Routing design by Cisco Press&hellip; Can you tell that I get through books very slowly? I&rsquo;ve probably used that sentence in my blog posts three or four times now! Either way, this chapter focused on scaling BGP and dealing with external connections. The section that really got me was external connections. The books goes over a lot, for example, handling inbound traffic, outbound traffic, full routes vs partial vs default.">
-<meta itemprop="datePublished" content="2022-02-25T15:06:14-08:00" />
+<meta itemprop="description" content="Intro I was recently working my way through Optimal Routing design by Cisco Press&hellip; Can you tell that I get through books very slowly? I&rsquo;ve probably used that sentence in my blog posts three or four times now! Either way, this chapter focused on scaling BGP and dealing with external connections. The section that really got me was external connections. The books goes over a lot, for example, handling inbound traffic, outbound traffic, full routes vs partial vs default."><meta itemprop="datePublished" content="2022-02-25T15:06:14-08:00" />
 <meta itemprop="dateModified" content="2022-02-25T15:06:14-08:00" />
-<meta itemprop="wordCount" content="3886">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/greg-rakozy.jpg">
-
-
-
+<meta itemprop="wordCount" content="3886"><meta itemprop="image" content="https://juliopdx.com/blog/images/greg-rakozy.jpg">
 <meta itemprop="keywords" content="BGP,Docker,SR Linux,Arista," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/greg-rakozy.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="ExaBGP in the Lab" />
 <meta property="og:description" content="Intro I was recently working my way through Optimal Routing design by Cisco Press&hellip; Can you tell that I get through books very slowly? I&rsquo;ve probably used that sentence in my blog posts three or four times now! Either way, this chapter focused on scaling BGP and dealing with external connections. The section that really got me was external connections. The books goes over a lot, for example, handling inbound traffic, outbound traffic, full routes vs partial vs default." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2022/02/25/exabgp-in-the-lab/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/greg-rakozy.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2022/02/25/exabgp-in-the-lab/" /><meta property="og:image" content="https://juliopdx.com/blog/images/greg-rakozy.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-02-25T15:06:14-08:00" />
 <meta property="article:modified_time" content="2022-02-25T15:06:14-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -221,7 +215,7 @@ graph LR
 <p>When going down a particular route, I usually always check if something similar has been done before. I really don&rsquo;t like to reinvent the wheel and if someone has created it freely for the world, why not give it a shot! Thankfully I found two really great resources for ExaBGP. One from <a href="https://jasonmurray.org/posts/2020/exabgp-fulltable/">Jason Murray</a>, who made this happen before in GNS3 and a few great posts by <a href="https://thepacketgeek.com/exabgp/">Mat Wood</a>. These posts were incredibly insightful but the step to convert the BGP data from RIPE to an ExaBGP format was time consuming.</p>
 <h3 id="converting-manual-steps-to-dockerfile">Converting Manual Steps to Dockerfile</h3>
 <p>I eventually decided on wrapping these steps in a Dockerfile, which could then be used to build a container image. My eventual goal was to use this in a lab with something like Containerlab or Net-sim Tools.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> ubuntu:20.04</span><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> ubuntu:20.04</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Install dependencies</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> bgp.cfg .<span style="color:#960050;background-color:#1e0010">
@@ -236,7 +230,7 @@ graph LR
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> rm -rf latest-bview.gz<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><p>The default configuration file I created for ExaBGP supports two neighbors on AS 65001 and 65002 respectively. Vim and nano are included to allow users to modify this for their deployment. For example you could have ISP nodes on the same AS to simulate multiple external connections to the same ISP.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">process announce-routes {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">process announce-routes {
     run python3 fullbgptable.py;
     encoder json;
 }
@@ -262,7 +256,7 @@ neighbor 172.16.2.3 {
 </code></pre></div><p>This container is now on <a href="https://hub.docker.com/repository/docker/juliopdx/exabgp-irt">Docker Hub</a>, feel free to pull it down and check it out. After it was on Docker Hub, I had this random idea to automate the updates to the docker image. For example, the BGP view from RIPE is updated a decent amount throughout the day. I think it would be neat to grab the latest update at the end of the day and rebuild the docker image. This could then be tagged with <code>latest</code> and the <code>date</code> it was created.</p>
 <h3 id="migrating-docker-build-to-github-actions">Migrating Docker Build to GitHub Actions</h3>
 <p>GitHub Actions was fairly new to me, besides some hello world example. I found this neat example from <a href="https://medium.com/platformer-blog/lets-publish-a-docker-image-to-docker-hub-using-a-github-action-f0b17e5cceb3">Chamod Shehanka</a> that I used as a starting point. I still had to add scheduled updates and syncing the readme/description on Docker Hub with the repository on GitHub. The latter is only available for some pro version of Docker Hub automated builds but luckily there&rsquo;s a GitHub Action to get around this. Example starting workflow file below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Docker Image CI</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Docker Image CI</span>
 
 <span style="color:#f92672">on</span>:
   <span style="color:#f92672">push</span>:
@@ -292,7 +286,7 @@ neighbor 172.16.2.3 {
 
 </code></pre></div><h4 id="adding-github-actions">Adding GitHub Actions</h4>
 <p>Shorty after I discovered two really slick GitHub Actions from some awesome folks to streamline the workflow and arguably make it look a bit cleaner. One being <a href="https://github.com/marketplace/actions/docker-build-push-action">Docker Build &amp; Push by Sean Smith</a> and the other <a href="https://github.com/marketplace/actions/docker-hub-readme-description-sync">sync-readme by Damian Mee</a>. Both offer a simplicity to the workflow file that I really enjoy. This led me to fairly finalizing this docker workflow.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Docker Image CI</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Docker Image CI</span>
 
 <span style="color:#f92672">on</span>:
   <span style="color:#f92672">push</span>:
@@ -327,7 +321,7 @@ neighbor 172.16.2.3 {
 
 </code></pre></div><h2 id="incorporating-exabgp-in-the-lab">Incorporating ExaBGP in the Lab</h2>
 <p>Now that we have the docker image created, we can incorporate it in our lab. For this example I leveraged Containerlab.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">irt</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">irt</span>
 <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
 
 <span style="color:#f92672">topology</span>:
@@ -372,7 +366,7 @@ neighbor 172.16.2.3 {
     - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;cmpa1:eth2&#34;</span>, <span style="color:#e6db74">&#34;cmpa2:eth2&#34;</span>]
 
 </code></pre></div><p>For starters I&rsquo;ll configure the internet node(ExaBGP) with an IP address and activate ExaBGP. In this case not advertising routes, just validating peering.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">root@internet:/# cat bgp.cfg
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">root@internet:/# cat bgp.cfg
 #process announce-routes {
 #    run python3 fullbgptable.py;
 #    encoder json;
@@ -396,7 +390,7 @@ neighbor 172.16.2.3 {
     peer-as 65002;
 }
 root@internet:/#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@containerlab:~$ docker exec -it internet bash
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx@containerlab:~$ docker exec -it internet bash
 root@internet:/# ifconfig eth1 172.16.2.1 netmask 255.255.255.0 up
 root@internet:/# exabgp bgp.cfg
 04:47:01 | <span style="color:#ae81ff">22</span>     | welcome       | Thank you <span style="color:#66d9ef">for</span> using ExaBGP
@@ -428,7 +422,7 @@ root@internet:/# exabgp bgp.cfg
 04:47:01 | <span style="color:#ae81ff">22</span>     | reactor       | connected to peer-1 with outgoing-1 172.16.2.1-172.16.2.2
 04:47:01 | <span style="color:#ae81ff">22</span>     | reactor       | connected to peer-2 with outgoing-1 172.16.2.1-172.16.2.3
 
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it ispa sr_cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it ispa sr_cli
 Using configuration file(s): []
 Welcome to the srlinux CLI.
 Type &#39;help&#39; (and press &lt;ENTER&gt;) if you need any help using this.
@@ -451,7 +445,7 @@ Summary:
 0 dynamic peers
 --{ running }--[  ]--
 A:ispa#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it ispb sr_cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it ispb sr_cli
 Using configuration file(s): []
 Welcome to the srlinux CLI.
 Type &#39;help&#39; (and press &lt;ENTER&gt;) if you need any help using this.
@@ -474,7 +468,7 @@ Summary:
 0 dynamic peers
 --{ running }--[  ]--
 A:ispb#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it cmpa1 Cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it cmpa1 Cli
 cmpa1&gt;en
 cmpa1#show ip bgp summary
 BGP summary information for VRF default
@@ -486,7 +480,7 @@ Neighbor Status Codes: m - Under maintenance
 cmpa1#
 </code></pre></div><h3 id="advertising-many-nlri">Advertising Many NLRI</h3>
 <p>At this point all peering has been verified. I will reenable ExaBGP but advertise all the routes this time. This process does take some time to complete and I will explain a few caveats at the end of this post.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">root@internet:/# cat bgp.cfg
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">root@internet:/# cat bgp.cfg
 process announce-routes {
     run python3 fullbgptable.py;
     encoder json;
@@ -511,7 +505,7 @@ neighbor 172.16.2.3 {
 }
 root@internet:/# exabgp bgp.cfg
 </code></pre></div><p>I&rsquo;ll save your eyes, the output is a lot! For fun, lets check out some crazy prefix numbers on one ISP node and one Company A node.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:ispa# show network-instance default protocols bgp summary
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">A:ispa# show network-instance default protocols bgp summary
 ------------------------------------------------------------------------------------------------------------------------------------------------
 BGP is enabled and up in network-instance &#34;default&#34;
 Global AS number  : 65001
@@ -526,7 +520,7 @@ BGP identifier    : 172.16.2.2
 ------------------------------------------------------------------------------------------------------------------------------------------------
 --{ running }--[  ]--
 A:ispa#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp summary
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp summary
 BGP summary information for VRF default
 Router identifier 10.0.0.1, local AS number 65003
 Neighbor Status Codes: m - Under maintenance
@@ -538,13 +532,13 @@ cmpa1#
 <h2 id="use-cases">Use Cases</h2>
 <h3 id="reducing-excess-information-client-side">Reducing Excess Information Client Side</h3>
 <p>Let me walk through a few examples on how this could be useful in a lab scenario or for general learning. You may have noticed that the Company A node is receiving routes from both ISPA and the iBGP neighbor. Seems like a bit of a waste in resources and memory. We can configure the iBGP neighbors to only send the default route from the ISP. The below configuration is done on both node 1 and 2 of Company A.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ip prefix-list default seq 10 permit 0.0.0.0/0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ip prefix-list default seq 10 permit 0.0.0.0/0
 !
 route-map default permit 10
    match ip address prefix-list default
 router bgp 65003
    neighbor 10.0.0.7 route-map default out
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp summary
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp summary
 BGP summary information for VRF default
 Router identifier 10.0.0.1, local AS number 65003
 Neighbor Status Codes: m - Under maintenance
@@ -553,9 +547,9 @@ Neighbor Status Codes: m - Under maintenance
   10.0.0.7 4 65003           8540      8454    0    0 00:31:11 Estab   1      1
 cmpa1#
 </code></pre></div><p>Now we are only receiving the default route from our iBGP neighbor! This iBGP route map also has the benefit of preventing our AS from being a transit AS. Routes learned from one node will not be advertised to the other ISP and possibly severely hindering our edge devices. Maybe we want to filter the routes inbound from the ISPs.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 65003
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 65003
    neighbor 10.0.0.0 route-map default in
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp sum
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp sum
 BGP summary information for VRF default
 Router identifier 10.0.0.1, local AS number 65003
 Neighbor Status Codes: m - Under maintenance
@@ -569,7 +563,7 @@ cmpa1#show ip bgp | b Network
 cmpa1#
 </code></pre></div><h3 id="reducing-excess-information-provider-side">Reducing Excess Information Provider Side</h3>
 <p>Maybe we have a really simple site and we no longer need full tables. Our days of being fancy are over. I&rsquo;ll remove the previous configuration besides the iBGP route-map. Then we will update the ISP to only send the default.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it ispa sr_cli
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">juliopdx@containerlab:~$ docker exec -it ispa sr_cli
 Using configuration file(s): []
 Welcome to the srlinux CLI.
 Type &#39;help&#39; (and press &lt;ENTER&gt;) if you need any help using this.
@@ -609,7 +603,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 ------------------------------------------------------------------------------------------------------------------------------------------------
 --{ running }--[ network-instance default protocols bgp ]--
 A:ispa#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#  show ip bgp sum
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#  show ip bgp sum
 BGP summary information for VRF default
 Router identifier 10.0.0.1, local AS number 65003
 Neighbor Status Codes: m - Under maintenance
@@ -620,7 +614,7 @@ cmpa1#
 </code></pre></div><h3 id="outbound-traffic-steering">Outbound Traffic Steering</h3>
 <h4 id="partial-routes-on-each-node-by-as-path-length">Partial Routes on Each Node by AS Path Length</h4>
 <p>Maybe we want to control outbound paths on each Company A node. One node gets routes with AS path length of three or less with a default route. The other will get routes with an AS length of four or more and a default. The iBGP route map will be removed.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># cmpa1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># cmpa1
 ip prefix-list default seq 10 permit 0.0.0.0/0
 !
 route-map default permit 5
@@ -644,7 +638,7 @@ route-map default permit 10
 router bgp 65003
    neighbor 10.0.0.3 route-map default in
 </code></pre></div><p>I&rsquo;ll share a small sample from active BGP NLRI on each node. Note the AS path lengh on that information.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp neighbors 10.0.0.0 routes | b AS Path
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1#show ip bgp neighbors 10.0.0.0 routes | b AS Path
 AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
 
           Network                Next Hop              Metric  AIGP       LocPref Weight  Path
@@ -663,7 +657,7 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
  * &gt;      1.37.47.0/24           10.0.0.0              0       -          100     0       65001 6939 4775 i
  * &gt;      1.37.86.0/24           10.0.0.0              0       -          100     0       65001 6939 4775 i
  * &gt;      1.37.128.0/17          10.0.0.0              0       -          100     0       65001 6939 4775 i
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa2#show ip bgp neighbors 10.0.0.3 routes | b AS Path
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa2#show ip bgp neighbors 10.0.0.3 routes | b AS Path
 AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
 
           Network                Next Hop              Metric  AIGP       LocPref Weight  Path
@@ -684,7 +678,7 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
  * &gt;      1.0.133.0/24           10.0.0.3              0       -          100     0       65002 6939 38040 23969 i
 </code></pre></div><h4 id="partial-routes-on-each-node-by-prefix">Partial Routes on Each Node by Prefix</h4>
 <p>Please see the updated configuration on each node and their respective NLRI.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># cmpa1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># cmpa1
 ip prefix-list default seq 10 permit 0.0.0.0/0
 ip prefix-list half seq 10 permit 0.0.0.0/1 le 32
 !
@@ -709,7 +703,7 @@ route-map default permit 10
 !
 router bgp 65003
    neighbor 10.0.0.3 route-map default in
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1# show ip bgp neighbors 10.0.0.0 routes | b AS Path
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa1# show ip bgp neighbors 10.0.0.0 routes | b AS Path
 AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
 
           Network                Next Hop              Metric  AIGP       LocPref Weight  Path
@@ -723,7 +717,7 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
  * &gt;      1.0.64.0/18            10.0.0.0              0       -          100     0       65001 52320 1299 2497 7670 18144 i
  * &gt;      1.0.128.0/17           10.0.0.0              0       -          100     0       65001 6939 38040 23969 i
  * &gt;      1.0.128.0/18           10.0.0.0              0       -          100     0       65001 6939 38040 23969 i
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa2#show ip bgp neighbors 10.0.0.3 routes | b AS Path
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">cmpa2#show ip bgp neighbors 10.0.0.3 routes | b AS Path
 AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
 
           Network                Next Hop              Metric  AIGP       LocPref Weight  Path
@@ -868,7 +862,7 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

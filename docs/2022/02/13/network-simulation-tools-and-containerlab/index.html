@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Network Simulation Tools and Containerlab">
-<meta itemprop="description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing.">
-<meta itemprop="datePublished" content="2022-02-13T21:07:43-08:00" />
+<meta itemprop="description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing."><meta itemprop="datePublished" content="2022-02-13T21:07:43-08:00" />
 <meta itemprop="dateModified" content="2022-02-13T21:07:43-08:00" />
-<meta itemprop="wordCount" content="2849">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg">
-
-
-
+<meta itemprop="wordCount" content="2849"><meta itemprop="image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg">
 <meta itemprop="keywords" content="Containerlab,OSPF,BGP,net-sim,Docker,Ansible," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Network Simulation Tools and Containerlab" />
 <meta property="og:description" content="Introduction I&rsquo;ve been progressing through a series of technical books, some of which I&rsquo;ve shared on other blogs. A few of them focus on BGP. BGP being so broad, I decided to create a challenge lab. Creating the challenge/troubleshooting labs has really made more concepts stick. I&rsquo;m trying to use the principle of teaching someone to make the learning last. These have been incredibly fun to create and the community interaction has been amazing." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/" /><meta property="og:image" content="https://juliopdx.com/blog/images/philip-swinburn.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-02-13T21:07:43-08:00" />
 <meta property="article:modified_time" content="2022-02-13T21:07:43-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -198,14 +192,14 @@
 <li><a href="https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/">Import Docker Container Images</a></li>
 </ul>
 <p>There are a few options to get started with net-sim tools, but I think using a python virtualenv was fairly simple.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">python3 -m venv venv
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">python3 -m venv venv
 source venv/bin/activate
 pip install netsim-tools
 pip install ansible <span style="color:#75715e">#decided to use whatever was latest and it works just fine for me</span>
 </code></pre></div><p>I know this seems like a lot but the benefits are definitely worth it.</p>
 <h3 id="defining-a-topology">Defining a Topology</h3>
 <p>Let me share a basic topology and walk you through what will be created. Please note, some of the options I have defined are already defaults, I just decided to add them to the topology file for reader clarity.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:
   <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
@@ -246,7 +240,7 @@ pip install ansible <span style="color:#75715e">#decided to use whatever was lat
 <p>Net-sim does not come pre packaged with any network operating systems(NOS) images. A few vendors have made their images publicly available(see Nokia/FRR) as a simple docker pull. For any other images, please see their documentation to obtain an image. For this example, I will be using some Arista cEOS nodes. They can be obtained by signing up to their support site(free).</p>
 <h4 id="networks">Networks</h4>
 <p>Net-sim gives you pretty much any option you could want for network addressing. You can either use built-in address pools, assign statics, or define your own pools. Net-sim will then handle the IP addressing for each network device and interface. Very simple example below, please check out their in-depth <a href="https://netsim-tools.readthedocs.io/en/latest/example/addressing-tutorial.html">addressing tutorial</a>!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">  <span style="color:#f92672">p2p</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">  <span style="color:#f92672">p2p</span>:
     <span style="color:#f92672">ipv4</span>: <span style="color:#ae81ff">10.1.0.0</span><span style="color:#ae81ff">/16</span>
     <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">30</span>
     <span style="color:#f92672">ipv6</span>: <span style="color:#66d9ef">true</span>
@@ -268,7 +262,7 @@ graph LR
 <p>The CLI has a few neat options, let me show you some I think will be used the most.</p>
 <p><code>netlab create</code></p>
 <p>This command will create any files necessary to deploy your containers and configure devices with Ansible. Great if you would just like to view the data without actually performing any deployments.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab create basic.yml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab create basic.yml
 Created provider configuration file: clab.yml
 Created group_vars <span style="color:#66d9ef">for</span> all
 Created group_vars <span style="color:#66d9ef">for</span> eos
@@ -279,7 +273,7 @@ Created minimized Ansible inventory hosts.yml
 Created Ansible configuration file: ansible.cfg
 <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
 </code></pre></div><p>Lets take a look at the <code>clab.yml</code> file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
 
 <span style="color:#f92672">topology</span>:
   <span style="color:#f92672">nodes</span>:
@@ -306,7 +300,7 @@ Created Ansible configuration file: ansible.cfg
     - <span style="color:#e6db74">&#34;R3:eth1&#34;</span>
 
 </code></pre></div><p>This can then be used to run either <code>netlab up basic.yml</code> or <code>sudo containerlab deploy -t clab.yml</code>. One of the more interesting files created is the <code>host_vars/&lt;device name&gt;/topology.yml</code>. This gives you a great look at everything that will be deployed on the device with Ansible</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#75715e"># Ansible inventory created from [&#39;basic.yml&#39;, &#39;package:topology-defaults.yml&#39;]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#75715e"># Ansible inventory created from [&#39;basic.yml&#39;, &#39;package:topology-defaults.yml&#39;]</span>
 <span style="color:#75715e">#</span>
 ---
 <span style="color:#f92672">af</span>:
@@ -343,7 +337,7 @@ Created Ansible configuration file: ansible.cfg
 
 </code></pre></div><p><code>netlab up</code></p>
 <p>This command will actually deploy our nodes with Containerlab and configure the initial configuration with Ansible. You can use this command instead of using individual commands to deploy the topology.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up basic.yml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up basic.yml
 Created provider configuration file: clab.yml
 Created group_vars <span style="color:#66d9ef">for</span> all
 Created group_vars <span style="color:#66d9ef">for</span> eos
@@ -420,7 +414,7 @@ R3                         : ok<span style="color:#f92672">=</span><span style="
 
 <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
 </code></pre></div><p>Checking the configuration on R1.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-basic-R1 Cli
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-basic-R1 Cli
 R1&gt;en
 R1#show run
 ! Command: show running-config
@@ -475,7 +469,7 @@ R1#
 </code></pre></div><p>I think that is pretty awesome. With one command we have deployed nodes, set base parameters, and interface configurations. At this point someone could proceed to learn whatever the objective is for the day or test some design.</p>
 <p><code>netlab down</code></p>
 <p>This command will remove all containers and remove any directory created by Containerlab(startup configs). If you would like to keep startup configurations, I would recommend you shutdown the lab with Containerlab commands.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab down basic.yml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab down basic.yml
 
 Step 1: Checking virtualization provider installation
 <span style="color:#f92672">============================================================</span>
@@ -497,7 +491,7 @@ INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span>
 <p>So far I think this is pretty neat. Similar to Containerlab, I think net-sim lends itself incredibly well in learning environments or testing solutions/designs. Let me walk you through some simple workflows someone might go through when learning a technology.</p>
 <h4 id="basic-lab-for-ospf-learning">Basic Lab for OSPF Learning</h4>
 <p>We have shown this topology already but bear with me. In this example we have three nodes that we would like to deploy to start learning some OSPF. The topology file can deploy nodes and configure all interface settings.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:
   <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
@@ -525,7 +519,7 @@ INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span>
 
 </code></pre></div><h4 id="multi-area-ospf">Multi Area OSPF</h4>
 <p>Maybe we want to deploy an OSPF topology with multiple areas. This could be used to get the concepts of IA vs O vs E vs N routes down. This file will deploy R2 in area 0. R1 will be in area 1, but the link between R1 and R2 will be in area 0. R3 will be in area 3, but the link between R2 and R3 will be in area 0.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">ospf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">ospf</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:
   <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
@@ -566,7 +560,7 @@ INFO<span style="color:#f92672">[</span>0001<span style="color:#f92672">]</span>
     <span style="color:#f92672">R3</span>:
       <span style="color:#f92672">ospf.area</span>: <span style="color:#ae81ff">0</span>
 
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up ospf.yml
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up ospf.yml
 Created provider configuration file: clab.yml
 Created group_vars <span style="color:#66d9ef">for</span> all
 Created group_vars <span style="color:#66d9ef">for</span> eos
@@ -605,7 +599,7 @@ INFO<span style="color:#f92672">[</span>0054<span style="color:#f92672">]</span>
 
 etc...
 <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-ospf-R1 Cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-ospf-R1 Cli
 R1&gt;en
 R1#show ip ospf neighbor
 Neighbor ID     Instance VRF      Pri State                  Dead Time   Address         Interface
@@ -621,7 +615,7 @@ VRF: default
 R1#
 </code></pre></div><h4 id="ospf-lab-for-bgp-learning">OSPF Lab for BGP Learning</h4>
 <p>In this topology, the lab is predeployed with OSPF(area 0) and the students could then focus on the BGP learning.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basico</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">basico</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:
   <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
@@ -649,7 +643,7 @@ R1#
   - <span style="color:#ae81ff">R1-R2</span>
   - <span style="color:#ae81ff">R2-R3</span>
 
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up basic_ospf.yml
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ netlab up basic_ospf.yml
 Created provider configuration file: clab.yml
 Created group_vars <span style="color:#66d9ef">for</span> all
 Created group_vars <span style="color:#66d9ef">for</span> eos
@@ -686,7 +680,7 @@ INFO<span style="color:#f92672">[</span>0055<span style="color:#f92672">]</span>
 | <span style="color:#ae81ff">3</span> | clab-basico-R3 | 0f643cc95fc7 | ceos:4.27.2F | ceos | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
 +---+----------------+--------------+--------------+------+---------+----------------+----------------------+
 etc...
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-basico-R1 Cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-basico-R1 Cli
 R1&gt;en
 R1#show ip route ospf
 
@@ -712,7 +706,7 @@ flowchart TD
   end
 
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">bgp</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">bgp</span>
 <span style="color:#f92672">provider</span>: <span style="color:#ae81ff">clab</span>
 <span style="color:#f92672">defaults</span>:
   <span style="color:#f92672">device</span>: <span style="color:#ae81ff">eos</span>
@@ -747,7 +741,7 @@ flowchart TD
   - <span style="color:#ae81ff">R1-R2</span>
   - <span style="color:#ae81ff">R2-R3</span>
 
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-bgp-R1 Cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> juliopdx@containerlab:~/repos/cl-nst-demo$ docker exec -it clab-bgp-R1 Cli
 R1&gt;en
 R1#show ip bgp summary
 BGP summary information <span style="color:#66d9ef">for</span> VRF default
@@ -886,7 +880,7 @@ R1#
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

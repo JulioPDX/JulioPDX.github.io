@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Integrating Nornir With FastAPI">
-<meta itemprop="description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs.">
-<meta itemprop="datePublished" content="2021-09-01T18:52:28-08:00" />
+<meta itemprop="description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs."><meta itemprop="datePublished" content="2021-09-01T18:52:28-08:00" />
 <meta itemprop="dateModified" content="2021-09-01T18:52:28-08:00" />
-<meta itemprop="wordCount" content="914">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/michael-dziedzic.jpg">
-
-
-
+<meta itemprop="wordCount" content="913"><meta itemprop="image" content="https://juliopdx.com/blog/images/michael-dziedzic.jpg">
 <meta itemprop="keywords" content="Python,Nornir,FastAPI,Cisco,Aruba,Arista,Network Automation," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/michael-dziedzic.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Integrating Nornir With FastAPI" />
 <meta property="og:description" content="Introduction I recently saw a fellow engineer share an amazing article on Real Python. It was a post by Sebastián Ramírez, the creator of FastAPI. I’m fairly comfortable working with APIs but I’ve never even thought about making one. The prospect seems so daunting, especially when I’m still trying to master the foundational skills of python. FastAPI does a ton of heavy lifting to make this process incredibly easy to get started and build web APIs." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/michael-dziedzic.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/09/01/integrating-nornir-with-fastapi/" /><meta property="og:image" content="https://juliopdx.com/blog/images/michael-dziedzic.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-09-01T18:52:28-08:00" />
 <meta property="article:modified_time" content="2021-09-01T18:52:28-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -188,7 +182,7 @@
 <p>The topology consists of three networking nodes from three popular vendors. I tried to include a variety to show how automation can remove some thought when trying to return data from devices. Whether its vendor A or vendor B, at the end of the day we want the information required for the task at hand.</p>
 <h2 id="script-breakdown">Script Breakdown</h2>
 <p><code>All the Imports</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> fastapi <span style="color:#f92672">import</span> FastAPI
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> fastapi <span style="color:#f92672">import</span> FastAPI
 <span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
 <span style="color:#f92672">from</span> nornir_napalm.plugins.tasks <span style="color:#f92672">import</span> napalm_get
 <span style="color:#f92672">from</span> yaml <span style="color:#f92672">import</span> safe_load
@@ -201,20 +195,20 @@
 <li>urllib3 – At the moment this will simply be disabling insecure warnings in the terminal output.</li>
 </ul>
 <p><code>Inits</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>InsecureRequestWarning)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">urllib3<span style="color:#f92672">.</span>disable_warnings(urllib3<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>InsecureRequestWarning)
 
 nr <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;config/config.yaml&#34;</span>)
 
 app <span style="color:#f92672">=</span> FastAPI()
 
 
-<span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
-async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">root</span>():
+<span style="color:#a6e22e">@app</span><span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;/&#34;</span>)
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">root</span>():
     <span style="color:#e6db74">&#34;&#34;&#34;Says hi!&#34;&#34;&#34;</span>
     <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;Hello JulioPDX&#34;</span>}
 </code></pre></div><p>As mentioned previously, we will be disabling the insecure warnings for our lab. We are initializing Nornir with the nr variable and FastAPI to the app variable. Something new is the ‘@app.get(“/”)’ on line eight. From the article this is known as a decorator in python and it relates to the function definition immediately below it. You will see this pattern further in this writing. For this example, if we run the app pointing to “/” it should return “Hello JulioPDX”. Lets start the app!</p>
 <p><code>Starting the App</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>juliopdx@pbpro net_auto_fastapi<span style="color:#f92672">]</span>$ uvicorn play:app --reload
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>juliopdx@pbpro net_auto_fastapi<span style="color:#f92672">]</span>$ uvicorn play:app --reload
 INFO:     Will watch <span style="color:#66d9ef">for</span> changes in these directories: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;/home/juliopdx/git/net_auto_fastapi&#39;</span><span style="color:#f92672">]</span>
 INFO:     Uvicorn running on http://127.0.0.1:8000 <span style="color:#f92672">(</span>Press CTRL+C to quit<span style="color:#f92672">)</span>
 INFO:     Started reloader process <span style="color:#f92672">[</span>99179<span style="color:#f92672">]</span> using watchgod
@@ -225,8 +219,8 @@ INFO:     Application startup complete.
 <p><img src="/blog/images/fastapi_hello.png" alt="Looking good!"></p>
 <p>Now that I have my local environment to the point of the original article, I wanted to start with something simple to test my knowledge. Could there be a way to let users know what all devices will be loaded and available in Nornir? Check out the code below.</p>
 <p><code>Get All the Things</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/devices&#34;</span>)
-async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_devices</span>():
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a6e22e">@app</span><span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;/devices&#34;</span>)
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_devices</span>():
     <span style="color:#e6db74">&#34;&#34;&#34;Returns a list of devices loaded from our hosts file&#34;&#34;&#34;</span>
     <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;./config/hosts.yaml&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
         devices <span style="color:#f92672">=</span> safe_load(file)
@@ -235,11 +229,11 @@ async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_dev
 <p><img src="/blog/images/fastapi_devices.png" alt="Devices"></p>
 <p>This next portion was the most interesting to me. NAPALM has a concept called getters. Basically these functions will go and grab different pieces of information from a device. I initially thought I would have to write a function for every getter. Luckily for me and you viewers watching at home, we can use path parameters when defining these endpoints! For example, if I wanted to interact with the ArubaCX device and the facts getter, I would need to provide two parameters to the endpoint. This allows the operator to just enter the URL with the correct device name and getter, all in one function definition!</p>
 <p><code>All the Getters</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/devices/{hostname}/napalm_get/{getter}&#34;</span>)
-async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_config</span>(hostname: str, getter: str):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a6e22e">@app</span><span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;/devices/</span><span style="color:#e6db74">{hostname}</span><span style="color:#e6db74">/napalm_get/</span><span style="color:#e6db74">{getter}</span><span style="color:#e6db74">&#34;</span>)
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_config</span>(hostname: str, getter: str):
     <span style="color:#e6db74">&#34;&#34;&#34;Function used to interact with NAPALM and devices&#34;&#34;&#34;</span>
-    rtr <span style="color:#f92672">=</span> nr<span style="color:#f92672">.</span>filter(name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;{hostname}&#34;</span>)
-    <span style="color:#66d9ef">return</span> rtr<span style="color:#f92672">.</span>run(name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Get {hostname} {getter}&#34;</span>, task<span style="color:#f92672">=</span>napalm_get, getters<span style="color:#f92672">=</span>[f<span style="color:#e6db74">&#34;{getter}&#34;</span>])
+    rtr <span style="color:#f92672">=</span> nr<span style="color:#f92672">.</span>filter(name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>hostname<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+    <span style="color:#66d9ef">return</span> rtr<span style="color:#f92672">.</span>run(name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Get </span><span style="color:#e6db74">{</span>hostname<span style="color:#e6db74">}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{</span>getter<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, task<span style="color:#f92672">=</span>napalm_get, getters<span style="color:#f92672">=</span>[<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>getter<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>])
 </code></pre></div><table>
 <thead>
 <tr>
@@ -302,7 +296,7 @@ async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_con
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        914 Words
+        913 Words
       </p>
 
       <p>
@@ -390,7 +384,7 @@ async <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_con
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

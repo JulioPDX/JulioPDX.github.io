@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="My Journey and Experience With Containerlab">
-<meta itemprop="description" content="Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.">
-<meta itemprop="datePublished" content="2021-12-10T14:32:22-08:00" />
+<meta itemprop="description" content="Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools."><meta itemprop="datePublished" content="2021-12-10T14:32:22-08:00" />
 <meta itemprop="dateModified" content="2021-12-10T14:32:22-08:00" />
-<meta itemprop="wordCount" content="3501">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/louis-reed.jpg">
-
-
-
+<meta itemprop="wordCount" content="3501"><meta itemprop="image" content="https://juliopdx.com/blog/images/louis-reed.jpg">
 <meta itemprop="keywords" content="Containerlab,Network Automation,Python,Docker,Ansible," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/louis-reed.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="My Journey and Experience With Containerlab" />
 <meta property="og:description" content="Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/louis-reed.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/" /><meta property="og:image" content="https://juliopdx.com/blog/images/louis-reed.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-12-10T14:32:22-08:00" />
 <meta property="article:modified_time" content="2021-12-10T14:32:22-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -207,7 +201,7 @@
 <h2 id="getting-started-with-containerlab">Getting Started With Containerlab</h2>
 <p>One of the main requirements of Containerlab is to have an environment with Linux and Docker available. In my case, I am running a Linux laptop running <a href="https://pop.system76.com/">PopOS</a>. For instructions on getting Docker installed, please see this <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">example</a> by the team at Digital Ocean.</p>
 <h3 id="installing-containerlab">Installing Containerlab</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># download and install the latest release (may require sudo)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># download and install the latest release (may require sudo)</span>
 bash -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -sL https://get-clab.srlinux.dev<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
 </code></pre></div><h3 id="how-to-add-networking-images-to-containerlab">How to Add Networking Images to Containerlab</h3>
 <p>At this time there are a few network vendors that make acquiring container images for their NOS simple. Nokia (SR Linux) is a great example of that. In their case, you can just pull the image from a public repository to make it available to Containerlab. Others may require you to sign up for some guest account in their portal to get access to images. There are some that make you pick up the old telephone and ask for access, and others that don&rsquo;t make any of these an option. To all vendors “please make container images of your NOS and make it publicly available”. I will walk through the process of adding an Arista cEOS image to be used with Containerlab.</p>
@@ -217,13 +211,13 @@ bash -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</
 </ul>
 <p><img src="/blog/images/ceos-download.png" alt="cEOS Download"></p>
 <p>Now that the image is downloaded, we need to make it available to Docker and Containerlab.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker import cEOS-lab-4.27.0F.tar ceos:4.27.0F
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker import cEOS-lab-4.27.0F.tar ceos:4.27.0F
 ❯ docker images
 REPOSITORY                        TAG            IMAGE ID       CREATED          SIZE
 ceos                              4.27.0F        b7119ccccbcd   <span style="color:#ae81ff">27</span> seconds ago   1.68GB
 </code></pre></div><h3 id="the-topology-definition-file">The Topology Definition File</h3>
 <p>Now that we have a NOS container image available, we can start the initial process of standing up a lab topology. In Containerlab, this is known as the <strong>clab file</strong>. In the root on my current directory, I will create a file called <strong>net.clab.yaml</strong>. Example of my file is below. I will break down each portion in a bit.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">cicd</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">cicd</span>
 <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
 
 <span style="color:#f92672">mgmt</span>:
@@ -263,21 +257,21 @@ ceos                              4.27.0F        b7119ccccbcd   <span style="col
     <span style="color:#75715e"># Client connections</span>
     - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;client1:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-01:eth2&#34;</span>]
     - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;client2:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-04:eth2&#34;</span>]
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">cicd</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">cicd</span>
 <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
 </code></pre></div><p>All labs must have a name at the top of the tree. This is great if you are deploying multiple labs and will prevent any conflict between them. By default lab nodes will be named using the following structure: <strong>clab-{{lab-name}}-{{node-name}}</strong>. For my example, rtr-01 would have the name of <strong>clab-cicd-pdx-rtr-eos-01</strong>. I am setting the <strong>prefix</strong> to <code>“”</code>, this will remove the prefix of <strong>clab-cicd</strong> on each node. That is more of a preference and not required.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">mgmt</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">mgmt</span>:
   <span style="color:#f92672">network</span>: <span style="color:#ae81ff">statics</span>
   <span style="color:#f92672">ipv4_subnet</span>: <span style="color:#ae81ff">172.100.100.0</span><span style="color:#ae81ff">/24</span>
 </code></pre></div><p>Here we are telling Containerlab to stand up a Docker network named <strong>statics</strong> that can then be assigned to our nodes.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
   <span style="color:#f92672">kinds</span>:
     <span style="color:#f92672">ceos</span>:
       <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.27.0F</span>
     <span style="color:#f92672">linux</span>:
       <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/hellt/network-multitool</span>
 </code></pre></div><p>This is something I thought was really useful. Containerlab works by defining nodes with what kind of node it is and what image will be used for that node. The kind can be something like ceos, linux, crpd, and others. The documentation does an incredible job of breaking it all down. I will link the docs at the end of this post. In this example I am setting the kind of “ceos.image = ceos:4.27.0F”. This helps remove a lot of duplication when building out topology files with similar nodes.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">nodes</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">nodes</span>:
     <span style="color:#f92672">pdx-rtr-eos-01</span>:
       <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
       <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.11</span>
@@ -298,7 +292,7 @@ ceos                              4.27.0F        b7119ccccbcd   <span style="col
       <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
       <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.22</span>
 </code></pre></div><p>This is where a lot of what has been defined is tied together. I will break down the first eos node and client node. Here, pdx-rtr-eos-01, is assigned the kind of ceos and will inherit the image of “ceos:4.27.0F”. This node will then be accessible either by IP address at 172.100.100.11 or by hostname or by the docker exec commands. I will show these examples in a bit. The client image is similar, it is a kind of linux and will inherit the image of “ghcr.io/hellt/network-multitool”, a publicly available image. If you notice I never had to pull down the image myself. It was handled by Containerlab.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">links</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">links</span>:
     - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-01:eth1&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-02:eth1&#34;</span>]
     - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-02:eth2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-03:eth1&#34;</span>]
     - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;pdx-rtr-eos-03:eth2&#34;</span>, <span style="color:#e6db74">&#34;pdx-rtr-eos-04:eth1&#34;</span>]
@@ -308,7 +302,7 @@ ceos                              4.27.0F        b7119ccccbcd   <span style="col
 </code></pre></div><p>The links portion is fairly simple but it does require some planning on the front end. The link numbering is defined in the Containerlab documentation and even the examples helped me create this links format. It looks fairly simple but the magic going on behind the scenes is awesome.</p>
 <h2 id="deploying-a-topology">Deploying a Topology</h2>
 <p>I may have lost you at this point but please bear with me. Lets get to the fun stuff.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ time sudo containerlab deploy -t net.clab.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ time sudo containerlab deploy -t net.clab.yaml
 INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: net.clab.yaml
 INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating lab directory: /home/juliopdx/git/gcl/cicd
 INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Creating docker network: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;statics&#39;</span>, IPv4Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;172.100.100.0/24&#39;</span>, IPv6Subnet<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>, MTU<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1500&#39;</span>
@@ -334,26 +328,26 @@ INFO<span style="color:#f92672">[</span>0056<span style="color:#f92672">]</span>
 <p><img src="/blog/images/ping-container.png" alt="Ping Container"></p>
 <h2 id="connecting-to-nodes">Connecting to Nodes</h2>
 <p>Great, now we have everything deployed but we need to do something with it. If folks are testing or learning a NOS, naturally we want to connect to the nodes to start laying down some sweet configuration. Luckily, we have a few options to connect to each node.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ ssh admin@cicd-pdx-rtr-eos-01
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ ssh admin@cicd-pdx-rtr-eos-01
 Password:
 pdx-rtr-eos-01&gt;en
 pdx-rtr-eos-01#show version | inc image version
 Software image version: 4.27.0F-24305004.4270F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">)</span>
 pdx-rtr-eos-01#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ ssh admin@172.100.100.11
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ ssh admin@172.100.100.11
 Password:
 pdx-rtr-eos-01&gt;en
 pdx-rtr-eos-01#show version | inc image version
 Software image version: 4.27.0F-24305004.4270F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">)</span>
 pdx-rtr-eos-01#
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker exec -it cicd-pdx-rtr-eos-01 Cli
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker exec -it cicd-pdx-rtr-eos-01 Cli
 pdx-rtr-eos-01&gt;en
 pdx-rtr-eos-01#show version | inc image version
 Software image version: 4.27.0F-24305004.4270F <span style="color:#f92672">(</span>engineering build<span style="color:#f92672">)</span>
 pdx-rtr-eos-01#
 </code></pre></div><h2 id="viewing-the-topology">Viewing the Topology</h2>
 <p>I’m so used to using tools like GNS3 and EVE-NG. Both of these tools provide some type of GUI to view the current topology. Maybe its because I’m a visual person, but I really like to view the topology. Can you believe with a bit of digging… I found out that Containerlab can render a topology image. Example below. FYI, I don’t think the graph enjoyed all the dashes in my hostnames. I’ll post the original when I found this feature!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ sudo containerlab graph -t net.clab.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ sudo containerlab graph -t net.clab.yaml
 INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Parsing &amp; checking topology file: net.clab.yaml
 INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> Listening on :50080...
 </code></pre></div><p><img src="/blog/images/container-graph.jpeg" alt="Container Graph"></p>
@@ -361,7 +355,7 @@ INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span>
 <h2 id="automating-some-configuration">Automating Some Configuration</h2>
 <p><img src="/blog/images/ci_cd_blog.png" alt="High Level Diagram"></p>
 <p>A while back I wrote a series on building a CI/CD pipeline. In that series, I used a generic topology with four Arista nodes running OSPF and BGP. I wanted to see if I could recreate this topology in Containerlab and utilize some of the automation skills I have been practicing. I wont go all in on this post but I will drop some configuration with Nornir and NAPALM using the Ansible inventory Containerlab created. Oh yeah, Containerlab creates an Ansible inventory when deploying a topology. Example of the inventory that was created after I deployed this topology is below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">all</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">all</span>:
   <span style="color:#f92672">children</span>:
     <span style="color:#f92672">ceos</span>:
       <span style="color:#f92672">hosts</span>:
@@ -381,9 +375,9 @@ INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span>
           <span style="color:#f92672">ansible_host</span>: <span style="color:#ae81ff">172.100.100.22</span>
 </code></pre></div><h3 id="nornir-with-ansible-inventory">Nornir With Ansible Inventory</h3>
 <p>Nornir has a plugin to interact with an Ansible inventory, after getting Nornir installed, its just a matter of installing the plugin and setting the inventory to use that plugin.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install nornir nornir_ansible nornir_napalm
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install nornir nornir_ansible nornir_napalm
 </code></pre></div><p><code>Nornir config.yaml</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
 <span style="color:#f92672">inventory</span>:
   <span style="color:#f92672">plugin</span>: <span style="color:#ae81ff">AnsibleInventory</span>
   <span style="color:#f92672">options</span>:
@@ -396,7 +390,7 @@ INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span>
 </code></pre></div><p>Below is a function used to set credentials and platform for the nodes in this deployment.</p>
 <h3 id="deployment-scripts">Deployment Scripts</h3>
 <p><code>tools.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Tools script that holds a variety of functions&#34;&#34;&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74">&#34;&#34;&#34;Tools script that holds a variety of functions&#34;&#34;&#34;</span>
 
 <span style="color:#f92672">import</span> os
 
@@ -415,7 +409,7 @@ INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span>
         host_obj<span style="color:#f92672">.</span>password <span style="color:#f92672">=</span> password
         host_obj<span style="color:#f92672">.</span>platform <span style="color:#f92672">=</span> platform
 </code></pre></div><p><code>deploy.py</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
 
 <span style="color:#e6db74">&#34;&#34;&#34;Script used to configure the network&#34;&#34;&#34;</span>
 
@@ -431,10 +425,10 @@ INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span>
         <span style="color:#66d9ef">pass</span>
     <span style="color:#66d9ef">else</span>:
         task1_result <span style="color:#f92672">=</span> task<span style="color:#f92672">.</span>run(
-            name<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;Configuring {task.host.name}!&#34;</span>,
+            name<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Configuring </span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">!&#34;</span>,
             task<span style="color:#f92672">=</span>napalm_configure,
-            filename<span style="color:#f92672">=</span>f<span style="color:#e6db74">&#34;configs/post/{task.host.name}.cfg&#34;</span>,
-            replace<span style="color:#f92672">=</span>True,
+            filename<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;configs/post/</span><span style="color:#e6db74">{</span>task<span style="color:#f92672">.</span>host<span style="color:#f92672">.</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">.cfg&#34;</span>,
+            replace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
         )
 
 
@@ -450,7 +444,7 @@ INFO<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span>
     main()
 </code></pre></div><h3 id="sample-configuration">Sample Configuration</h3>
 <p><code>cicd-pdx-rtr-eos-01.cfg</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">! Command: show running-config
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">! Command: show running-config
 ! device: pdx-rtr-eos-01 (cEOSLab, EOS-4.27.0F-24305004.4270F (engineering build))
 !
 no aaa root
@@ -511,7 +505,7 @@ router ospf 1
 !
 endtext
 </code></pre></div><p>Script output below! I’ll set the client1 and client2 IP addresses in the meantime!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker exec -it cicd-client1 bash
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ docker exec -it cicd-client1 bash
 bash-5.0# ifconfig eth1 192.168.1.2 netmask 255.255.255.0 up
 bash-5.0# route add default gw 192.168.1.1
 bash-5.0# ping -c <span style="color:#ae81ff">4</span> 192.168.1.1
@@ -535,93 +529,93 @@ eth1      Link encap:Ethernet  HWaddr AA:C1:AB:94:0D:B0
           RX bytes:218275 <span style="color:#f92672">(</span>213.1 KiB<span style="color:#f92672">)</span>  TX bytes:2112 <span style="color:#f92672">(</span>2.0 KiB<span style="color:#f92672">)</span>
 
 bash-5.0# exit
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">❯</span> python deploy<span style="color:#f92672">.</span>py
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">❯</span> python deploy<span style="color:#f92672">.</span>py
 deploy_network<span style="color:#f92672">******************************************************************</span>
-<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>client1 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">**********************************************</span>
-vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>client1 <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">**********************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
 <span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>client2 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">**********************************************</span>
-vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>client2 <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> <span style="color:#f92672">**********************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
 <span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
-vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
-<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">37</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#f92672">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">37</span> <span style="color:#f92672">@@</span>
     transport ssh default
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet1
 <span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">12.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.12.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
 <span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet2
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">192.168.1.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>interface Loopback1
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.0.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Management0
-    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.11</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+    ip address <span style="color:#ae81ff">172.100.100.11</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">-</span>no ip routing
 <span style="color:#f92672">+</span>ip routing
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>router bgp <span style="color:#ae81ff">65001</span>
-<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0.0.1</span>
 <span style="color:#f92672">+</span>   timers bgp <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">30</span>
-<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">65004</span>
-<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span> update<span style="color:#f92672">-</span>source Loopback1
-<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span> ebgp<span style="color:#f92672">-</span>multihop <span style="color:#ae81ff">3</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0.0.4</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">65004</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0.0.4</span> update<span style="color:#f92672">-</span>source Loopback1
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0.0.4</span> ebgp<span style="color:#f92672">-</span>multihop <span style="color:#ae81ff">3</span>
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
-<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0.0.1</span>
 <span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Ethernet2
 <span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Loopback1
 <span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  end
 <span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
-vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
-<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#f92672">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">26</span> <span style="color:#f92672">@@</span>
     transport ssh default
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet1
 <span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">12.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.12.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
 <span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet2
 <span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">23.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.23.2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
 <span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Management0
-    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.12</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+    ip address <span style="color:#ae81ff">172.100.100.12</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">-</span>no ip routing
 <span style="color:#f92672">+</span>ip routing
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
-<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.2</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0.0.2</span>
 <span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  end
 <span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
-vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
-<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">6</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">8</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#f92672">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">6</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">8</span> <span style="color:#f92672">@@</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  spanning<span style="color:#f92672">-</span>tree mode mstp
  <span style="color:#960050;background-color:#1e0010">!</span>
@@ -630,40 +624,40 @@ vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvv
  management api http<span style="color:#f92672">-</span>commands
     no shutdown
  <span style="color:#960050;background-color:#1e0010">!</span>
-<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>,<span style="color:#ae81ff">27</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+<span style="color:#f92672">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>,<span style="color:#ae81ff">27</span> <span style="color:#f92672">@@</span>
     transport ssh default
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet1
 <span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">23.3</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.23.3</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
 <span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet2
 <span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">34.3</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.34.3</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
 <span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Management0
-    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.13</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+    ip address <span style="color:#ae81ff">172.100.100.13</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">-</span>no ip routing
 <span style="color:#f92672">+</span>ip routing
 <span style="color:#f92672">+</span>no ip routing vrf MGMT
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
-<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.3</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0.0.3</span>
 <span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  end
 <span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">****************************************</span>
-vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
-<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : True <span style="color:#f92672">------------------------</span> INFO
-<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+<span style="color:#f92672">*</span> cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">****************************************</span>
+vvvv deploy_network <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">False</span> vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+<span style="color:#f92672">----</span> Configuring cicd<span style="color:#f92672">-</span>pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">04</span><span style="color:#960050;background-color:#1e0010">!</span> <span style="color:#f92672">**</span> changed : <span style="color:#66d9ef">True</span> <span style="color:#f92672">------------------------</span> INFO
+<span style="color:#f92672">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span> <span style="color:#f92672">@@</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  no aaa root
  <span style="color:#960050;background-color:#1e0010">!</span>
@@ -672,40 +666,40 @@ vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvv
  <span style="color:#960050;background-color:#1e0010">!</span>
  transceiver qsfp default<span style="color:#f92672">-</span>mode <span style="color:#ae81ff">4</span>x10G
  <span style="color:#960050;background-color:#1e0010">!</span>
-<span style="color:#960050;background-color:#1e0010">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">37</span> <span style="color:#960050;background-color:#1e0010">@@</span>
+<span style="color:#f92672">@@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">12</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">37</span> <span style="color:#f92672">@@</span>
     transport ssh default
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet1
 <span style="color:#f92672">+</span>   description connection to pdx<span style="color:#f92672">-</span>rtr<span style="color:#f92672">-</span>eos<span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">34.4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.34.4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
 <span style="color:#f92672">+</span>   ip ospf network point<span style="color:#f92672">-</span>to<span style="color:#f92672">-</span>point
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Ethernet2
 <span style="color:#f92672">+</span>   no switchport
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">4.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">192.168.4.1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>interface Loopback1
-<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>
-<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.0</span>
+<span style="color:#f92672">+</span>   ip address <span style="color:#ae81ff">10.0.0.4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">32</span>
+<span style="color:#f92672">+</span>   ip ospf area <span style="color:#ae81ff">0.0.0.0</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
  interface Management0
-    ip address <span style="color:#ae81ff">172.100</span><span style="color:#f92672">.</span><span style="color:#ae81ff">100.14</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
+    ip address <span style="color:#ae81ff">172.100.100.14</span><span style="color:#f92672">/</span><span style="color:#ae81ff">24</span>
  <span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">-</span>no ip routing
 <span style="color:#f92672">+</span>ip routing
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>router bgp <span style="color:#ae81ff">65004</span>
-<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0.0.4</span>
 <span style="color:#f92672">+</span>   timers bgp <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">30</span>
-<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">65001</span>
-<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span> update<span style="color:#f92672">-</span>source Loopback1
-<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.1</span> ebgp<span style="color:#f92672">-</span>multihop <span style="color:#ae81ff">3</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0.0.1</span> remote<span style="color:#f92672">-</span><span style="color:#66d9ef">as</span> <span style="color:#ae81ff">65001</span>
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0.0.1</span> update<span style="color:#f92672">-</span>source Loopback1
+<span style="color:#f92672">+</span>   neighbor <span style="color:#ae81ff">10.0.0.1</span> ebgp<span style="color:#f92672">-</span>multihop <span style="color:#ae81ff">3</span>
 <span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">!</span>
 <span style="color:#f92672">+</span>router ospf <span style="color:#ae81ff">1</span>
-<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0</span><span style="color:#f92672">.</span><span style="color:#ae81ff">0.4</span>
+<span style="color:#f92672">+</span>   router<span style="color:#f92672">-</span>id <span style="color:#ae81ff">10.0.0.4</span>
 <span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Ethernet2
 <span style="color:#f92672">+</span>   passive<span style="color:#f92672">-</span>interface Loopback1
 <span style="color:#f92672">+</span>   max<span style="color:#f92672">-</span>lsa <span style="color:#ae81ff">12000</span>
@@ -713,7 +707,7 @@ vvvv deploy_network <span style="color:#f92672">**</span> changed : False vvvvvv
  end
 <span style="color:#f92672">^^^^</span> END deploy_network <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
 </code></pre></div><h3 id="simple-verifications">Simple Verifications</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">pdx-rtr-eos-01#show ip ospf neighbor
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">pdx-rtr-eos-01#show ip ospf neighbor
 Neighbor ID     Instance VRF      Pri State                  Dead Time   Address         Interface
 10.0.0.2        1        default  0   FULL                   00:00:38    10.0.12.2       Ethernet1
 pdx-rtr-eos-01#show ip route ospf
@@ -742,7 +736,7 @@ PING 192.168.4.1 (192.168.4.1) 72(100) bytes of data.
 rtt min/avg/max/mdev = 0.033/0.061/0.164/0.051 ms, ipg/ewma 0.094/0.110 ms
 pdx-rtr-eos-01#
 </code></pre></div><p>At this point client1 (192.168.1.2) should be able to reach client2 (192.168.4.2)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">❯ docker exec -it cicd-client1 bash
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">❯ docker exec -it cicd-client1 bash
 bash-5.0# ping -c 4 192.168.4.2
 PING 192.168.4.2 (192.168.4.2) 56(84) bytes of data.
 64 bytes from 192.168.4.2: icmp_seq=1 ttl=60 time=0.202 ms
@@ -756,7 +750,7 @@ rtt min/avg/max/mdev = 0.186/0.214/0.254/0.025 ms
 bash-5.0#
 </code></pre></div><h2 id="destroying-a-topology">Destroying a Topology</h2>
 <p>When destroying the lab there are two main options. Well really there is more but the other sounds dangerous! You can either destroy the lab which is more like shutting it down. Or you can destroy a lab and cleanup all directories/configurations that have been configured. The former will maintain configurations when you deploy again and the latter will revert to a factory reset if you will.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># Maintain configurations after shutdown</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># Maintain configurations after shutdown</span>
 sudo containerlab destroy -t net.clab.yaml
 <span style="color:#75715e"># Destroy all configurations</span>
 sudo containerlab destroy -t net.clab.yaml --cleanup
@@ -887,7 +881,7 @@ sudo containerlab destroy -t net.clab.yaml --cleanup
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

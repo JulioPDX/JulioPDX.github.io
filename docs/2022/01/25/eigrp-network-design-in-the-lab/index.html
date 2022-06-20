@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="EIGRP Network Design in the Lab">
-<meta itemprop="description" content="Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.">
-<meta itemprop="datePublished" content="2022-01-25T15:50:47-08:00" />
+<meta itemprop="description" content="Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons."><meta itemprop="datePublished" content="2022-01-25T15:50:47-08:00" />
 <meta itemprop="dateModified" content="2022-01-25T15:50:47-08:00" />
-<meta itemprop="wordCount" content="2543">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/med-badr.jpg">
-
-
-
+<meta itemprop="wordCount" content="2543"><meta itemprop="image" content="https://juliopdx.com/blog/images/med-badr.jpg">
 <meta itemprop="keywords" content="Cisco,EIGRP," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/med-badr.jpg"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="EIGRP Network Design in the Lab" />
 <meta property="og:description" content="Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/med-badr.jpg" />
+<meta property="og:url" content="https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/" /><meta property="og:image" content="https://juliopdx.com/blog/images/med-badr.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-01-25T15:50:47-08:00" />
 <meta property="article:modified_time" content="2022-01-25T15:50:47-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -183,7 +177,7 @@
 <h2 id="the-topology">The Topology</h2>
 <p><img src="/blog/images/eigrp-design.png" alt="EIGRP Topo"></p>
 <p>Lets break down the topology above. Everything is in EIGRP AS 12345. I just chose a random number but for the most part, using multiple autonomous systems in EIGRP does not limit the query scope, so we will use just one. Every link is configured as a /31 point to point to save on address space. We will be using a fairly traditional 3 tier design. The DMZ node is advertising a default route throughout the network and has a few loopbacks representing public IP addresses. Example of that below as well as one core nodes routing table before any optimization is performed.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dmz node redistributing a default route
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dmz node redistributing a default route
 router eigrp 12345
  network 10.0.0.11 0.0.0.0
  network 10.0.0.13 0.0.0.0
@@ -191,7 +185,7 @@ router eigrp 12345
  eigrp router-id 0.0.0.12
 !
 ip route 0.0.0.0 0.0.0.0 Null0
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">core3#show ip route eigrp | b Gate
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">core3#show ip route eigrp | b Gate
 Gateway of last resort is 10.0.0.13 to network 0.0.0.0
 
 D*EX  0.0.0.0/0 [170/281600] via 10.0.0.13, 00:01:21, Ethernet0/3
@@ -298,26 +292,26 @@ core3#
 </code></pre></div><p>At the moment since no optimizations have been added, if we were to lose any of these links, the network would have to ask every node if they are aware of an alternate path to reach a particular destination. Not very efficient at all. A few places where we can improve are the 10.1.0.0 and 10.2.0.0 networks. Those are all coming from nodes R3, R4, and R5. Think of these as our fake access layer in a campus. The networks in the 172.16.17.0 and 172.16.18.0 networks are coming from a services edge of the network. This could be servers or whatever services you can think of. In this case it is just one node called servers advertising some routes.</p>
 <h2 id="optimizations-in-the-core-layer">Optimizations in the Core Layer</h2>
 <p>The main idea behind the core is to push the traffic as fast as possible. Try to limit the extra stuffs that can consume resources within the core. Please note that I said within, do summarize from the core to the aggregation layer. How does this look like in practice? From the aggregation standpoint, all we really need from the core is a default route. One way to do this is to configure a summary on the interfaces towards the aggregates.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!core1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!core1
 interface Ethernet0/2
  ip summary-address eigrp 12345 0.0.0.0 0.0.0.0
 !
 interface Ethernet0/3
  ip summary-address eigrp 12345 0.0.0.0 0.0.0.0
 </code></pre></div><p>There’s a catch though. When you create a summary route, EIGRP will add the sweet null0 route… At this point core1 believes it has the better default route over the one the dmz node is sending. For example, lets try and ping the 8.8.8.8 network from svcs1.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">svcs1#ping 8.8.8.8
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">svcs1#ping 8.8.8.8
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
 U.U.U
 Success rate is 0 percent (0/5)
 svcs1#
 </code></pre></div><p>We have effectively black holed traffic. So how do we get around this? We make that summary route look terrible so it will not be added into the routing table.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!core1-3
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!core1-3
 router eigrp 12345
  summary-metric 0.0.0.0/0 distance 255
  network 0.0.0.0
 </code></pre></div><p>Please note, you will see the advertise all the things command (network 0.0.0.0) in the configurations. In reality, you should be explicit (network 10.1.2.1 0.0.0.0). Lets try that ping again!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">svcs1#ping 8.8.8.8
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">svcs1#ping 8.8.8.8
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
 !!!!!
@@ -326,17 +320,17 @@ svcs1#
 </code></pre></div><p>I’ll add that config and summary metric to all core nodes pointing to their different aggregation layers!</p>
 <h2 id="optimizations-in-the-aggregation-layer">Optimizations in the Aggregation Layer</h2>
 <p>A bit similar as before, we can advertise summary routes from the aggregation layer to the core. The catch here is that if one of the aggregation nodes loses access to a route, it will still advertise that summary if a route within the summary is present. The solution here is to connect the aggregation nodes either physically or using a tunnel. I decided to run a direct connection for simplicity. Here is what it looks like to summarize the 10.1.0.0/16 and 10.2.0.0/16 networks from dis1 and dis2. It should be noted, the creation of the null0 route for these summaries is not a big deal, the local network will see more specific routes to reach each destination.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dis1 and dis2
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dis1 and dis2
 interface Ethernet1/0
  ip summary-address eigrp 12345 10.1.0.0 255.255.0.0
  ip summary-address eigrp 12345 10.2.0.0 255.255.0.0
 </code></pre></div><p>Similar summaries can be performed from svcs1 and svcs2.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!svcs1 and svcs2
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!svcs1 and svcs2
 interface Ethernet0/0
  ip summary-address eigrp 12345 172.16.17.0 255.255.255.0
  ip summary-address eigrp 12345 172.16.18.0 255.255.255.0
 </code></pre></div><p>Lets check the access layer and see how a route table is looking.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#  show ip route eigrp | b Gate
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#  show ip route eigrp | b Gate
 Gateway of last resort is 10.2.3.2 to network 0.0.0.0
 
 D*EX  0.0.0.0/0 [170/332800] via 10.2.3.2, 00:17:27, Ethernet0/1
@@ -394,7 +388,7 @@ D        10.2.54.0/24 [90/435200] via 10.2.3.2, 00:57:32, Ethernet0/1
 D        10.2.255.253/32 [90/409600] via 10.1.3.1, 00:57:32, Ethernet0/0
 D        10.2.255.254/32 [90/409600] via 10.2.3.2, 00:57:32, Ethernet0/1
 </code></pre></div><p>This is a bit overkill for the access layer and we can make improvements here as well. We could add another summary command and metric but lets look at another method. We will limit what is advertised to the access layer using the distribute command coupled with a prefix list. Please see example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dis1 and dis2 pointing towards access
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dis1 and dis2 pointing towards access
 !Similar on svcs1 and svcs2
 router eigrp 12345
  distribute-list prefix DEFAULT out Ethernet0/1
@@ -403,7 +397,7 @@ router eigrp 12345
 !
 ip prefix-list DEFAULT seq 20 permit 0.0.0.0/0
 </code></pre></div><p>Lets check that routing table again on R3.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#show ip route eigrp | b Gate
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#show ip route eigrp | b Gate
 Gateway of last resort is 10.2.3.2 to network 0.0.0.0
 
 D*EX  0.0.0.0/0 [170/332800] via 10.2.3.2, 00:34:32, Ethernet0/1
@@ -411,7 +405,7 @@ R3#
 </code></pre></div><h2 id="optimizations-in-the-access-layer">Optimizations in the Access Layer</h2>
 <p><img src="/blog/images/stub.png" alt="Stub"></p>
 <p>The amount of filtering and summarizing performed already, we have limited the amount of queries EIGRP will send out to search for alternate paths of a route. Another addition that can be made at the access layer is setting the stub flag. Why use the stub feature? Lets say R4 had a loopback1 network of “10.1.48.1/24”. If we were to shut this interface, then we would see a query from dis1 and dis2 towards R3</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#debug eigrp packets query
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R3#debug eigrp packets query
     (QUERY)
 EIGRP Packet debugging is on
 R3#
@@ -422,7 +416,7 @@ R3#
 R3#u all
 All possible debugging has been turned off
 </code></pre></div><p>In this example R3 would not have an alternate path to this route and overall we may not want to use these access layer nodes as a transit network to reach other destinations. These devices may have lower bandwidth or overall resources. The stub feature is a neat way to say “do not query me”. Lets test this out!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!Stub setting added to all access layer nodes
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!Stub setting added to all access layer nodes
 R3#show run | s router
 router eigrp 12345
  network 0.0.0.0
@@ -434,7 +428,7 @@ R3#debug eigrp packets query
 EIGRP Packet debugging is on
 R3#
 </code></pre></div><p>Okay that’s a bit hard to visualize in writing but test it out and you’ll see that no query is sent to R3.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">dis1# show ip eigrp neighbors detail
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">dis1# show ip eigrp neighbors detail
 EIGRP-IPv4 Neighbors for AS(12345)
 H   Address                 Interface              Hold Uptime   SRTT   RTO  Q  Seq
                                                    (sec)         (ms)       Cnt Num
@@ -443,14 +437,14 @@ H   Address                 Interface              Hold Uptime   SRTT   RTO  Q  
    Topology-ids from peer - 0
    Stub Peer Advertising (CONNECTED ) Routes
    Suppressing queries
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dmz gets to be special because it is redistributing a static
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!dmz gets to be special because it is redistributing a static
 router eigrp 12345
  network 10.0.0.11 0.0.0.0
  network 10.0.0.13 0.0.0.0
  redistribute static
  eigrp router-id 0.0.0.12
  eigrp stub static
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!Almost forgot that core3 routing table!
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!Almost forgot that core3 routing table!
 core3#show ip route eigrp | b Gate
 Gateway of last resort is 10.0.0.13 to network 0.0.0.0
 
@@ -590,7 +584,7 @@ core3#
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 

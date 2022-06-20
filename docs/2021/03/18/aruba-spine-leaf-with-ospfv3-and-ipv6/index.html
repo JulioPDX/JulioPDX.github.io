@@ -42,16 +42,10 @@
 
 
 <meta itemprop="name" content="Aruba Spine Leaf With OSPFv3 and IPv6">
-<meta itemprop="description" content="Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago.">
-<meta itemprop="datePublished" content="2021-03-18T00:00:00+00:00" />
+<meta itemprop="description" content="Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago."><meta itemprop="datePublished" content="2021-03-18T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-03-18T00:00:00+00:00" />
-<meta itemprop="wordCount" content="2295">
-<meta itemprop="image" content="https://juliopdx.com/blog/images/aruba_spine_leaf.png">
-
-
-
+<meta itemprop="wordCount" content="2295"><meta itemprop="image" content="https://juliopdx.com/blog/images/aruba_spine_leaf.png">
 <meta itemprop="keywords" content="IPv6,Aruba,Data Center,OSPFv3," />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/aruba_spine_leaf.png"/>
 
@@ -64,10 +58,10 @@
 <meta property="og:title" content="Aruba Spine Leaf With OSPFv3 and IPv6" />
 <meta property="og:description" content="Introduction Hello and thank you for checking out this post! In this post I hope to breakdown the topology you see above. I’ll walk through the design, IPv6 IP allocations, and OSPFv3. I have a very small background in IPv6, basically enough to get past a few Cisco exams, which inevitably gets forgotten about after some time of little to no use. I purchased IPv6 Fundamentals by Rick Graziani, I want to say almost a year ago." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/" />
-<meta property="og:image" content="https://juliopdx.com/blog/images/aruba_spine_leaf.png" />
+<meta property="og:url" content="https://juliopdx.com/2021/03/18/aruba-spine-leaf-with-ospfv3-and-ipv6/" /><meta property="og:image" content="https://juliopdx.com/blog/images/aruba_spine_leaf.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-03-18T00:00:00+00:00" />
 <meta property="article:modified_time" content="2021-03-18T00:00:00+00:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
 
 
 
@@ -191,7 +185,7 @@
 <p>At this point you might be thinking, wow this is wasting a lot of IP space. Remember, with IPv6 you have an incredible amount of IP space. This doesn’t mean you shouldn’t plan ahead but also don’t spend months on this. One small caveat, I’m not saying this is a great or even good IP plan for this deployment. Just going by what I’ve learned so far and putting it to use. Below you’ll see the link configurations on spine01. The output for spine02 is essentially the same.</p>
 <h2 id="ospfv3-and-spine-nodes">OSPFv3 and Spine Nodes</h2>
 <p><code>Spine01 Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
 interface mgmt
      no shutdown
      ip dhcp
@@ -243,7 +237,7 @@ router ospfv3 1
 !
 </code></pre></div><p>A lot to unpack there right? Ill do my best to break it down below. Lets just focus on the small snippet below.</p>
 <p><code>Interface Snippet</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface 1/1/4
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">interface 1/1/4
      no shutdown
      description link to leaf04
      ipv6 address link-local fe80:face:cafe::1/64
@@ -263,7 +257,7 @@ router ospfv3 1
 <p>I want to take a quick second and mention IP unnumbered. This does seem like a lot of IP addresses to manage, even if we are following a pattern. To my knowledge and some google searches, I don’t believe Aruba supports this feature. IP unnumbered essentially lets you borrow an IP address from an interface. For example, borrowing the loopback 0 address in our deployment and using it on all point to point links. If your network operating system supports this feature, use it! I think that’s enough for the spines, lets take a look at one of the leaf nodes. Below is leaf01, again, all other leaf nodes are essentially the same.</p>
 <h2 id="ospfv3-and-leaf-nodes">OSPFv3 and Leaf Nodes</h2>
 <p><code>Leaf01 Configuration</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">vlan 1,10
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">vlan 1,10
 interface 1/1/1
      no shutdown
      description link to spine01
@@ -335,7 +329,7 @@ router ospfv3 1
 <p>Check out the ICMPv6 options sent in the RA message. The big one to note here is the prefix information of 2001:db8:cafe:a::/64, the VLAN 10 prefix information on leaf01. Just a note, the RA message is also the only way a node can get a default gateway in IPv6. Whether its SLAAC or DHCPv6, the default gateway comes from the RA message.</p>
 <p>What’s a good network engineering article without some routes and pings!</p>
 <p><code>OSPFv3 Routes at leaf01</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">leaf01# show ipv6 ospfv3 routes | b 2001
  2001:db8:cafe:a::/64 (i) area:0.0.0.0
       directly attached to interface vlan10, cost 100 distance 110
  2001:db8:cafe:14::/64 (i) area:0.0.0.0
@@ -508,7 +502,7 @@ router ospfv3 1
 
 
 
-<script type="text/javascript" src="/bundle.min.f48d5e9ad81b628de50e646ed14e5aae64d8ae4e73b9f0a3e0b7c64fc662127f4f1dfd3f7481aea22503ac9c0a9215c27c3de6d6a4e0e0ac56e908224c54f2eb.js" integrity="sha512-9I1emtgbYo3lDmRu0U5armTYrk5zufCj4LfGT8ZiEn9PHf0/dIGuoiUDrJwKkhXCfD3m1qTg4KxW6QgiTFTy6w=="></script>
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
 
 
 
