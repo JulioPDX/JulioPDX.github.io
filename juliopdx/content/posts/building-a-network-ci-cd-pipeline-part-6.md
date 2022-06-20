@@ -10,7 +10,7 @@ tags:
   - Suzieq
   - Network Automation
   - Python
-alias:
+aliases:
   - /2021/11/12/building-a-network-ci-cd-pipeline-part-6/
 ---
 
