@@ -10,6 +10,8 @@ tags:
   - Docker
   - DockerHub
   - Drone
+aliases:
+  - /2021/10/20/building-a-network-ci-cd-pipeline-part-3/
 ---
 
 ![Containers](/blog/images/ian-taylor.jpg)

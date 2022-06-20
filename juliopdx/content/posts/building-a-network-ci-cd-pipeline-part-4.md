@@ -12,6 +12,8 @@ tags:
   - Nornir
   - Network Automation
   - Python
+aliases:
+  - /2021/10/31/building-a-network-ci-cd-pipeline-part-4/
 ---
 
 ![Fish](/blog/images/masaaki-komori.jpg)

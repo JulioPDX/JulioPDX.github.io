@@ -11,6 +11,8 @@ tags:
   - Docker
   - NGROK
   - Drone
+aliases:
+  - /2021/10/20/building-a-network-ci-cd-pipeline-part-2/
 ---
 
 ![Featured Image](/blog/images/jonathan-lampel.jpg)

@@ -9,6 +9,8 @@ tags:
   - CI/CD
   - Network Automation
   - Python
+aliases:
+  - /2021/11/08/building-a-network-ci-cd-pipeline-part-5/
 ---
 
 ![Featured Image](/blog/images/david-clode.jpg)
