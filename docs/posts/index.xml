@@ -6,8 +6,280 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-        <lastBuildDate>Mon, 28 Mar 2022 12:08:20 -0700</lastBuildDate>
+        <lastBuildDate>Tue, 01 Nov 2022 21:38:29 -0700</lastBuildDate>
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Slidev</title>
+            <link>https://juliopdx.com/2022/11/01/slidev/</link>
+            <pubDate>Tue, 01 Nov 2022 21:38:29 -0700</pubDate>
+            
+            <guid>https://juliopdx.com/2022/11/01/slidev/</guid>
+            <description>Introduction A while back, I was building a technical presentation. Like most presentations, this would include diagrams, code blocks, images, etc. So I did what any of us usually did and looked at something like Google Slides or Microsoft PowerPoint.
+For the longest time, I wasn&amp;rsquo;t a fan of how code blocks looked in these presentations or the gymnastics performed when taking a screenshot of some highlighted code or opening another app to create an image that would then be added to the presentation.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>A while back, I was building a technical presentation. Like most presentations, this would include diagrams, code blocks, images, etc. So I did what any of us usually did and looked at something like Google Slides or Microsoft PowerPoint.</p>
+<p>For the longest time, I wasn&rsquo;t a fan of how code blocks looked in these presentations or the gymnastics performed when taking a screenshot of some highlighted code or opening another app to create an image that would then be added to the presentation. After some searches on the internet, I was blessed with something incredible, Slidev.</p>
+<h2 id="what-is-slidev">What is Slidev</h2>
+<p>Slidev is maintained by Anthony Fu and aims to be &ldquo;Presentation Slides for Developers.&rdquo; I&rsquo;m guessing Anthony was tired of running through certain hoops and figured, &ldquo;Why not just make some presentation software that mimics what I do daily?&rdquo;</p>
+<p>I&rsquo;ll walk through some examples and my favorite features in a sec. Slidev makes the presentation-building workflow essentially like presentations as code. When building slides, developers and engineers can take advantage of using Markdown, CSS, and HTML.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>Getting started with Slidev is as simple as one command (requires Node.js &gt;= 14.0).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm init slidev@latest
+</code></pre></div><p>You will then be prompted to select a project name, if you would like to install it now, and what agent to use for the install. Example below.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ npm init slidev@latest
+npx: installed <span style="color:#ae81ff">22</span> in 1.688s
+
+  ●■▲
+  Slidev Creator  v0.36.10
+
+✔ Project name: … example
+  Scaffolding project in example ...
+  Done.
+
+✔ Install and start it now? … yes
+✔ Choose the agent › npm
+</code></pre></div><p>The slides should open in your web browser automatically. You can run it manually using <code>npm run dev</code> if they don&rsquo;t. The slides will then be viewable at <code>localhost:3030</code>. By default, the slides can be modified at <code>slides.md</code>. In this case, I&rsquo;ll delete the built-in ones made by default and run through some examples.</p>
+<h2 id="favorite-features">Favorite Features</h2>
+<p>Slidev has so many features that breaking them all down would take a while. So instead, I&rsquo;ll run through some simple examples, but I highly encourage you to look at the official documentation (linked at the end).</p>
+<h3 id="creating-in-markdown">Creating in Markdown</h3>
+<p>The ability to create slides in Markdown format was huge for me. Learning the syntax for creating documentation (and slides) is nice and straightforward. Below is an example of the initial slide.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+
+# Welcome to the world of tomorrow
+
+These slides are sweet!
+
+---
+</code></pre></div><p><img src="/blog/images/slidev-welcome.png" alt="Welcome"></p>
+<h3 id="themes">Themes</h3>
+<p>The default themes in Slidev are pretty sweet, but you can also use <a href="https://sli.dev/themes/gallery.html">custom themes</a>. I&rsquo;m a fan of the <a href="https://github.com/moudev/slidev-theme-purplin">Purplin theme</a>, mainly for its support of a bottom bar. I can change the front matter at the top of the <code>slides.md</code> file and run <code>npm run dev</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#75715e"># try also &#39;default&#39; to start simple</span>
+<span style="color:#f92672">theme</span>: <span style="color:#ae81ff">purplin</span>
+<span style="color:#75715e"># random image from a curated Unsplash collection by Anthony</span>
+<span style="color:#75715e"># like them? see https://unsplash.com/collections/94734566/slidev</span>
+<span style="color:#f92672">background</span>: <span style="color:#ae81ff">https://source.unsplash.com/collection/94734566/1920x1080</span>
+<span style="color:#75715e"># apply any windi css classes to the current slide</span>
+<span style="color:#f92672">class</span>: <span style="color:#e6db74">&#39;text-center&#39;</span>
+<span style="color:#75715e"># https://sli.dev/custom/highlighters.html</span>
+<span style="color:#f92672">highlighter</span>: <span style="color:#ae81ff">prism</span>
+<span style="color:#75715e"># show line numbers in code blocks</span>
+<span style="color:#f92672">lineNumbers</span>: <span style="color:#66d9ef">false</span>
+<span style="color:#75715e"># some information about the slides, markdown enabled</span>
+<span style="color:#f92672">info</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">  ## Slidev Starter Template
+</span><span style="color:#e6db74">  Presentation slides for developers.
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">  Learn more at [Sli.dev](https://sli.dev)</span>  
+<span style="color:#75715e"># persist drawings in exports and build</span>
+<span style="color:#f92672">drawings</span>:
+  <span style="color:#f92672">persist</span>: <span style="color:#66d9ef">false</span>
+<span style="color:#75715e"># use UnoCSS</span>
+<span style="color:#f92672">css</span>: <span style="color:#ae81ff">unocss</span>
+---
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ npm run dev
+
+&gt; example@ dev /home/juliopdx/Documents/slidev-example/example
+&gt; slidev --open
+
+? The theme <span style="color:#e6db74">&#34;slidev-theme-purplin&#34;</span> was not found in your project, <span style="color:#66d9ef">do</span> you want to install it now? › <span style="color:#f92672">(</span>Y/n<span style="color:#f92672">)</span>
+</code></pre></div><p>You&rsquo;ll lose the sweet image in your initial slide at this point, but that&rsquo;s okay for now. Next, I&rsquo;ll add another slide and include the bottom bar component with some additional Slidev features.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+layout: iframe-right
+
+# the web page source
+url: https://juliopdx.com
+---
+
+# Hello, world
+
+<span style="color:#66d9ef">-</span> Some sweet blog from a random dude on the internet &lt;<span style="color:#f92672">mdi-terminal</span> /&gt;
+<span style="color:#66d9ef">-</span> Thank you for stopping by &lt;<span style="color:#f92672">mdi-check-box</span> /&gt;
+
+&lt;<span style="color:#f92672">BarBottom</span>  <span style="color:#a6e22e">title</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Slidev Example&#34;</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;JulioPDX&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:logo-github</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;@Julio_PDX&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:logo-twitter</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;juliopdx.com&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:globe</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+&lt;/<span style="color:#f92672">BarBottom</span>&gt;
+---
+</code></pre></div><p>There is a lot going on here but stick with me.</p>
+<ul>
+<li>At the top, we have front matter for each slide representing a particular <a href="https://sli.dev/builtin/layouts.html">layout</a> we may want.</li>
+<li>In this case, I chose an <code>iframe-right</code> to display a live web page as we go through a presentation. Imagine presenting project documentation on the fly.</li>
+<li>I added some random header of <code>Hello, world</code> and a list of information.</li>
+<li>A little subtle, but we can also add emojis all over the place.</li>
+<li>The bar bottom piece is almost a copy of the Purplin documentation. It allows you to present data at the bottom of each slide.</li>
+</ul>
+<p><img src="/blog/images/slidev-web.png" alt="Web"></p>
+<h3 id="diagrams">Diagrams</h3>
+<p>Slidev supports mermaid diagrams which I thought was awesome. Below you will see a rough example I was working on showing some roles in the <a href="https://avd.sh/en/stable/">Arista AVD Collection</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+layout: center
+---
+
+# Ansible AVD Collection
+
+```mermaid {scale: .58}
+flowchart LR
+    1(YAML);2(eos_designs_role);3(eos_cli_config_gen_role);4(eos_config_deploy_cvp_role);5(eos_validate_state_role);6(CSV/MD);7(YAML);8(EOS.CFG);9(YAML);10(CSV/MD);11(CloudVision)
+    subgraph vars
+      1
+    end
+    subgraph eos_designs
+    2
+    end
+    subgraph eos_cli_config_gen
+    3
+    end
+    subgraph eos_config_deploy_cvp
+    4
+    end
+    subgraph eos_validate_state
+    5
+    end
+    subgraph Documentation
+      6
+    end
+    subgraph Structured-EOS-Config
+      7
+    end
+    subgraph EOS-CLI-Config
+      8
+    end
+    subgraph Ansible-Inventory
+      9
+    end
+    subgraph Reports
+      10
+    end
+    subgraph CloudVision
+      11
+    end
+    subgraph Arista-EOS-Fabric
+      S1(S1);S2(S2);L1(L1);L2(L2);L3(L3);L4(L4)
+      S1 <span style="color:#960050;background-color:#1e0010">&amp;</span> S2 --- L1 <span style="color:#960050;background-color:#1e0010">&amp;</span> L2 <span style="color:#960050;background-color:#1e0010">&amp;</span> L3 <span style="color:#960050;background-color:#1e0010">&amp;</span> L4
+    end
+    vars --&gt; eos_designs
+    eos_designs --&gt; Documentation
+    eos_cli_config_gen --&gt; Documentation
+    eos_designs &lt;<span style="color:#f92672">--</span>&gt; Structured-EOS-Config
+    Structured-EOS-Config --&gt; eos_cli_config_gen
+    Structured-EOS-Config --&gt; eos_validate_state
+    eos_cli_config_gen --&gt; EOS-CLI-Config
+    EOS-CLI-Config --&gt; eos_config_deploy_cvp
+    Ansible-Inventory --&gt; eos_config_deploy_cvp
+    eos_validate_state &lt;<span style="color:#f92672">--</span>&gt; Reports
+    eos_validate_state &lt;<span style="color:#f92672">--</span>&gt; Arista-EOS-Fabric
+    CloudVision &lt;<span style="color:#f92672">--</span>&gt; eos_config_deploy_cvp
+    CloudVision &lt;<span style="color:#f92672">--</span>&gt; Arista-EOS-Fabric
+
+
+
+    classDef arista_blue fill:#27569B,stroke:#333,stroke-width:2px;
+    class 1,2,3,4,5,6,7,8,9,10,11 arista_blue
+```
+
+&lt;<span style="color:#f92672">BarBottom</span>  <span style="color:#a6e22e">title</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Slidev Example&#34;</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;JulioPDX&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:logo-github</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;@Julio_PDX&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:logo-twitter</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;juliopdx.com&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:globe</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+&lt;/<span style="color:#f92672">BarBottom</span>&gt;
+---
+</code></pre></div><p><img src="/blog/images/slidev-avd.png" alt="AVD"></p>
+<h3 id="syntax-highlighting">Syntax highlighting</h3>
+<p>I honestly cant pick a favorite feature, but syntax highlighting might be it. You can create code blocks like any markdown document, and the code will be highlighted for you. Slidev can also highlight specific lines as you go through a presentation.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+
+# Colors &lt;mdi-heart /&gt;
+
+&lt;<span style="color:#f92672">br</span>&gt;
+&lt;<span style="color:#f92672">br</span>&gt;
+
+&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">grid</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;~ cols-3 gap-2&#34;</span> <span style="color:#a6e22e">m</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-t-3&#34;</span>&gt;
+
+```yaml {all|3-5}
+api: 1
+
+group: com.company
+artifact: LoremIpsum
+version: 1.0-SNAPSHOT
+type: txt
+<span style="color:#e6db74">```
+</span><span style="color:#e6db74"></span>
+```json {all|8-13}
+{
+  &#34;water&#34;: [
+    true,
+    343168281.98631763,
+    1364186132
+  ],
+  &#34;sky&#34;: true,
+  &#34;strong&#34;: [
+    {
+      &#34;stopped&#34;: &#34;quickly&#34;,
+      &#34;kitchen&#34;: &#34;knife&#34;,
+      &#34;after&#34;: -506746570.6858001
+    },
+    &#34;began&#34;,
+    true
+  ]
+}
+<span style="color:#e6db74">```</span>
+
+```python {all|4}
+my_numbers = [7, 7, 7]
+first = &#34;Julio&#34;
+last = &#34;PDX&#34;
+print(&#34;Hello, world&#34;)
+```
+
+&lt;/<span style="color:#f92672">div</span>&gt;
+
+&lt;<span style="color:#f92672">BarBottom</span>  <span style="color:#a6e22e">title</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Slidev Example&#34;</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;JulioPDX&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:logo-github</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;@Julio_PDX&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:logo-twitter</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;juliopdx.com&#34;</span>&gt;
+    &lt;<span style="color:#f92672">carbon:globe</span> /&gt;
+  &lt;/<span style="color:#f92672">Item</span>&gt;
+&lt;/<span style="color:#f92672">BarBottom</span>&gt;
+---
+</code></pre></div><p>Again, a lot going on, but please stick with me.</p>
+<ul>
+<li>We added a small amount of HTML within the slide to lower the code blocks. We then split the slide into three columns. We could also use the layout called <a href="https://sli.dev/builtin/layouts.html#two-cols"><code>two-cols</code></a> in Slidev. But that only gets us two.</li>
+<li>We then added three code blocks, one for YAML, JSON, and Python.</li>
+<li>We can then ask Slidev to highlight portions of the code block as we go through the presentation. So, for example, <code>{all|3-5}</code> means, initially highlight everything, then on the next slide press, highlight lines three through five.</li>
+</ul>
+<h4 id="start">Start</h4>
+<p><img src="/blog/images/slidev-before.png" alt="Start"></p>
+<h4 id="a-few-click-later">A few click later</h4>
+<p><img src="/blog/images/slidev-after.png" alt="After"></p>
+<h2 id="final-thoughts-and-links">Final thoughts and links</h2>
+<p>Thank you for reading this far. It means a lot. I hope you learned a bit about Slidev and give it a shot. I&rsquo;ve had a blast working with it so far. I took a long blogging break but hope to ramp back up. Maybe slower than I was publishing before. I wish you all the best, and thanks again.</p>
+<ul>
+<li><a href="https://sli.dev/">Slidev Documentation</a></li>
+<li><a href="https://sli.dev/new">Try it out in a playground</a></li>
+<li><a href="https://github.com/moudev/slidev-theme-purplin">Purplin Theme</a></li>
+<li><a href="https://unsplash.com/photos/ln5drpv_ImI">Featrured image by Vincentiu Solomon</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Node Connections With Netreplica and Containerlab</title>
@@ -677,6 +949,34 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
 <li><a href="https://hub.docker.com/repository/docker/juliopdx/exabgp-irt">ExaBGP-IRT Docker Hub</a></li>
 <li><a href="https://github.com/JulioPDX/learning_labs/tree/main/labs/bgp/exabgp">Containerlab Clab File Used in Blog</a></li>
 </ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Test</title>
+            <link>https://juliopdx.com/2022/02/17/test/</link>
+            <pubDate>Thu, 17 Feb 2022 09:53:22 -0800</pubDate>
+            
+            <guid>https://juliopdx.com/2022/02/17/test/</guid>
+            <description>%%{init: {&#39;theme&#39;:&#39;dark&#39;}}%% graph TD R1((R1)) --- |.0
+10.1.2.0/31
+.1| R2((R2)) R1 --- |10.1.3.0/31| R3((R3)) R2 --- |10.2.4.0/31| R4((R4)) R3 --- |10.3.4.0/31| R4  graph TD R1((R1)) --- |10.1.2.0/31| R2((R2)) R1 --- |10.1.3.0/31| R3((R3)) R2 --- |10.2.4.0/31| R4((R4)) R3 --- |10.3.4.0/31| R4 Looking forward to adding this to future blog posts vs rendering images&amp;hellip;</description>
+            <content type="html"><![CDATA[<div class="mermaid">
+    
+%%{init: {'theme':'dark'}}%%
+graph TD
+  R1((R1)) --- |.0<br>10.1.2.0/31<br>.1| R2((R2))
+  R1 --- |10.1.3.0/31| R3((R3))
+  R2 --- |10.2.4.0/31| R4((R4))
+  R3 --- |10.3.4.0/31| R4
+
+</div>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TD
+  R1((R1)) --- |10.1.2.0/31| R2((R2))
+  R1 --- |10.1.3.0/31| R3((R3))
+  R2 --- |10.2.4.0/31| R4((R4))
+  R3 --- |10.3.4.0/31| R4
+</code></pre><p>Looking forward to adding this to future blog posts vs rendering images&hellip;</p>
 ]]></content>
         </item>
         

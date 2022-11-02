@@ -2,6 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2022-11-01T21:38:29-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/slidev/</loc>
+    <lastmod>2022-11-01T21:38:29-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/2022/11/01/slidev/</loc>
+    <lastmod>2022-11-01T21:38:29-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2022-11-01T21:38:29-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/</loc>
+    <lastmod>2022-11-01T21:38:29-07:00</lastmod>
+  </url><url>
     <loc>https://juliopdx.com/tags/containerlab/</loc>
     <lastmod>2022-03-28T12:08:20-07:00</lastmod>
   </url><url>
@@ -11,16 +26,7 @@
     <loc>https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/</loc>
     <lastmod>2022-03-28T12:08:20-07:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/posts/</loc>
-    <lastmod>2022-03-28T12:08:20-07:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/sr-linux/</loc>
-    <lastmod>2022-03-28T12:08:20-07:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2022-03-28T12:08:20-07:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/</loc>
     <lastmod>2022-03-28T12:08:20-07:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/arista/</loc>
@@ -34,6 +40,12 @@
   </url><url>
     <loc>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</loc>
     <lastmod>2022-02-25T15:06:14-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/2022/02/17/test/</loc>
+    <lastmod>2022-02-17T09:53:22-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/untagged/</loc>
+    <lastmod>2022-02-17T09:53:22-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/ansible/</loc>
     <lastmod>2022-02-13T21:07:43-08:00</lastmod>

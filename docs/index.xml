@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 28 Mar 2022 12:08:20 -0700</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Nov 2022 21:38:29 -0700</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Slidev</title>
+      <link>https://juliopdx.com/2022/11/01/slidev/</link>
+      <pubDate>Tue, 01 Nov 2022 21:38:29 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/2022/11/01/slidev/</guid>
+      <description>Introduction A while back, I was building a technical presentation. Like most presentations, this would include diagrams, code blocks, images, etc. So I did what any of us usually did and looked at something like Google Slides or Microsoft PowerPoint.
+For the longest time, I wasn&amp;rsquo;t a fan of how code blocks looked in these presentations or the gymnastics performed when taking a screenshot of some highlighted code or opening another app to create an image that would then be added to the presentation.</description>
+    </item>
+    
     <item>
       <title>Node Connections With Netreplica and Containerlab</title>
       <link>https://juliopdx.com/2022/03/28/node-connections-with-netreplica-and-containerlab/</link>
@@ -24,6 +34,17 @@
       
       <guid>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</guid>
       <description>Intro I was recently working my way through Optimal Routing design by Cisco Press&amp;hellip; Can you tell that I get through books very slowly? I&amp;rsquo;ve probably used that sentence in my blog posts three or four times now! Either way, this chapter focused on scaling BGP and dealing with external connections. The section that really got me was external connections. The books goes over a lot, for example, handling inbound traffic, outbound traffic, full routes vs partial vs default.</description>
+    </item>
+    
+    <item>
+      <title>Test</title>
+      <link>https://juliopdx.com/2022/02/17/test/</link>
+      <pubDate>Thu, 17 Feb 2022 09:53:22 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2022/02/17/test/</guid>
+      <description>%%{init: {&#39;theme&#39;:&#39;dark&#39;}}%% graph TD R1((R1)) --- |.0
+10.1.2.0/31
+.1| R2((R2)) R1 --- |10.1.3.0/31| R3((R3)) R2 --- |10.2.4.0/31| R4((R4)) R3 --- |10.3.4.0/31| R4  graph TD R1((R1)) --- |10.1.2.0/31| R2((R2)) R1 --- |10.1.3.0/31| R3((R3)) R2 --- |10.2.4.0/31| R4((R4)) R3 --- |10.3.4.0/31| R4 Looking forward to adding this to future blog posts vs rendering images&amp;hellip;</description>
     </item>
     
     <item>
@@ -80,24 +101,6 @@ I have been working through the Introduction to Computer Science course by CS50x
       
       <guid>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
       <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
-    </item>
-    
-    <item>
-      <title>My Journey Learning About Juniper Junos</title>
-      <link>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</link>
-      <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
-      <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
-    </item>
-    
-    <item>
-      <title>My Journey Learning About the Palo Alto Networks Python SDK</title>
-      <link>https://juliopdx.com/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</link>
-      <pubDate>Mon, 22 Nov 2021 13:18:29 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/11/22/my-journey-learning-about-the-palo-alto-networks-python-sdk/</guid>
-      <description>Introduction Hello and thank you for checking out another blog post. This one will be all about Python and Palo Alto Networks (PAN). I was recently going through a PAN Firewall course on Pluralsight by Craig Stansbury. Craig does an excellent job of walking learners through the process of administering and securing a PAN firewall. I wanted to take this opportunity to double dip and try to wrap my head around the PAN pan-os-python library.</description>
     </item>
     
   </channel>

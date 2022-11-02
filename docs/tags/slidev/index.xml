@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Slidev on Welcome to the World of Tomorrow</title>
+    <link>https://juliopdx.com/tags/slidev/</link>
+    <description>Recent content in Slidev on Welcome to the World of Tomorrow</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Tue, 01 Nov 2022 21:38:29 -0700</lastBuildDate><atom:link href="https://juliopdx.com/tags/slidev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Slidev</title>
+      <link>https://juliopdx.com/2022/11/01/slidev/</link>
+      <pubDate>Tue, 01 Nov 2022 21:38:29 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/2022/11/01/slidev/</guid>
+      <description>Introduction A while back, I was building a technical presentation. Like most presentations, this would include diagrams, code blocks, images, etc. So I did what any of us usually did and looked at something like Google Slides or Microsoft PowerPoint.
+For the longest time, I wasn&amp;rsquo;t a fan of how code blocks looked in these presentations or the gymnastics performed when taking a screenshot of some highlighted code or opening another app to create an image that would then be added to the presentation.</description>
+    </item>
+    
+  </channel>
+</rss>
