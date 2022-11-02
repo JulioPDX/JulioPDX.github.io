@@ -72,15 +72,6 @@
     </item>
     
     <item>
-      <title>untagged</title>
-      <link>https://juliopdx.com/tags/untagged/</link>
-      <pubDate>Thu, 17 Feb 2022 09:53:22 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/untagged/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Ansible</title>
       <link>https://juliopdx.com/tags/ansible/</link>
       <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
@@ -95,6 +86,15 @@
       <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/net-sim/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSPF</title>
+      <link>https://juliopdx.com/tags/ospf/</link>
+      <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/ospf/</guid>
       <description></description>
     </item>
     

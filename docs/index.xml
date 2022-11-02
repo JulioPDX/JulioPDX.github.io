@@ -37,17 +37,6 @@ For the longest time, I wasn&amp;rsquo;t a fan of how code blocks looked in thes
     </item>
     
     <item>
-      <title>Test</title>
-      <link>https://juliopdx.com/2022/02/17/test/</link>
-      <pubDate>Thu, 17 Feb 2022 09:53:22 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2022/02/17/test/</guid>
-      <description>%%{init: {&#39;theme&#39;:&#39;dark&#39;}}%% graph TD R1((R1)) --- |.0
-10.1.2.0/31
-.1| R2((R2)) R1 --- |10.1.3.0/31| R3((R3)) R2 --- |10.2.4.0/31| R4((R4)) R3 --- |10.3.4.0/31| R4  graph TD R1((R1)) --- |10.1.2.0/31| R2((R2)) R1 --- |10.1.3.0/31| R3((R3)) R2 --- |10.2.4.0/31| R4((R4)) R3 --- |10.3.4.0/31| R4 Looking forward to adding this to future blog posts vs rendering images&amp;hellip;</description>
-    </item>
-    
-    <item>
       <title>Network Simulation Tools and Containerlab</title>
       <link>https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/</link>
       <pubDate>Sun, 13 Feb 2022 21:07:43 -0800</pubDate>
@@ -101,6 +90,15 @@ I have been working through the Introduction to Computer Science course by CS50x
       
       <guid>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
       <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
+    </item>
+    
+    <item>
+      <title>My Journey Learning About Juniper Junos</title>
+      <link>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</link>
+      <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
+      <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
     </item>
     
   </channel>
