@@ -49,7 +49,7 @@ npx: installed 22 in 1.688s
 
 The slides should open in your web browser automatically. You can run it manually using `npm run dev` if they don't. The slides will then be viewable at `localhost:3030`. By default, the slides can be modified at `slides.md`. In this case, I'll delete the built-in ones made by default and run through some examples.
 
-## Favorite Features
+## Favorite features
 
 Slidev has so many features that breaking them all down would take a while. So instead, I'll run through some simple examples, but I highly encourage you to look at the official documentation (linked at the end).
 
