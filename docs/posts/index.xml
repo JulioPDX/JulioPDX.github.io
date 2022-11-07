@@ -10,7 +10,7 @@
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>Static Website with Pulumi, YAML, MkDocs, GCP, and CI/CD</title>
+            <title>Static website with Pulumi, YAML, MkDocs, GCP, and CI/CD</title>
             <link>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</link>
             <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
             
@@ -512,6 +512,7 @@ Simple workflows to view and build static site stuff.
 <li>Michael Vieira - <a href="https://www.mickaelvieira.com/blog/2020/01/29/deploying-a-static-website-to-google-cloud-storage-with-github-actions.html">Deploying a Static Website to Google Cloud Storage With Github Actions</a></li>
 </ul>
 </li>
+<li><a href="https://github.com/JulioPDX/static-hosting-example">GitHub repository</a></li>
 </ul>
 ]]></content>
         </item>

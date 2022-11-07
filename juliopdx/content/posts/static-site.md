@@ -706,3 +706,4 @@ Wow, that was a lot of information. I hope you enjoyed the read and hopefully le
 - Blogs for inspiration
   - Joel Rozen - [Create a Cloud Run service and https load balancer with Pulumi](https://medium.com/develop-everything/create-a-cloud-run-service-and-https-load-balancer-with-pulumi-3ba542e60367)
   - Michael Vieira - [Deploying a Static Website to Google Cloud Storage With Github Actions](https://www.mickaelvieira.com/blog/2020/01/29/deploying-a-static-website-to-google-cloud-storage-with-github-actions.html)
+- [GitHub repository](https://github.com/JulioPDX/static-hosting-example)
