@@ -6,8 +6,515 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-        <lastBuildDate>Tue, 01 Nov 2022 21:38:29 -0700</lastBuildDate>
+        <lastBuildDate>Sun, 06 Nov 2022 14:20:59 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Static Website with Pulumi, YAML, MkDocs, GCP, and CI/CD</title>
+            <link>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</link>
+            <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
+            
+            <guid>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</guid>
+            <description>Introduction A few weeks ago, a co-worker asked the team if there was a way to convert a set of Markdown files produced from the AVD Ansible Collection to nice HTML. I then created a simple GitHub Repo that explored various ways to build HTML from Markdown. That repository is combined with the example we&amp;rsquo;ll walk through in this blog.
+I then went down the rabbit hole of getting a static site deployed in the various Clouds.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>A few weeks ago, a co-worker asked the team if there was a way to convert a set of Markdown files produced from the <a href="https://avd.sh/en/stable/">AVD Ansible Collection</a> to nice HTML. I then created a simple GitHub Repo that explored various ways to build HTML from Markdown. That repository is combined with the example we&rsquo;ll walk through in this blog.</p>
+<p>I then went down the rabbit hole of getting a static site deployed in the various Clouds. If you look through the old <a href="https://github.com/JulioPDX/static-hosting-example/actions/runs/3397059440/jobs/5648812068">commits</a>, you can see the site is also deployed in <a href="https://orange-forest-091db261e.2.azurestaticapps.net/index.html">Azure</a> using a static web app. By the time you read this, that link may or may not be active. Although, it&rsquo;s using the free tier, I&rsquo;ll probably leave it up.</p>
+<p>I&rsquo;ve used GCP to take advantage of the private container registry to push up some images. I wanted to challenge myself with deploying the static site in GCP (and learn a bit about GCP along the way). So I decided to make it harder (or easier?) on myself and leverage <a href="https://www.pulumi.com/">Pulumi</a> to deploy the infrastructure..</p>
+<h2 id="what-is-pulumi">What is Pulumi</h2>
+<p>I&rsquo;ve written about Pulumi in the past on <a href="https://packetpushers.net/introduction-to-pulumi-for-infrastructure-as-code-deployments/">Packet Pushers</a> (read it!), so I won&rsquo;t go into deep detail about it. But, in summary, it allows us to deploy infrastructure to the cloud using various programming languages (TypeScript, Python, Go, YAML). So, for example, if the team is very comfortable working with Go or Python, we can maintain those skills and use them to provision our cloud infrastructure. If you want to follow along, install Pulumi locally and create an account for their <a href="https://app.pulumi.com/">backend</a> service.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -fsSL https://get.pulumi.com | sh
+pulumi login
+</code></pre></div><h2 id="pulumi--yaml">Pulumi &amp; YAML</h2>
+<p>Did you see YAML in that list earlier? What the heck!? <a href="https://www.pulumi.com/blog/pulumi-yaml/">Pulumi recently</a> (wow, I just checked, and it was back in May) announced the support for YAML as another option to deploy infrastructure. Once again, hating myself, I decided to use YAML as the language of choice for this example (I&rsquo;ve used Python in the past).</p>
+<h2 id="static-sites">Static sites</h2>
+<p>Wow, that was a long intro, and it&rsquo;s still going. The original question was, &ldquo;we have a bunch of Markdown, and we want this converted to HTML.&rdquo; I&rsquo;ve been using <a href="https://www.mkdocs.org/">MkDocs</a> heavily in the last few months, so that&rsquo;s what I&rsquo;ll use in this example. Please note there are a lot of static site generators (SSG) out there. For example, this blog is created with <a href="https://gohugo.io/">Hugo</a>, but others such as <a href="https://jekyllrb.com/">Jekyll</a>, <a href="https://www.gatsbyjs.com/docs/glossary/static-site-generator/">Gatsby</a>, etc. will work just fine.</p>
+<h2 id="mkdocs">MkDocs</h2>
+<p>MkDocs is so easy to use that it&rsquo;s really grown on me these last few months. If you want to follow along, either clone the repository linked at the end or start fresh. We can begin by creating a Python virtual environment and installing a few items.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">pre-commit
+mkdocs
+mkdocs-material
+mkdocs-include-dir-to-nav
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+</code></pre></div><p>Pre-commit will be explained later on. The other installs will leverage MkDocs, the fantastic <a href="https://squidfunk.github.io/mkdocs-material/">Material</a> theme, and a simple MkDocs plugin for navigation (optional). Great, now that we have that installed, we can review our <code>mkdocs.yaml</code> file. This is used to configure the various settings for our static site.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">site_name</span>: <span style="color:#ae81ff">Fabric Docs</span>
+
+<span style="color:#75715e"># Configuration</span>
+<span style="color:#f92672">use_directory_urls</span>: <span style="color:#66d9ef">false</span>
+<span style="color:#f92672">site_url</span>: <span style="color:#e6db74">&#34;&#34;</span>
+<span style="color:#f92672">edit_uri</span>: <span style="color:#e6db74">&#34;&#34;</span>
+<span style="color:#f92672">docs_dir</span>: <span style="color:#ae81ff">avd-project</span>
+<span style="color:#f92672">theme</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">material</span>
+  <span style="color:#f92672">palette</span>:
+    - <span style="color:#f92672">media</span>: <span style="color:#e6db74">&#34;(prefers-color-scheme: light)&#34;</span>
+      <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">default</span>
+      <span style="color:#f92672">toggle</span>:
+        <span style="color:#f92672">icon</span>: <span style="color:#ae81ff">material/weather-sunny</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Switch to dark mode</span>
+    - <span style="color:#f92672">media</span>: <span style="color:#e6db74">&#34;(prefers-color-scheme: dark)&#34;</span>
+      <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">slate</span>
+      <span style="color:#f92672">toggle</span>:
+        <span style="color:#f92672">icon</span>: <span style="color:#ae81ff">material/weather-night</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Switch to light mode</span>
+<span style="color:#f92672">plugins</span>:
+  - <span style="color:#f92672">include_dir_to_nav</span>:
+  - <span style="color:#ae81ff">search</span>
+<span style="color:#f92672">extra_css</span>:
+  - <span style="color:#ae81ff">stylesheets/extra.css</span>
+<span style="color:#f92672">extra_javascript</span>:
+  - <span style="color:#ae81ff">https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js</span>
+  - <span style="color:#ae81ff">stylesheets/tables.js</span>
+<span style="color:#f92672">nav</span>:
+  - <span style="color:#f92672">Home</span>: <span style="color:#ae81ff">README.md</span>
+  - <span style="color:#ae81ff">documentation</span>
+  - <span style="color:#ae81ff">reports</span>
+</code></pre></div><ul>
+<li><code>docs_dir</code>: Points to a directory where our documents are stored and will be referenced from (default is <code>docs</code>).</li>
+<li><code>theme.name</code>: This tells MkDocs that we will be leveraging the material theme.</li>
+<li><code>plugins</code>: Any additional plugins we would like enabled. If you did not install <code>mkdocs-include-dir-to-nav</code> that can be disabled. I am leveraging to point mkdocs to folders within <code>docs_dir</code> to build the navigation tree. Instead of specifying them one by one.</li>
+<li><code>extra_css</code>: Not required, adds different styling from the default.</li>
+<li><code>extra_javascript</code>: Again, not required, used here to sort generated tables.</li>
+<li><code>nav</code>: This is used to build all the navigation for our site.</li>
+</ul>
+<p>Excellent, clear as mud. We can &ldquo;serve&rdquo; the documents to get a live view as we modify them.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>✘!?<span style="color:#f92672">]</span> via dev via 🐍 took 6s
+❯ mkdocs serve
+INFO     -  Building documentation...
+INFO     -  Cleaning site directory
+INFO     -  Documentation built in 0.84 seconds
+INFO     -  <span style="color:#f92672">[</span>00:00:50<span style="color:#f92672">]</span> Watching paths <span style="color:#66d9ef">for</span> changes: <span style="color:#e6db74">&#39;avd-project&#39;</span>, <span style="color:#e6db74">&#39;mkdocs.yml&#39;</span>
+INFO     -  <span style="color:#f92672">[</span>00:00:50<span style="color:#f92672">]</span> Serving on http://127.0.0.1:8000/
+</code></pre></div><p>If we open that in the browser, we will see something like the following.</p>
+<p><img src="/blog/images/static-site-mkdocs.png" alt="mkdocs"></p>
+<p>Great, we have a simple static site ready for deployment in the cloud. If you run <code>mkdocs build</code>, mkdocs will package your static site in a new folder called <code>site</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>✘!?<span style="color:#f92672">]</span> via dev via 🐍 took 12m32s
+❯ mkdocs build
+INFO     -  Cleaning site directory
+INFO     -  Building documentation to directory: /home/juliopdx/repos/static-hosting-example/site
+INFO     -  Documentation built in 0.67 seconds
+
+juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>✘!?<span style="color:#f92672">]</span> via dev via 🐍
+❯
+</code></pre></div><h2 id="deploying-the-static-site-to-gcp">Deploying the static site to GCP</h2>
+<p>On the first build of this site, I used the <a href="https://cloud.google.com/storage/docs/hosting-static-website">official documentation</a>. That was a great exercise and showed how all the various resources are connected. But this example will show the steps to deploy this with Pulumi and YAML. If you are following along, you will need to install the <a href="https://www.pulumi.com/docs/get-started/gcp/begin/">Google Cloud SDK</a> and authorize with a user account.</p>
+<h2 id="pulumi">Pulumi</h2>
+<p>If you are using this repository, you can edit a few values and run <code>pulumi up</code>. Create a directory and start a new Pulumi project if you are creating your own project.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkdir quickstart <span style="color:#f92672">&amp;&amp;</span> cd quickstart <span style="color:#f92672">&amp;&amp;</span> pulumi new gcp-yaml
+</code></pre></div><blockquote>
+<p>Please note, you will need to create a GCP project and enable the Google Compute API in your project to create resources.</p>
+</blockquote>
+<h3 id="bucket-and-rule-for-the-public">Bucket and rule for the public</h3>
+<p>This example will leverage a storage bucket to store our site files.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-hosting-example</span>
+<span style="color:#f92672">description</span>: <span style="color:#ae81ff">Static hosting on GCP</span>
+<span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">yaml</span>
+<span style="color:#f92672">resources</span>:
+  <span style="color:#75715e"># Create storage bucket</span>
+  <span style="color:#f92672">web-bucket</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:storage:Bucket</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">website</span>:
+        <span style="color:#f92672">mainPageSuffix</span>: <span style="color:#ae81ff">index.html</span>
+        <span style="color:#f92672">notFoundPage</span>: <span style="color:#ae81ff">404.</span><span style="color:#ae81ff">html</span>
+      <span style="color:#f92672">location</span>: <span style="color:#ae81ff">US</span>
+      <span style="color:#f92672">uniformBucketLevelAccess</span>: <span style="color:#66d9ef">true</span>
+      <span style="color:#f92672">forceDestroy</span>: <span style="color:#66d9ef">true</span>
+
+  <span style="color:#75715e"># Enable public access to view site</span>
+  <span style="color:#f92672">web-bucket-binding</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:storage:BucketIAMBinding</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">bucket</span>: <span style="color:#ae81ff">${web-bucket.name}</span>
+      <span style="color:#f92672">role</span>: <span style="color:#e6db74">&#34;roles/storage.objectViewer&#34;</span>
+      <span style="color:#f92672">members</span>: [<span style="color:#e6db74">&#34;allUsers&#34;</span>]
+</code></pre></div><p>At the root, we have basic information like name, description, and runtime (YAML). We then list out the individual resources as dictionaries. For example, the <code>web-bucket</code> is of type <code>gcp:storage:Bucket</code>. I thought this was interesting syntax. In a programming language, you may see this as <code>gcp.storage.Bucket</code>. It essentially maps to what function will be executed to create the particular resource.</p>
+<p>We then fill in the <code>properties</code> key with our unique configuration. We could also add a <code>name</code> key to hardcode what name we want to give a resource. I left this to Pulumi to name from the top-level key. For example, <code>web-bucket</code> will actually be named something crazy like <code>web-bucket12345445</code>.</p>
+<p>We specify two essential files for our storage bucket, one for our main page and another when something is not found. I added the <code>forceDestroy</code> property so that I could destroy the bucket while testing. I believe if something is in the bucket and <code>forceDestroy</code> is not set, it will not delete the bucket.</p>
+<p>Apologies that this section is so long, but it&rsquo;s important to understand how Pulumi works. The second resource is just setting an access rule to make our files viewable to the public. But notice, to pass in what bucket this rule should be associated with, we use <code>${web-bucket.name}</code>. This is an available parameter from our storage bucket resource. You can run <code>pulumi up -y</code> to create the resources.</p>
+<h3 id="load-balancer-and-ssl-certs">Load balancer and SSL certs</h3>
+<p>The goal of building this was to make it secure. Users get weird when they browse a site with the famous &ldquo;Your connection is not private, invalid SSL cert&rdquo; error. The note below is directly from the guide.</p>
+<blockquote>
+<p>Cloud Storage doesn&rsquo;t support custom domains with HTTPS on its own, so you also need to set up an SSL certificate attached to an HTTPS load balancer to serve your website through HTTPS.</p>
+</blockquote>
+<p>Okay, that sounds super easy&hellip;</p>
+<h4 id="load-balancer-and-ssl-certificate">Load balancer and SSL certificate</h4>
+<p>We&rsquo;ll need a static IP for future assignment to our global forwarding rules (also used for our DNS records).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-hosting-example</span>
+<span style="color:#f92672">description</span>: <span style="color:#ae81ff">Static hosting on GCP</span>
+<span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">yaml</span>
+<span style="color:#f92672">resources</span>:
+<span style="color:#75715e"># ...</span>
+  <span style="color:#75715e"># Global address</span>
+  <span style="color:#f92672">webglobaladdress</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:GlobalAddress</span>
+</code></pre></div><p>I don&rsquo;t want to manage SSL certs, so I&rsquo;ll just let GCP handle that. I then list any domains I plan to leverage with this certificate.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># ...</span>
+  <span style="color:#75715e"># GCP managed cert with list of domains</span>
+  <span style="color:#f92672">managedcert</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:ManagedSslCertificate</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">managed</span>:
+        <span style="color:#f92672">domains</span>:
+        - <span style="color:#ae81ff">juliopdx.org</span>
+        - <span style="color:#ae81ff">www.juliopdx.org</span>
+</code></pre></div><p>The backend service is interesting. First, we enable CDN (Content Delivery Network) since we want users to get quick and close delivery of our content. Although I&rsquo;m guessing GCP gets you with the pricing here, I would plan ahead. I&rsquo;m currently leveraging the free account on GCP for this deployment, which will be short-lived. We then associate our <code>web-bucket</code> where the site will be stored.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e"># backend service leveraging our storage bucket</span>
+  <span style="color:#f92672">sitebackend</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:BackendBucket</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">description</span>: <span style="color:#ae81ff">Contains a sweet site</span>
+      <span style="color:#f92672">bucketName</span>: <span style="color:#ae81ff">${web-bucket.name}</span>
+      <span style="color:#f92672">enableCdn</span>: <span style="color:#66d9ef">true</span>
+      <span style="color:#f92672">cdnPolicy</span>:
+        <span style="color:#f92672">cacheMode</span>: <span style="color:#ae81ff">CACHE_ALL_STATIC</span>
+        <span style="color:#f92672">clientTtl</span>: <span style="color:#ae81ff">300</span>
+        <span style="color:#f92672">defaultTtl</span>: <span style="color:#ae81ff">300</span>
+        <span style="color:#f92672">maxTtl</span>: <span style="color:#ae81ff">1800</span>
+</code></pre></div><p>From my research, it seems like <code>URLmaps</code> can get really complex. URLMaps route requests to backend services (<code>sitebackend</code> seen above). We don&rsquo;t have any defined, so it will just use the default. The default will route all the things to our <code>sitebackend</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e"># Basic URL map pointing to backend</span>
+  <span style="color:#f92672">webservicepaths</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:URLMap</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">defaultService</span>: <span style="color:#ae81ff">${sitebackend.id}</span>
+</code></pre></div><p>The HTTPS proxy ties everything together. At this point, we associate our URLMap and newly managed SSL certificate. Our global forwarding rule can use the proxy to route incoming HTTPS requests to our <code>webservicepaths</code> URLMap.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e"># HTTP proxy leveraging managed cert</span>
+  <span style="color:#f92672">httpsproxy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:TargetHttpsProxy</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">urlMap</span>: <span style="color:#ae81ff">${webservicepaths.selfLink}</span>
+      <span style="color:#f92672">sslCertificates</span>:
+      - <span style="color:#ae81ff">${managedcert.id}</span>
+</code></pre></div><p>We tie the <code>httpsproxy</code> and <code>webglobaladdres</code> with our global forwarding rule. The <code>loadBalancingScheme: EXTERNAL_MANAGED</code> makes this a fancy load balancer vs. the classic one. You will probably get more features with the new one.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e"># Forwarding rule pointing to HTTPS proxy</span>
+  <span style="color:#f92672">defaultglobalforwardingrule</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:GlobalForwardingRule</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">target</span>: <span style="color:#ae81ff">${httpsproxy.id}</span>
+      <span style="color:#f92672">portRange</span>: <span style="color:#ae81ff">443</span>
+      <span style="color:#f92672">loadBalancingScheme</span>: <span style="color:#ae81ff">EXTERNAL_MANAGED</span>
+      <span style="color:#f92672">ipAddress</span>: <span style="color:#ae81ff">${webglobaladdress.id}</span>
+</code></pre></div><p>You can run <code>pulumi up -y</code> to create all the resources. Please make sure to update the domain names for the certificate with your information. Below is an example from the GCP console and the Load Balancer we just created.</p>
+<p><img src="/blog/images/static-site-gcp.png" alt="Load Balancer"></p>
+<h4 id="http-to-https-redirect">HTTP to HTTPS redirect</h4>
+<p>We&rsquo;re almost done with the deployment. One other piece is directing users to HTTPS when they try to hit our site on port 80 or HTTP. The build-out is similar to our initial load balancer without the certificate or SSL policy.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e"># HTTP to HTTPS redirect</span>
+  <span style="color:#f92672">redirecturlmap</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:URLMap</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">defaultUrlRedirect</span>:
+        <span style="color:#f92672">httpsRedirect</span>: <span style="color:#66d9ef">true</span>
+        <span style="color:#f92672">stripQuery</span>: <span style="color:#66d9ef">false</span>
+
+  <span style="color:#f92672">redirecttargethttpproxy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:TargetHttpProxy</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">urlMap</span>: <span style="color:#ae81ff">${redirecturlmap.id}</span>
+
+  <span style="color:#f92672">redirectglobalforwardingrule</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:GlobalForwardingRule</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">loadBalancingScheme</span>: <span style="color:#ae81ff">EXTERNAL_MANAGED</span>
+      <span style="color:#f92672">target</span>: <span style="color:#ae81ff">${redirecttargethttpproxy.id}</span>
+      <span style="color:#f92672">portRange</span>: <span style="color:#ae81ff">80</span>
+      <span style="color:#f92672">ipAddress</span>: <span style="color:#ae81ff">${webglobaladdress.id}</span>
+</code></pre></div><p>This diagram does a great job of summing up this workflow and our initial load balancer.</p>
+<p><img src="https://cloud.google.com/static/load-balancing/images/http-to-https-redirect.svg" alt="http-to-http-from-gcp"></p>
+<blockquote>
+<p>Note: Pulumi also has this neat feature called outputs. We can save the output and use it later on in other programs or within the command line. Example in a moment.</p>
+</blockquote>
+<h2 id="connecting-domain-to-load-balancer">Connecting domain to load balancer</h2>
+<p>Now that everything is created, we can update our DNS records to point to our public address. We can either use the console or the command line. The load balancer image shown earlier also reveals the public address.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>!⇡<span style="color:#f92672">]</span> via dev via 🐍 took 2s
+❯ gcloud config set project pulumi-web
+Updated property <span style="color:#f92672">[</span>core/project<span style="color:#f92672">]</span>.
+
+juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>!⇡<span style="color:#f92672">]</span> via dev via 🐍
+❯ gcloud compute addresses list
+NAME                      ADDRESS/RANGE  TYPE      PURPOSE  NETWORK  REGION  SUBNET  STATUS
+webglobaladdress-e33548f  34.98.78.165   EXTERNAL                                    IN_USE
+</code></pre></div><p>I wanted to use <code>www.juliopdx.org</code> and <code>juliopdx.org</code>. I created two &ldquo;A&rdquo; records that matched my setup.</p>
+<p><img src="/blog/images/static-site-dns.png" alt="DNS"></p>
+<h2 id="uploading-files-using-gsutil">Uploading files using gsutil</h2>
+<p>I couldn&rsquo;t figure out how to send a folder using the Pulumi YAML provider. Please send me a message if you know how to do that. After some research, I found this great post by Mickael Vieira, where they use Hugo and GitHub actions to deploy a static site. This led me to <code>gsutil</code>. It&rsquo;s a Python application that lets you interact with GCP storage from the command line. If you already ran <code>mkdocs build</code>, you should have a site folder in your directory. The following command can be used to send the files from a particular directory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">gsutil -m rsync -d -c -r site gs://&lt;some bucket name&gt;
+</code></pre></div><p>From Mickael&rsquo;s blog:</p>
+<ul>
+<li><code>m</code> to perform parallel synchronization;</li>
+<li><code>r</code> to synchronize the directories and subdirectories recursively;</li>
+<li><code>c</code> to use files’ checksum instead of their modification time to avoid sending all files during each deployment;</li>
+<li><code>d</code> to delete the files that are no longer necessary.</li>
+</ul>
+<p>We can use the console to find out what the name of our bucket is, or we can use a Pulumi Output. For example, the end of our <code>Pulumi.yaml</code> file has this line.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">outputs</span>:
+    <span style="color:#75715e"># Export the DNS name of the bucket</span>
+    <span style="color:#f92672">bucketName</span>: <span style="color:#ae81ff">${web-bucket.url}</span>
+</code></pre></div><p>We can leverage this in our <code>gsutil</code> command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">gsutil -m rsync -d -c -r site <span style="color:#66d9ef">$(</span>pulumi stack output bucketName<span style="color:#66d9ef">)</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>!⇡<span style="color:#f92672">]</span> via dev via 🐍
+❯ gsutil -m rsync -d -c -r site <span style="color:#66d9ef">$(</span>pulumi stack output bucketName<span style="color:#66d9ef">)</span>
+Building synchronization state...
+Starting synchronization...
+Copying file://site/sitemap.xml <span style="color:#f92672">[</span>Content-Type<span style="color:#f92672">=</span>application/xml<span style="color:#f92672">]</span>...
+Copying file://site/sitemap.xml.gz <span style="color:#f92672">[</span>Content-Type<span style="color:#f92672">=</span>application/xml<span style="color:#f92672">]</span>...
+- <span style="color:#f92672">[</span>2/2 files<span style="color:#f92672">][</span>  1.0 KiB/  1.0 KiB<span style="color:#f92672">]</span> 100% Done
+Operation completed over <span style="color:#ae81ff">2</span> objects/1.0 KiB.
+</code></pre></div><p>After some time for the certificate to be created and DNS to propagate, you should see something like this. It&rsquo;s beautiful.</p>
+<p><img src="/blog/images/static-site-live.png" alt="Site"></p>
+<h2 id="thats-great-and-all-but-lets-talk-cicd-with-documentation">Thats great and all, but lets talk CI/CD with documentation</h2>
+<p>So far, we have built up the infrastructure and the site content with local development, but we can incorporate CI/CD into our documentation. Contributors would still create content locally, but that content would then get pushed up to our Git repository to be checked before going out to production. In the following sections, I&rsquo;ll explain some fantastic tools and examples of moving some of these steps to GitHub actions.</p>
+<h3 id="pre-commit">pre-commit</h3>
+<p>Pre-commit is pretty awesome. You can supply a series of hooks that can then be used to lint your various programming languages, fix common file issues (trailing whitespace), or in our case, fix our documentation written in Markdown. If you followed along, you should have pre-commit installed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pip install pre-commit
+</code></pre></div><p>Pre-commit relies on a <code>.pre-commit-config.yaml</code> file at the root of your project to know what linters or hooks to run.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># See https://pre-commit.com for more information</span>
+<span style="color:#75715e"># See https://pre-commit.com/hooks.html for more hooks</span>
+<span style="color:#f92672">repos</span>:
+  - <span style="color:#f92672">repo</span>: <span style="color:#ae81ff">https://github.com/pre-commit/pre-commit-hooks</span>
+    <span style="color:#f92672">rev</span>: <span style="color:#ae81ff">v2.4.0</span>
+    <span style="color:#f92672">hooks</span>:
+      - <span style="color:#f92672">id</span>: <span style="color:#ae81ff">trailing-whitespace</span>
+        <span style="color:#f92672">exclude</span>: <span style="color:#ae81ff">ansible_collections/arista/avd/molecule</span>
+      - <span style="color:#f92672">id</span>: <span style="color:#ae81ff">end-of-file-fixer</span>
+        <span style="color:#f92672">exclude_types</span>: [<span style="color:#ae81ff">svg, json]</span>
+
+</code></pre></div><p>You can extend this as much as you want or add more hooks related to your project. To get started, run the following command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">juliopdx in static-hosting-example on main <span style="color:#f92672">[</span>!⇡<span style="color:#f92672">]</span> via  dev via 🐍
+❯ pre-commit install --install-hooks
+pre-commit installed at .git/hooks/pre-commit
+<span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Initializing environment <span style="color:#66d9ef">for</span> https://github.com/pre-commit/pre-commit-hooks.
+<span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Installing environment <span style="color:#66d9ef">for</span> https://github.com/pre-commit/pre-commit-hooks.
+<span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Once installed this environment will be reused.
+<span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> This may take a few minutes...
+<span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Once installed this environment will be reused.
+<span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> This may take a few minutes...
+</code></pre></div><p>We can then check our code base for any issues.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ pre-commit run --all-files
+Trim Trailing Whitespace.................................................Passed
+Fix End of Files.........................................................Passed
+</code></pre></div><p>Great, everything passed. What about with an error? I removed the extra new line in <code>Pulumi.yaml</code>, which we want.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ pre-commit run --all-files
+Trim Trailing Whitespace.................................................Passed
+Fix End of Files.........................................................Failed
+- hook id: end-of-file-fixer
+- exit code: <span style="color:#ae81ff">1</span>
+- files were modified by this hook
+
+Fixing Pulumi.yaml
+</code></pre></div><p>Pre-commit is much more powerful than I&rsquo;m showing here, but it&rsquo;s good for demonstration.</p>
+<h3 id="markdownlint">Markdownlint</h3>
+<p>We can also add Markdownlint to our pre-commit workflow.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># ...</span>
+  - <span style="color:#f92672">repo</span>: <span style="color:#ae81ff">https://github.com/igorshubovych/markdownlint-cli</span>
+    <span style="color:#f92672">rev</span>: <span style="color:#ae81ff">v0.32.1</span>
+    <span style="color:#f92672">hooks</span>:
+      - <span style="color:#f92672">id</span>: <span style="color:#ae81ff">markdownlint</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Check for Linting errors on MarkDown files</span>
+        <span style="color:#f92672">args</span>:
+          - --<span style="color:#ae81ff">config=.github/.markdownlint.yaml</span>
+          - --<span style="color:#ae81ff">ignore-path=.github/.markdownlintignore</span>
+          - --<span style="color:#ae81ff">fix</span>
+</code></pre></div><p>I will only go into some detail since this is already so long. First, I created two files in the <code>.github</code> directory. One that points to the rules we want to enable or disable. Check out the repo if you would like to leverage them. I then ignore specific directories for files that may be created by automation. This is similar to a <code>.gitignore</code> file but for Markdown files. We can then run pre-commit again.</p>
+<p>I&rsquo;ll add an error by adding another H1 heading in the README file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"># Static site example
+
+Simple workflows to view and build static site stuff.
+
+# Test heading
+
+<span style="color:#75715e">## Getting started
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ pre-commit run --all-files
+Trim Trailing Whitespace.................................................Passed
+Fix End of Files.........................................................Passed
+Check <span style="color:#66d9ef">for</span> Linting errors on MarkDown files...............................Failed
+- hook id: markdownlint
+- exit code: <span style="color:#ae81ff">1</span>
+
+README.md:5 MD025/single-title/single-h1 Multiple top-level headings in the same document <span style="color:#f92672">[</span>Context: <span style="color:#e6db74">&#34;# Test heading&#34;</span><span style="color:#f92672">]</span>
+Usage: markdownlint <span style="color:#f92672">[</span>options<span style="color:#f92672">]</span> &lt;files|directories|globs&gt;
+</code></pre></div><p>In the case of Markdownlint, it will try to fix some errors, but it cant assume everything. The heading is not automatically removed for us, but some mistakes will be corrected. I&rsquo;ll remove the duplicate H1 heading and run pre-commit again.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ pre-commit run --all-files
+Trim Trailing Whitespace.................................................Passed
+Fix End of Files.........................................................Passed
+Check <span style="color:#66d9ef">for</span> Linting errors on MarkDown files...............................Passed
+</code></pre></div><p>For more inforamtion, check out <a href="https://github.com/DavidAnson/markdownlint">markdownlint</a> and <a href="https://github.com/igorshubovych/markdownlint-cli">markdown-cli</a>.</p>
+<h3 id="vale-on-the-command-line">Vale on the command line</h3>
+<p><a href="https://vale.sh/">Vale</a> is a command line tool that can be used to check prose (your writing style). It does this based on a series of rules. The user can create these rules, or you can leverage pre-made styles. For example, Googles developer style guide (<a href="https://github.com/errata-ai/Google">errata-ai version of the style guide</a>). To use Vale, you must install the <a href="https://vale.sh/docs/vale-cli/installation/">binary</a>.</p>
+<p>I&rsquo;ve found the easiest way to get Vale running is through Homebrew.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">brew install vale
+</code></pre></div><p>Like most things, we need to provide Vale a configuration. This is done by Vale reading the <code>.vale.ini</code> file at the root of our project.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ini" data-lang="ini"><span style="color:#a6e22e">StylesPath</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">.github/styles</span>
+<span style="color:#a6e22e">MinAlertLevel</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">error # suggestion, warning or error</span>
+
+<span style="color:#75715e"># Only Markdown; change to whatever you&#39;re using.</span>
+<span style="color:#66d9ef">[*.{md}]</span>
+<span style="color:#75715e"># List of styles to load.</span>
+<span style="color:#a6e22e">BasedOnStyles</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">Google</span>
+
+</code></pre></div><p>I have the Google style in my repository in that <code>StylesPath</code>. I then chose the alert level of <code>error</code>. Feel free to play with the alert levels and the Google style rules that you agree or don&rsquo;t agree with. My good friend, <a href="https://blog.danielteycheney.com/posts/blog-automation-part-three/">Daniel Teycheney</a>, has an excellent blog post on using Vale. Check it out for more details.</p>
+<p>I&rsquo;ll run Vale against one file with no errors.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ vale README.md
+✔ <span style="color:#ae81ff">0</span> errors, <span style="color:#ae81ff">0</span> warnings and <span style="color:#ae81ff">0</span> suggestions in <span style="color:#ae81ff">1</span> file.
+</code></pre></div><p>Now I&rsquo;ll introduce one error: Google hates exclamation marks in headings. Maybe hate is a strong word.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"># Static site example!
+
+Simple workflows to view and build static site stuff.
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ vale README.md
+
+ README.md
+ 1:21  error  Don<span style="color:#960050;background-color:#1e0010">&#39;</span>t use exclamation points    Google.Exclamation
+              in text.
+
+✖ <span style="color:#ae81ff">1</span> error, <span style="color:#ae81ff">0</span> warnings and <span style="color:#ae81ff">0</span> suggestions in <span style="color:#ae81ff">1</span> file.
+</code></pre></div><p>I think that&rsquo;s slick. With tools like these, you can ensure a consistent style and quality of your blog, documentation, or whatever else you&rsquo;re building. But the fun doesn&rsquo;t stop there. We can take all the tools mentioned and move them to GitHub actions.</p>
+<h3 id="github-actions">GitHub actions</h3>
+<p>I have the following files in my <code>.github/workflows/</code> directory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ tree .github/workflows
+.github/workflows
+├── pr-manage.yml
+└── static-web-app.yml
+
+<span style="color:#ae81ff">0</span> directories, <span style="color:#ae81ff">2</span> files
+</code></pre></div><p><code>pr-manage.yml</code> will be used for any pull requests. This workflow can run pre-commit, Vale, and Pulumi preview.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+
+<span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Doc testing&#34;</span>
+
+<span style="color:#f92672">on</span>:
+  <span style="color:#75715e"># For a pull_request event, only branches and tags on the base are evaluated.</span>
+  <span style="color:#f92672">push</span>:
+    <span style="color:#f92672">branches-ignore</span>:
+      - <span style="color:#ae81ff">main  </span> <span style="color:#75715e"># excludes main</span>
+
+<span style="color:#f92672">jobs</span>:
+  <span style="color:#f92672">pre_commit</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Run pre-commit validation hooks</span>
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">steps</span>:
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v3</span>
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/setup-python@v3</span>
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">pre-commit/action@v3.0.0</span>
+
+  <span style="color:#f92672">vale</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">runner / vale</span>
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">errata-ai/vale-action@reviewdog</span>
+        <span style="color:#f92672">env</span>:
+          <span style="color:#75715e"># Required, set by GitHub actions automatically:</span>
+          <span style="color:#75715e"># https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret</span>
+          <span style="color:#f92672">GITHUB_TOKEN</span>: <span style="color:#ae81ff">${{secrets.GITHUB_TOKEN}}</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">files</span>: <span style="color:#ae81ff">avd-project/</span>
+          <span style="color:#f92672">reporter</span>: <span style="color:#ae81ff">github-check</span>
+
+  <span style="color:#f92672">pulumi-gcp-preview</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">runner / pulumi</span>
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+      <span style="color:#75715e">###### GCP connect ######</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">gcp auth</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#e6db74">&#39;google-github-actions/auth@v0&#39;</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">credentials_json</span>: <span style="color:#e6db74">&#39;${{ secrets.GCP_CREDENTIALS }}&#39;</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Set up Cloud SDK</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#e6db74">&#39;google-github-actions/setup-gcloud@v0&#39;</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pulumi preview</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">pulumi/actions@v3</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">command</span>: <span style="color:#ae81ff">preview</span>
+          <span style="color:#f92672">stack-name</span>: <span style="color:#ae81ff">dev</span>
+        <span style="color:#f92672">env</span>:
+          <span style="color:#f92672">PULUMI_ACCESS_TOKEN</span>: <span style="color:#ae81ff">${{ secrets.PULUMI_ACCESS_TOKEN }}</span>
+
+</code></pre></div><p>A lot is going on, but two secrets must be set to run this workflow. First, you need to create a <a href="https://console.cloud.google.com/iam-admin/serviceaccounts?">service account</a> user in GCP and add a new key in the form of JSON. This can then be added to repository secrets. You will also need to create a token in the Pulumi backend. This is a great <a href="https://www.pulumi.com/docs/guides/continuous-delivery/github-actions/#configuring-your-secrets">guide</a>.</p>
+<p><img src="/blog/images/static-site-secrets.png" alt="Secrets"></p>
+<p>I&rsquo;ll create a branch and push this up with some description added to one of our resources.</p>
+<p><img src="/blog/images/static-site-pr.png" alt="branch-preview"></p>
+<p>Looking closely, you can see we have an update for the description on the <code>ManagedSslCertificate</code> resource.</p>
+<h3 id="push-on-main">Push on main</h3>
+<p>Now that it is working, I&rsquo;ll run a pull request and merge these changes to our main branch. Then, instead of a preview, Pulumi will perform the changes.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">GCP &amp; Pulumi static web app</span>
+
+<span style="color:#f92672">on</span>:
+  <span style="color:#f92672">push</span>:
+    <span style="color:#f92672">branches</span>:
+      - <span style="color:#ae81ff">main</span>
+
+
+<span style="color:#f92672">jobs</span>:
+  <span style="color:#f92672">build_and_deploy_job</span>:
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build and Deploy Job</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span>
+
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/setup-python@v2</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">python-version</span>: <span style="color:#ae81ff">3.</span><span style="color:#ae81ff">x</span>
+
+      - <span style="color:#f92672">run</span>: <span style="color:#ae81ff">pip install -r requirements.txt</span>
+      - <span style="color:#f92672">run</span>: <span style="color:#ae81ff">mkdocs build</span>
+
+      <span style="color:#75715e">###### GCP push portion ######</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">auth</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#e6db74">&#39;google-github-actions/auth@v0&#39;</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">credentials_json</span>: <span style="color:#e6db74">&#39;${{ secrets.GCP_CREDENTIALS }}&#39;</span>
+
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Set up Cloud SDK</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#e6db74">&#39;google-github-actions/setup-gcloud@v0&#39;</span>
+
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Use gcloud CLI</span>
+        <span style="color:#f92672">run</span>: <span style="color:#e6db74">&#39;gcloud info&#39;</span>
+
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">deploy infrastructure pulumi</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">pulumi/actions@v3</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">command</span>: <span style="color:#ae81ff">up</span>
+          <span style="color:#f92672">stack-name</span>: <span style="color:#ae81ff">dev</span>
+        <span style="color:#f92672">env</span>:
+          <span style="color:#f92672">PULUMI_ACCESS_TOKEN</span>: <span style="color:#ae81ff">${{ secrets.PULUMI_ACCESS_TOKEN }}</span>
+
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Push updated files to bucket</span>
+        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">gsutil -m rsync -d -c -r site $(pulumi stack output bucketName)</span>
+</code></pre></div><p>We&rsquo;ll run through the MkDocs steps to build our site. We then login to GCP using our secrets and run <code>pulumi up</code>. Once the infrastructure is set, we run gsutil to update the files if required. It seems that at the time of this writing, the <code>set-ouput</code> is deprecated, so I can&rsquo;t show the difference in the GitHub actions workflow. Check out the <a href="https://github.com/JulioPDX/static-hosting-example/actions/runs/3407575785/jobs/5667352310">job run</a> and the <a href="https://github.com/pulumi/actions/issues/769">issue</a>. We can see the updates on the console.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#75715e"># GCP managed cert with list of domains</span>
+  <span style="color:#f92672">managedcert</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">gcp:compute:ManagedSslCertificate</span>
+    <span style="color:#f92672">properties</span>:
+      <span style="color:#f92672">description</span>: <span style="color:#ae81ff">Some sweet cert</span>
+      <span style="color:#f92672">managed</span>:
+        <span style="color:#f92672">domains</span>:
+        - <span style="color:#ae81ff">juliopdx.org</span>
+        - <span style="color:#ae81ff">www.juliopdx.org</span>
+</code></pre></div><p><img src="/blog/images/static-site-cert.png" alt="Cert description"></p>
+<h2 id="final-thoughts-and-links">Final thoughts and links</h2>
+<p>Wow, that was a lot of information. I hope you enjoyed the read and hopefully learned something along the way. Thank you for reading this far. As always, it really means a lot. I provided links where I may not have been as clear. Please check them out; they are great resources. Like anything I write, what I show here is just a subset of what these tools can do. Best of luck and happy labbing and learning.</p>
+<ul>
+<li><a href="https://unsplash.com/photos/zepnJQycr4U">Featured image by Kristopher Roller</a></li>
+<li><a href="https://cloud.google.com/storage/docs/hosting-static-website">Google guide for hosting a static site</a></li>
+<li><a href="https://www.pulumi.com/">Pulumi</a></li>
+<li><a href="https://www.mkdocs.org/">MkDocs</a></li>
+<li><a href="https://squidfunk.github.io/mkdocs-material/">MkDocs Material theme</a></li>
+<li><a href="https://pre-commit.com/">pre-commit</a></li>
+<li><a href="https://vale.sh/">Vale</a></li>
+<li><a href="https://github.com/DavidAnson/markdownlint">Markdownlint</a></li>
+<li>Blogs for inspiration
+<ul>
+<li>Joel Rozen - <a href="https://medium.com/develop-everything/create-a-cloud-run-service-and-https-load-balancer-with-pulumi-3ba542e60367">Create a Cloud Run service and https load balancer with Pulumi</a></li>
+<li>Michael Vieira - <a href="https://www.mickaelvieira.com/blog/2020/01/29/deploying-a-static-website-to-google-cloud-storage-with-github-actions.html">Deploying a Static Website to Google Cloud Storage With Github Actions</a></li>
+</ul>
+</li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Slidev</title>

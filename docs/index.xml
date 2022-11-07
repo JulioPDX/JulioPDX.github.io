@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 01 Nov 2022 21:38:29 -0700</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Nov 2022 14:20:59 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Static Website with Pulumi, YAML, MkDocs, GCP, and CI/CD</title>
+      <link>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</link>
+      <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</guid>
+      <description>Introduction A few weeks ago, a co-worker asked the team if there was a way to convert a set of Markdown files produced from the AVD Ansible Collection to nice HTML. I then created a simple GitHub Repo that explored various ways to build HTML from Markdown. That repository is combined with the example we&amp;rsquo;ll walk through in this blog.
+I then went down the rabbit hole of getting a static site deployed in the various Clouds.</description>
+    </item>
+    
     <item>
       <title>Slidev</title>
       <link>https://juliopdx.com/2022/11/01/slidev/</link>
@@ -90,15 +100,6 @@ I have been working through the Introduction to Computer Science course by CS50x
       
       <guid>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
       <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
-    </item>
-    
-    <item>
-      <title>My Journey Learning About Juniper Junos</title>
-      <link>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</link>
-      <pubDate>Mon, 06 Dec 2021 13:57:09 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/12/06/my-journey-learning-about-juniper-junos/</guid>
-      <description>Introduction Hello and thank you for checking out another blog post. I’ve been under the weather for a bit but I am back on the keys. This post will be all about some neat things I discovered while learning a bit about the Juniper Junos NOS (network operating system). Previously I had never used Juniper, it was a vendor that always eluded me. My previous employers did not utilize this NOS and I never got around to adding it in the lab.</description>
     </item>
     
   </channel>
