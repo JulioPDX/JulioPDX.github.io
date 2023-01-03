@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sun, 06 Nov 2022 14:20:59 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 02 Jan 2023 14:18:17 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RPKI in the Lab</title>
+      <link>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</link>
+      <pubDate>Mon, 02 Jan 2023 14:18:17 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</guid>
+      <description>Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&amp;rsquo;s printing was around 2003 and figured RPKI wouldn&amp;rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.</description>
+    </item>
+    
     <item>
       <title>Static website with Pulumi, YAML, MkDocs, GCP, and CI/CD</title>
       <link>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</link>
@@ -91,15 +100,6 @@ A while back I mentioned that Containerlab could be an amazing resource in learn
       <guid>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</guid>
       <description>Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
 I have been working through the Introduction to Computer Science course by CS50x (Harvard).</description>
-    </item>
-    
-    <item>
-      <title>My Journey and Experience With Containerlab</title>
-      <link>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</link>
-      <pubDate>Fri, 10 Dec 2021 14:32:22 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2021/12/10/my-journey-and-experience-with-containerlab/</guid>
-      <description>Introduction Thank you all for checking out this post. This is going to be a special one. Due to the fact that I had such a joy using this new tool (new to me). I don’t like to over hype tools or new things just to hype it up. There are times where a tool or technology does deserve the credit and time in the limelight. I think Containerlabs is one of those tools.</description>
     </item>
     
   </channel>

@@ -2,6 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://juliopdx.com/tags/arista/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/bgp/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/containerlab/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/rpki/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/</loc>
+    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
+  </url><url>
     <loc>https://juliopdx.com/tags/gcp/</loc>
     <lastmod>2022-11-06T14:20:59-08:00</lastmod>
   </url><url>
@@ -11,19 +35,10 @@
     <loc>https://juliopdx.com/tags/mkdocs/</loc>
     <lastmod>2022-11-06T14:20:59-08:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/posts/</loc>
-    <lastmod>2022-11-06T14:20:59-08:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/pulumi/</loc>
     <lastmod>2022-11-06T14:20:59-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/2022/11/06/static-website-with-pulumi-yaml-mkdocs-gcp-and-ci/cd/</loc>
-    <lastmod>2022-11-06T14:20:59-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2022-11-06T14:20:59-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/</loc>
     <lastmod>2022-11-06T14:20:59-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/yaml/</loc>
@@ -35,9 +50,6 @@
     <loc>https://juliopdx.com/2022/11/01/slidev/</loc>
     <lastmod>2022-11-01T21:38:29-07:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/tags/containerlab/</loc>
-    <lastmod>2022-03-28T12:08:20-07:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/netreplica/</loc>
     <lastmod>2022-03-28T12:08:20-07:00</lastmod>
   </url><url>
@@ -46,12 +58,6 @@
   </url><url>
     <loc>https://juliopdx.com/tags/sr-linux/</loc>
     <lastmod>2022-03-28T12:08:20-07:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/arista/</loc>
-    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/bgp/</loc>
-    <lastmod>2022-02-25T15:06:14-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/docker/</loc>
     <lastmod>2022-02-25T15:06:14-08:00</lastmod>

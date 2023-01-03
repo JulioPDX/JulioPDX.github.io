@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 25 Feb 2022 15:06:14 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/arista/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 02 Jan 2023 14:18:17 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/arista/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RPKI in the Lab</title>
+      <link>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</link>
+      <pubDate>Mon, 02 Jan 2023 14:18:17 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</guid>
+      <description>Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&amp;rsquo;s printing was around 2003 and figured RPKI wouldn&amp;rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.</description>
+    </item>
+    
     <item>
       <title>ExaBGP in the Lab</title>
       <link>https://juliopdx.com/2022/02/25/exabgp-in-the-lab/</link>

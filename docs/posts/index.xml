@@ -6,8 +6,245 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-        <lastBuildDate>Sun, 06 Nov 2022 14:20:59 -0800</lastBuildDate>
+        <lastBuildDate>Mon, 02 Jan 2023 14:18:17 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>RPKI in the Lab</title>
+            <link>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</link>
+            <pubDate>Mon, 02 Jan 2023 14:18:17 -0800</pubDate>
+            
+            <guid>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</guid>
+            <description>Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&amp;rsquo;s printing was around 2003 and figured RPKI wouldn&amp;rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.</p>
+<p>I knew very little about RPKI when I started down this road (arguably still know very little). However, I knew it was essential to set up to protect networks from the fate of route hijacks (someone advertising your network space without permission by accident or on purpose).</p>
+<p>By default, peering over BGP isn&rsquo;t secure. The workflow is usually Autonomous systems (AS) peering together and start advertising networks. There&rsquo;s a default trust put in place that each peer will advertise the correct routes. Over time, we&rsquo;ve developed filtering or route policies to ensure we receive and advertise the proper routes. However, time has shown that these options alone aren&rsquo;t enough to prevent route hijacking or leaks.</p>
+<h2 id="rpki-overview">RPKI overview</h2>
+<p>RPKI provides a way to connect an AS number to IP addresses in its simplest form. The beauty is that this pairing is associated with something we trust. For example, this could be one of the regional internet registries (RIR).</p>
+<div class="mermaid">
+    
+graph TD
+    subgraph RIR
+    AFRINIC
+    ARIN
+    APNIC
+    LACNIC
+    RIPENCC
+    end
+    IANA --> RIR
+    AFRINIC --> LIR
+    ARIN --> LIR
+    APNIC --> LIR
+    LACNIC --> LIR
+    RIPENCC --> LIR
+    LIR --> Customers
+
+</div>
+<p>The local internet registries (LIR) can create Route Origination Authorizations (ROA). The ROAs is the piece that states what AS can advertise a specific prefix. Once we have valid ROAs, we can determine if a route is valid, invalid, or unknown. You may wonder, &ldquo;okay, but where do these ROAs get stored?&rdquo; The ROAs are actually stored in multiple repositories. For example, the RIRs are the trusted source for RPKI information, including ROAs.</p>
+<p>If I want to validate IP space given out by APNIC, then I&rsquo;ll subscribe to their repository and trust that the information is accurate and up-to-date. There is so much more involved in RPKI, but I&rsquo;d like to keep a blog short for once. I&rsquo;ll include some helpful links at the end if you want to learn more.</p>
+<h2 id="getting-rpki-in-the-lab-with-routinator">Getting RPKI in the lab with Routinator</h2>
+<p>In this lab, we&rsquo;ll leverage a local Validator of routes. This Validator can pull the latest ROA information from the defined repositories. The Validator we will use is NLnetLabs <a href="https://github.com/NLnetLabs/routinator">Routinator</a>. The Validator will use RPKI to Router (RTR) protocol to signal if a route is valid, invalid, or unknown. This has the benefit of reducing control plane impact on our routers. All the validation and checks are done by the Validator.</p>
+<div class="mermaid">
+    
+graph TD
+    R1(R1) ---|172.100.100.11|MGMT
+    R2(R2) --- |172.100.100.12|MGMT
+    RT(Routinator) --- |172.100.100.13|MGMT
+
+</div>
+<h3 id="containerlab-to-simplify-the-deployment">Containerlab to simplify the deployment</h3>
+<p>NLnetLabs is very kind to include a container image of their Routinator software. Adding this to Containerlab is relatively easy. The example below is our lab file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">rpki</span>
+<span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;&#34;</span>
+
+<span style="color:#f92672">mgmt</span>:
+  <span style="color:#f92672">network</span>: <span style="color:#ae81ff">statics</span>
+  <span style="color:#f92672">ipv4_subnet</span>: <span style="color:#ae81ff">172.100.100.0</span><span style="color:#ae81ff">/24</span>
+
+<span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">kinds</span>:
+    <span style="color:#f92672">ceos</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ceos:4.29.0.2F</span>
+    <span style="color:#f92672">linux</span>:
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nlnetlabs/routinator</span>
+  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">R1</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.11</span>
+      <span style="color:#f92672">startup-config</span>: <span style="color:#ae81ff">startup/R1.conf</span>
+    <span style="color:#f92672">R2</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ceos</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.12</span>
+      <span style="color:#f92672">startup-config</span>: <span style="color:#ae81ff">startup/R2.conf</span>
+    <span style="color:#f92672">RPKI</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">mgmt_ipv4</span>: <span style="color:#ae81ff">172.100.100.13</span>
+      <span style="color:#f92672">ports</span>:
+      - <span style="color:#ae81ff">80</span>:<span style="color:#ae81ff">8323</span>
+  <span style="color:#f92672">links</span>:
+    - <span style="color:#f92672">endpoints</span>: [<span style="color:#e6db74">&#34;R1:eth1&#34;</span>, <span style="color:#e6db74">&#34;R2:eth1&#34;</span>]
+</code></pre></div><p>I kept the topology file as simple and small as possible. We will use two Arista EOS containers to form a BGP relationship and advertise routes. We will then implement RPKI to check the validity of those advertisements. The lab&rsquo;s startup configurations and GitHub repository will be linked at the end of this post.</p>
+<h3 id="simple-bgp-config-and-advertising-routes">Simple BGP config and advertising routes</h3>
+<p>We will simulate Google and Cloudflare as our two peering AS in our lab. We will advertise a network from each AS and another random network used for testing.</p>
+<div class="mermaid">
+    
+flowchart LR
+    subgraph AS 15169
+    R1(R1)
+    end
+    subgraph AS 13335
+    R2(R2)
+    end
+    R1 -->|192.168.100.1/32| R2
+    R1 -->|8.8.8.0/24| R2
+    R2 -->|192.168.100.2/32| R1
+    R2 -->|1.1.1.0/24| R1
+    linkStyle 0 stroke:green
+    linkStyle 1 stroke:green
+    linkStyle 2 stroke:green
+    linkStyle 3 stroke:green
+
+</div>
+<p>Below is a simple BGP configuration from R1&rsquo;s perspective.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 15169
+   router-id 192.168.100.1
+   neighbor 172.16.0.2 remote-as 13335
+   network 8.8.8.0/24
+   network 192.168.100.1/32
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#show ip bgp | b Net
+          Network                Next Hop              Metric  AIGP       LocPref Weight  Path
+ * &gt;      1.1.1.0/24             172.16.0.2            0       -          100     0       13335 i
+ * &gt;      8.8.8.0/24             -                     -       -          -       0       i
+ * &gt;      192.168.100.1/32       -                     -       -          -       0       i
+ * &gt;      192.168.100.2/32       172.16.0.2            0       -          100     0       13335 i
+R1#
+</code></pre></div><p>Next, we&rsquo;ll add Routinator to our BGP configuration.</p>
+<h3 id="connecting-to-routinator">Connecting to Routinator</h3>
+<p>Setting up our environment with Routinator is relatively simple. Since all nodes in this topology share a management network, we&rsquo;ll use that in our RPKI configuration. Below is the configuration from R1&rsquo;s perspective.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">router bgp 15169
+   router-id 192.168.100.1
+   neighbor 172.16.0.2 remote-as 13335
+   network 8.8.8.0/24
+   network 192.168.100.1/32
+   !
+   rpki cache routinator
+      host 172.100.100.13 port 3323
+      !
+      transport tcp
+   !
+   rpki origin-validation
+      ebgp local
+</code></pre></div><p>Once this is implemented, we can check if our router is communicating with our Validator.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#show bgp rpki cache
+routinator:
+Host: 172.100.100.13 port 3323
+VRF: default
+Refresh interval: 326 seconds
+Retry interval: 600 seconds
+Expire interval: 7200 seconds
+Preference: 5
+Protocol version: 1
+State: synced
+Session ID: 23300
+Serial number: 18
+Last update sync: never
+Last full sync: 0:00:10 ago
+Last serial query: never
+Last reset query: 0:00:41 ago
+Entries: 390484
+Connection: Active (0:00:41)
+Transport information:
+  Protocol: TCP
+ROA tables: default
+
+
+R1#
+</code></pre></div><p>If we check our routes now, we will see two new codes.</p>
+<ul>
+<li><code>V</code>: Valid RPKI routes</li>
+<li><code>U</code>: Unknown RPKI routes</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#show ip bgp | b Net
+          Network                Next Hop              Metric  AIGP       LocPref Weight  Path
+ * &gt;    V 1.1.1.0/24             172.16.0.2            0       -          100     0       13335 i
+ * &gt;      8.8.8.0/24             -                     -       -          -       0       i
+ * &gt;      192.168.100.1/32       -                     -       -          -       0       i
+ * &gt;    U 192.168.100.2/32       172.16.0.2            0       -          100     0       13335 i
+R1#
+</code></pre></div><p>At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. You may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the <code>192.168.100.0</code> routes as bad. We can correct this by implementing some simple filtering.</p>
+<h3 id="putting-policy-and-filtering-in-place">Putting policy and filtering in place</h3>
+<p>At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. However, you may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the <code>192.168.100.0</code> routes as bad. We can correct this by implementing some simple filtering.</p>
+<div class="mermaid">
+    
+flowchart LR
+    subgraph AS 135533
+    R1(R1)
+    end
+    subgraph AS 135534
+    R2(R2)
+    end
+    R1 --x|192.168.100.1/32| R2
+    R1 -->|8.8.8.0/24| R2
+    R2 --x|192.168.100.2/32| R1
+    R2 -->|1.1.1.0/24| R1
+    linkStyle 0 stroke:red
+    linkStyle 1 stroke:green
+    linkStyle 2 stroke:red
+    linkStyle 3 stroke:green
+
+</div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">!
+ip as-path access-list 1 permit ^$ any
+!
+route-map local-only permit 10
+   description Only export local routes
+   match as-path 1
+!
+route-map rpki-reject-non-valid deny 10
+   description Reject non valid routes
+   match origin-as validity invalid
+!
+route-map rpki-reject-non-valid deny 20
+   description Reject not found routes
+   match origin-as validity not-found
+!
+route-map rpki-reject-non-valid permit 100
+!
+router bgp 15169
+   router-id 192.168.100.1
+   neighbor 172.16.0.2 remote-as 13335
+   neighbor 172.16.0.2 route-map rpki-reject-non-valid in
+   neighbor 172.16.0.2 route-map local-only out
+</code></pre></div><p>Below we can see the updates after filtering and compare that with all routes received from our neighbor.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#show ip bgp | b Net
+          Network                Next Hop              Metric  AIGP       LocPref Weight  Path
+ * &gt;    V 1.1.1.0/24             172.16.0.2            0       -          100     0       13335 i
+ * &gt;      8.8.8.0/24             -                     -       -          -       0       i
+ * &gt;      192.168.100.1/32       -                     -       -          -       0       i
+R1#
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">R1#show bgp neighbors 172.16.0.2 received-routes | b AS Path
+AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Link Local Nexthop
+
+          Network                Next Hop              Metric  AIGP       LocPref Weight  Path
+ * &gt;    V 1.1.1.0/24             172.16.0.2            -       -          -       -       13335 i
+        U 192.168.100.2/32       172.16.0.2            -       -          -       -       13335 i
+R1#
+</code></pre></div><p>If you&rsquo;d like, you can also check out the Routinator GUI at <code>http://&lt;Containerlab host&gt;</code>. Feel free to check out the number of RTR connections or the source for all the repositories.</p>
+<h2 id="outro-and-links">Outro and links</h2>
+<p>That&rsquo;s about it. I hope you learned a little about RPKI and got to play with it in the lab. Please check out the GitHub repository and modify it for other AS and network combos you may want to learn with. Happy new year, and I wish you all the best. Thank you for reading this far. It really means a lot!</p>
+<ul>
+<li><a href="https://lexica.art/">Featured image by lexica.art</a></li>
+<li><a href="https://www.sanog.org/resources/sanog33/SANOG33_Tutorials-Routing-Security-Tutorial-RPKI_lab-Tashi-APNIC.pdf">APNIC lab used as inspiration</a></li>
+<li><a href="https://aristanetworks.force.com/AristaCommunity/s/article/bgp-origin-validation-rpki">BGP Origin Validation with RPKI by Kenneth Finnegan</a></li>
+<li><a href="https://github.com/NLnetLabs/routinator">Routinator GitHub</a></li>
+<li><a href="https://blog.cloudflare.com/rpki/">RPKI - The required cryptographic upgrade to BGP routing by Martin J Levy</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc6480#page-11">RFC 6480 - An Infrastructure to Support Secure Internet Routing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Resource_Public_Key_Infrastructure">RPKI on Wikipedia</a></li>
+<li>[GitHub repository]</li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Static website with Pulumi, YAML, MkDocs, GCP, and CI/CD</title>
