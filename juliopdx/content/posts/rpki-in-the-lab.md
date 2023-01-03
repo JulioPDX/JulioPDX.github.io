@@ -287,4 +287,4 @@ That's about it. I hope you learned a little about RPKI and got to play with it 
 - [RPKI - The required cryptographic upgrade to BGP routing by Martin J Levy](https://blog.cloudflare.com/rpki/)
 - [RFC 6480 - An Infrastructure to Support Secure Internet Routing](https://www.rfc-editor.org/rfc/rfc6480#page-11)
 - [RPKI on Wikipedia](https://en.wikipedia.org/wiki/Resource_Public_Key_Infrastructure)
-- [GitHub repository]
+- [GitHub repository](https://github.com/JulioPDX/learning_labs/tree/main/labs/bgp/rpki)
