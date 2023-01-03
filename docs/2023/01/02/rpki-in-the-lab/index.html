@@ -44,7 +44,7 @@
 <meta itemprop="name" content="RPKI in the Lab">
 <meta itemprop="description" content="Introduction I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey."><meta itemprop="datePublished" content="2023-01-02T14:18:17-08:00" />
 <meta itemprop="dateModified" content="2023-01-02T14:18:17-08:00" />
-<meta itemprop="wordCount" content="1492"><meta itemprop="image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg">
+<meta itemprop="wordCount" content="1432"><meta itemprop="image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg">
 <meta itemprop="keywords" content="Arista,RPKI,BGP,Containerlab," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg"/>
@@ -141,7 +141,7 @@
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        8 minutes
+        7 minutes
 
         
       </p>
@@ -335,8 +335,7 @@ R1#
  * &gt;      192.168.100.1/32       -                     -       -          -       0       i
  * &gt;    U 192.168.100.2/32       172.16.0.2            0       -          100     0       13335 i
 R1#
-</code></pre></div><p>At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. You may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the <code>192.168.100.0</code> routes as bad. We can correct this by implementing some simple filtering.</p>
-<h3 id="putting-policy-and-filtering-in-place">Putting policy and filtering in place</h3>
+</code></pre></div><h3 id="putting-policy-and-filtering-in-place">Putting policy and filtering in place</h3>
 <p>At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. However, you may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the <code>192.168.100.0</code> routes as bad. We can correct this by implementing some simple filtering.</p>
 <div class="mermaid">
     
@@ -434,7 +433,7 @@ R1#
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1492 Words
+        1432 Words
       </p>
 
       <p>

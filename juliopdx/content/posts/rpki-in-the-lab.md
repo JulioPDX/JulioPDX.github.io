@@ -204,8 +204,6 @@ R1#show ip bgp | b Net
 R1#
 ```
 
-At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. You may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the `192.168.100.0` routes as bad. We can correct this by implementing some simple filtering.
-
 ### Putting policy and filtering in place
 
 At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. However, you may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the `192.168.100.0` routes as bad. We can correct this by implementing some simple filtering.

@@ -172,8 +172,7 @@ R1#
  * &gt;      192.168.100.1/32       -                     -       -          -       0       i
  * &gt;    U 192.168.100.2/32       172.16.0.2            0       -          100     0       13335 i
 R1#
-</code></pre></div><p>At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. You may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the <code>192.168.100.0</code> routes as bad. We can correct this by implementing some simple filtering.</p>
-<h3 id="putting-policy-and-filtering-in-place">Putting policy and filtering in place</h3>
+</code></pre></div><h3 id="putting-policy-and-filtering-in-place">Putting policy and filtering in place</h3>
 <p>At this point, we can see that our router is correctly communicating with Routinator and labeling routes as valid or unknown. However, you may notice that the routes are still in our routing table, even if they are unknown or invalid. In this case, we are simulating the <code>192.168.100.0</code> routes as bad. We can correct this by implementing some simple filtering.</p>
 <div class="mermaid">
     
