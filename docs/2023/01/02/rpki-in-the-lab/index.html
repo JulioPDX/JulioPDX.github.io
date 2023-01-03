@@ -7,7 +7,7 @@
 <meta name="author"
     content="">
 <meta name="description"
-    content="Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&amp;rsquo;s printing was around 2003 and figured RPKI wouldn&amp;rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey." />
+    content="Introduction I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&amp;rsquo;s printing was around 2003 and figured RPKI wouldn&amp;rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey." />
 <meta name="keywords"
     content=", Arista, RPKI, BGP, Containerlab" />
 <meta name="robots" content="noodp" />
@@ -42,20 +42,20 @@
 
 
 <meta itemprop="name" content="RPKI in the Lab">
-<meta itemprop="description" content="Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey."><meta itemprop="datePublished" content="2023-01-02T14:18:17-08:00" />
+<meta itemprop="description" content="Introduction I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey."><meta itemprop="datePublished" content="2023-01-02T14:18:17-08:00" />
 <meta itemprop="dateModified" content="2023-01-02T14:18:17-08:00" />
-<meta itemprop="wordCount" content="1493"><meta itemprop="image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg">
+<meta itemprop="wordCount" content="1492"><meta itemprop="image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg">
 <meta itemprop="keywords" content="Arista,RPKI,BGP,Containerlab," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg"/>
 
 <meta name="twitter:title" content="RPKI in the Lab"/>
-<meta name="twitter:description" content="Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey."/>
+<meta name="twitter:description" content="Introduction I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey."/>
 
 
 
 <meta property="og:title" content="RPKI in the Lab" />
-<meta property="og:description" content="Introduction I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey." />
+<meta property="og:description" content="Introduction I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://juliopdx.com/2023/01/02/rpki-in-the-lab/" /><meta property="og:image" content="https://juliopdx.com/blog/images/routinator-ai.jpeg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-01-02T14:18:17-08:00" />
@@ -180,7 +180,7 @@
 
       <div class="post-content">
         <h2 id="introduction">Introduction</h2>
-<p>I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.</p>
+<p>I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book&rsquo;s printing was around 2003 and figured RPKI wouldn&rsquo;t be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.</p>
 <p>I knew very little about RPKI when I started down this road (arguably still know very little). However, I knew it was essential to set up to protect networks from the fate of route hijacks (someone advertising your network space without permission by accident or on purpose).</p>
 <p>By default, peering over BGP isn&rsquo;t secure. The workflow is usually Autonomous systems (AS) peering together and start advertising networks. There&rsquo;s a default trust put in place that each peer will advertise the correct routes. Over time, we&rsquo;ve developed filtering or route policies to ensure we receive and advertise the proper routes. However, time has shown that these options alone aren&rsquo;t enough to prevent route hijacking or leaks.</p>
 <h2 id="rpki-overview">RPKI overview</h2>
@@ -434,7 +434,7 @@ R1#
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1493 Words
+        1492 Words
       </p>
 
       <p>

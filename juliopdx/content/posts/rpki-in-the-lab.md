@@ -15,7 +15,7 @@ tags:
 
 ## Introduction
 
-I was recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book's printing was around 2003 and figured RPKI wouldn't be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.
+I recently finished the last chapters of Optimal Routing Design (great read). One of the chapters covered routing protocol security with protocols such as BGP, EIGRP, and OSPF. This echoed something in my head regarding Resource Public Key Infrastructure (RPKI). I knew the book's printing was around 2003 and figured RPKI wouldn't be in the book. This led me to wonder if I could get RPKI running in the lab, and the following blog post details some of that journey.
 
 I knew very little about RPKI when I started down this road (arguably still know very little). However, I knew it was essential to set up to protect networks from the fate of route hijacks (someone advertising your network space without permission by accident or on purpose).
 
