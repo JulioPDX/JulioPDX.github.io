@@ -24,7 +24,7 @@ Since its just you and me here. Lets pretend our site was assigned the 2001:db8:
 
 ## Design
 
-The design you see above is using Aruba CX nodes with version 10.06.0001 running on EVE-NG. The base of the topology is a spine leaf design. In a spine leaf design, every spine connects to every leaf. Every leaf connects to every spine. Spines do not connect with each other. In some situations, leaf switches can connect together. For example, when dual connecting a host. In the case of this topology we have two spines and four leaf nodes. The Linux nodes you see below are just running Linux Slax. They will be used for some lightweight testing and verification of connectivity.
+The design you see above is using Aruba CX nodes with version `10.06.0001` running on EVE-NG. The base of the topology is a spine leaf design. In a spine leaf design, every spine connects to every leaf. Every leaf connects to every spine. Spines do not connect with each other. In some situations, leaf switches can connect together. For example, when dual connecting a host. In the case of this topology we have two spines and four leaf nodes. The Linux nodes you see below are just running Linux Slax. They will be used for some lightweight testing and verification of connectivity.
 
 Lets knock out a few of the simple things. I’ll be using OSPFv3 in this example. The nodes were required to have a router ID set. In this case I stuck with spine01 having 1.1.1.1, spine02 having 1.1.1.2, and so on. For the leaf nodes I used the 10.0.0.x pattern. X being the number of the leaf.
 
@@ -167,7 +167,7 @@ router ospfv3 1
 
 Looks fairly similar right? Lets just focus on the new stuff. I added VLAN 10 on leaf01, VLAN 20 on leaf02, and so on. After that I just assigned the host interface to the appropriate VLAN. Here is where things get fun. In hex you get the range of 1-15. A-F make up what we know as 10-15. Remember our whole network is 2001:db8:cafe::/48. I decided to use the next available prefix that matched the VLAN number.
 
-For example if the VLAN is 10, that would give us 2001:db8:cafe:a::/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16s place, so that adds up to 16, and the 4 is in the 1s place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.
+For example if the VLAN is 10, that would give us 2001:db8:cafe:a::/64. If the VLAN was 20, that would give us 2001:db8:cafe:14::/64. Looking at that last IP, the 1 in 14 is in the 16's place, so that adds up to 16, and the 4 is in the 1's place. 16 + 4 = 20, or VLAN 20. Now you might be wondering, why are you using a /64. Well, the powers that be recommend all LAN networks be a /64. This helps nodes acquire addresses automatically without a DHCP server. More on that in a sec. The /64 would give you over 18,000,000,000,000,000,000 possible Interface IDs…. on one LAN… wow.
 
 ## Hosts
 
@@ -255,6 +255,6 @@ leaf01# show ipv6 ospfv3 routes | b 2001
 Thank you so much for reading this far! I am just getting my bearings with IPv6 but it really is great. Maybe as I work through the book I'll add some border leaf nodes and get some NAT64 going! Check out the links below if curious about learning more on IPv6 or data center networking. Too many RFCs to list but you can easily google them. For example RFC 6164, “Using 127-Bit IPv6 Prefixes on Inter-Router Links”.
 
 - [Cloud Native Data Center Networking: Architecture, Protocols, and Tools - I cant find the free link!](https://www.amazon.com/Cloud-Native-Data-Center-Networking/dp/1492045608)
-- [IPv6 Fundamentals: A Straightforward Approach to Understanding IPv6 2nd Edition](https://www.amazon.com/IPv6-Fundamentals-Straightforward-Approach-Understanding/dp/1587144778/ref=sr_1_2?dchild=1&keywords=ipv6+fundamentals&qid=1616115794&sr=8-2)
+- [IPv6 Fundamentals: A Straightforward Approach to Understanding IPv6 Second Edition](https://www.amazon.com/IPv6-Fundamentals-Straightforward-Approach-Understanding/dp/1587144778/ref=sr_1_2?dchild=1&keywords=ipv6+fundamentals&qid=1616115794&sr=8-2)
 - FYI, these are not sponsored links at all. I earn nothing if you buy or don’t buy a product.
 - Follow up post: [Using only link-local addresses between routers](https://juliopdx.com/2021/03/29/aruba-spine-leaf-deployment-with-ospfv3-and-link-local-addresses/)

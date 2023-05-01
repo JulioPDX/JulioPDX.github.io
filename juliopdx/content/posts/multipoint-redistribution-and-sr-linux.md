@@ -487,7 +487,7 @@ The solution above works but route tags would definitely scale more. A route tag
 
 ![Route Tags](/blog/images/mredis-tag.png)
 
-Bear with me, I know SR Linux does not run EIGRP :). Here we have the same topology but Cisco nodes are in place. From R3s perspective, when redistributing routes from OSPF to EIGRP, R3 will deny any routes tagged with 444 and set any routes not matching that to 333. In the opposite direction, routes from EIGRP to OSPF with a tag of 444 will be denied, and anything left will be tagged with 333. R4 essentially does the reverse to make sure anything from 333 is not sent to EIGRP or OSPF. Example configurations below.
+Bear with me, I know SR Linux does not run EIGRP :). Here we have the same topology but Cisco nodes are in place. From R3's perspective, when redistributing routes from OSPF to EIGRP, R3 will deny any routes tagged with 444 and set any routes not matching that to 333. In the opposite direction, routes from EIGRP to OSPF with a tag of 444 will be denied, and anything left will be tagged with 333. R4 essentially does the reverse to make sure anything from 333 is not sent to EIGRP or OSPF. Example configurations below.
 
 ```text
 !R3 Config

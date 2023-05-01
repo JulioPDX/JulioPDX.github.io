@@ -57,7 +57,7 @@ These legs were honestly a total surprise to me. It would be mileage I have neve
 
 ## Legs 9-12 "Go get it"
 
-I wont lie to anyone. Unless you are some experienced distance runner, these legs will hurt! I say that for a good reason. No one is making us do this. You can stop at anytime. Whatever the reason is that you chose to do this, I’m so happy and proud of you. It’ll hurt to even think of leaving that warm comfy bed at 4AM. Just know that you made it this far and you should be so proud. “One more to go!! Go get it!!” – John Spiegel
+I wont lie to anyone. Unless you are some experienced distance runner, these legs will hurt! I say that for a good reason. No one is making us do this. You can stop at anytime. Whatever the reason is that you chose to do this, I’m so happy and proud of you. It’ll hurt to even think of leaving that warm comfy bed at 4 AM. Just know that you made it this far and you should be so proud. “One more to go!! Go get it!!” – John Spiegel
 
 ![9-12](/blog/images/legs_9_12.png)
 
@@ -65,7 +65,7 @@ Some of you may have wondered, if you have to run 4 miles every four hours, why 
 
 ## In Between Time
 
-What do you do in between each leg? I developed a pretty normal routine. I ate half a banana after each leg and some orange slices. I would then hydrate with plain water and get a meal in at normal times of the day. I stretched and foam rolled after each and every run, no exceptions. Even if you have to stretch in bed at 1AM… do it! Besides that I just played some video games and read messages from awesome supporters.
+What do you do in between each leg? I developed a pretty normal routine. I ate half a banana after each leg and some orange slices. I would then hydrate with plain water and get a meal in at normal times of the day. I stretched and foam rolled after each and every run, no exceptions. Even if you have to stretch in bed at 1 AM… do it! Besides that I just played some video games and read messages from awesome supporters.
 
 ## Support
 

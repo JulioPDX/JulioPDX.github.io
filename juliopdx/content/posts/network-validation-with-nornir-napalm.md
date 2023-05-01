@@ -304,7 +304,7 @@ Did you catch which one failed? If you guessed NE-RTR-01 earlier you would be co
 I hope this post has shown you how NAPALM and Nornir can be leveraged to validate device configurations and dive into a bit of network automation with Python. Not too bad right? Below you’ll find some links to resources I have used and a link to the git repo. There really are so many great resources in this space for network engineers. I cant possibly list them all. Thank you for reading this far, it is much appreciated! Stay safe out there.
 
 - [Git Repository](https://github.com/JulioPDX/nornir_snmp_validation)
-- [Python Crash Course 2nd Edition](https://nostarch.com/pythoncrashcourse2e)
+- [Python Crash Course Second Edition](https://nostarch.com/pythoncrashcourse2e)
 - [Mastering Python Networking](https://www.packtpub.com/product/mastering-python-networking-third-edition/9781839214677)
 - [Chuck Black 52 Weeks of Python](https://www.youtube.com/playlist?list=PLKZjLeG8AwtES8apo6gonH4XmN_9xIo8W)
 - [NTC Awesome List](https://github.com/networktocode/awesome-network-automation)

@@ -44,7 +44,7 @@
 <meta itemprop="name" content="Building a Network CI/CD Pipeline Part 1">
 <meta itemprop="description" content="Introduction Hello all and thank you for joining me on another blog post! In this post or series of posts I hope to walk you through my journey on building a network CI/CD pipeline. This pipeline is not perfect and I’m sure there’s much more efficient ways to produce the same outcomes. I did make the choice to leave out a few things as the technologies involved and complexity kept growing."><meta itemprop="datePublished" content="2021-10-20T10:26:36-08:00" />
 <meta itemprop="dateModified" content="2021-10-20T10:26:36-08:00" />
-<meta itemprop="wordCount" content="823"><meta itemprop="image" content="https://juliopdx.com/blog/images/selim.jpg">
+<meta itemprop="wordCount" content="826"><meta itemprop="image" content="https://juliopdx.com/blog/images/selim.jpg">
 <meta itemprop="keywords" content="CI/CD,Network Automation,Docker," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/selim.jpg"/>
@@ -187,9 +187,9 @@
 <ul>
 <li>User requests change to the network</li>
 <li>Change control ticket is created detailing change and test plan</li>
-<li>Login to test environment if there is one and test the change</li>
-<li>Login to device(s) one by one and implement change</li>
-<li>Validate expected outcomes after change on device(s)</li>
+<li>Login to a test environment if there is one and test the change</li>
+<li>Login to the devices one by one and implement change</li>
+<li>Validate expected outcomes after change on the devices</li>
 </ul>
 <p>This process is fairly slow and has a lot of touch points. For example, the testing plan by different engineers may differ or a missed validation could lead to a network outage or an unexpected behavior from the change. Using a CI/CD pipeline we hope to automate a lot of these steps to ensure the change is correct and safe to implement on our network. This isn’t to say that a pipeline will eliminate all errors, far from that. This will allow us to continually improve our testing and the network over time to make it easier to manage and implement changes quickly and safely.</p>
 <h2 id="pieces-to-the-puzzle">Pieces to the Puzzle</h2>
@@ -273,7 +273,7 @@ juliopdx@drone:~$
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        823 Words
+        826 Words
       </p>
 
       <p>

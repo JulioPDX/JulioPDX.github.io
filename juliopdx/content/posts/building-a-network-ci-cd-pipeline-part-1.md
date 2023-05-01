@@ -29,9 +29,9 @@ How does this relate to network engineering? Lets say you didn’t have a CI/CD 
 
 - User requests change to the network
 - Change control ticket is created detailing change and test plan
-- Login to test environment if there is one and test the change
-- Login to device(s) one by one and implement change
-- Validate expected outcomes after change on device(s)
+- Login to a test environment if there is one and test the change
+- Login to the devices one by one and implement change
+- Validate expected outcomes after change on the devices
 
 This process is fairly slow and has a lot of touch points. For example, the testing plan by different engineers may differ or a missed validation could lead to a network outage or an unexpected behavior from the change. Using a CI/CD pipeline we hope to automate a lot of these steps to ensure the change is correct and safe to implement on our network. This isn’t to say that a pipeline will eliminate all errors, far from that. This will allow us to continually improve our testing and the network over time to make it easier to manage and implement changes quickly and safely.
 

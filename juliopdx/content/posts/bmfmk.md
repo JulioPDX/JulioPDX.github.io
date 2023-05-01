@@ -182,7 +182,7 @@ Minor spoiler, but in case you don't have access to a 3D printer, you can use Tr
 
 ![Case 2](/blog/images/minidox-case2.jpg)
 
-## RTFM
+## Read the FU***** manual
 
 Back to my reading the manual thought. After reading the build guide and soldering 30 diodes, I got too confident. So much so that I looked at the build guide but didn't read the not-so-fine print but rather the large print. The right-side controller has to be installed upside down because these PCBs are reversible. I can only blame myself. Just look at this screengrab from the actual build guide.
 
