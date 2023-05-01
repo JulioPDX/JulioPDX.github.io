@@ -137,7 +137,6 @@ From the CLI we can quickly explore a ton of information about our network and r
 
 I think you get the idea. The Suzieq CLI is a quick way to explore not only the capabilities of Suzieq but also your network. At this point lets exit the CLI, restart the Poller, and exit from the container(CTRL + p, CTRL + q).
 
-
 ```shell
 root> exit
 root@a091d6fe3b07:/suzieq# sq-poller -D inv.yaml -k # version 0.15.0

@@ -199,7 +199,6 @@ juliopdx@R1#
 
 At this point we can see that 10.0.12.1 has been replaced with 10.0.50.1 under the ge-0/0/0 interface. But we can still ping the remote side? This is because the change is only on the candidate configuration and not the running configuration. I’ll commit these changes and we should lose access to the remote side.
 
-
 ```text
 juliopdx@R1# commit comment "This is a bad config"
 commit complete

@@ -140,7 +140,6 @@ core3#
 
 At the moment since no optimizations have been added, if we were to lose any of these links, the network would have to ask every node if they are aware of an alternate path to reach a particular destination. Not very efficient at all. A few places where we can improve are the 10.1.0.0 and 10.2.0.0 networks. Those are all coming from nodes R3, R4, and R5. Think of these as our fake access layer in a campus. The networks in the 172.16.17.0 and 172.16.18.0 networks are coming from a services edge of the network. This could be servers or whatever services you can think of. In this case it is just one node called servers advertising some routes.
 
-
 ## Optimizations in the Core Layer
 
 The main idea behind the core is to push the traffic as fast as possible. Try to limit the extra stuffs that can consume resources within the core. Please note that I said within, do summarize from the core to the aggregation layer. How does this look like in practice? From the aggregation standpoint, all we really need from the core is a default route. One way to do this is to configure a summary on the interfaces towards the aggregates.

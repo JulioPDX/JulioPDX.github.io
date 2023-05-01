@@ -139,7 +139,7 @@ As promised, here is the code that interacts with our network devices.
         return my_file
 ```
 
-The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The _get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.
+The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The_get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.
 
 `get_network.py`
 
