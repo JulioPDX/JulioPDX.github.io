@@ -219,3 +219,4 @@ The case for the second build was ordered through Treat Stock in bronze PLA.
 Thank you all for reading this far. It really means a lot. Stepping into the world of mechanical keyboards has been fun. I'll make at least one more Minidox in the future, and after that, who knows. So let me know what you think, and stay safe out there.
 
 - Featured image by [Kirk Lai](https://unsplash.com/photos/8cVbbGCllOI)
+- [List of split keyboards](https://aposymbiont.github.io/split-keyboards/)
