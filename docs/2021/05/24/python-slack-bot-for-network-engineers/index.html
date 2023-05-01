@@ -44,7 +44,7 @@
 <meta itemprop="name" content="Python Slack Bot for Network Engineers">
 <meta itemprop="description" content="Introduction Hello and thank you for joining me in another blog post. I’ve wanted to mess with getting a bot running on Slack for a while now. After coming across a fantastic post by Mason Egger at Digital Ocean (linked at the end), I figured now is as good a time as any. Think of that post as a prerequisite to get you started before following along with this one."><meta itemprop="datePublished" content="2021-05-24T10:19:32-08:00" />
 <meta itemprop="dateModified" content="2021-05-24T10:19:32-08:00" />
-<meta itemprop="wordCount" content="1674"><meta itemprop="image" content="https://juliopdx.com/blog/images/jason-leung.jpg">
+<meta itemprop="wordCount" content="1673"><meta itemprop="image" content="https://juliopdx.com/blog/images/jason-leung.jpg">
 <meta itemprop="keywords" content="Python," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/jason-leung.jpg"/>
@@ -269,7 +269,7 @@ pip install napalm-aruba-cx
         facts <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>get_interfaces()
         my_file <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps(facts, indent<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
         <span style="color:#66d9ef">return</span> my_file
-</code></pre></div><p>The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The _get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.</p>
+</code></pre></div><p>The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The_get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.</p>
 <p><code>get_network.py</code></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_file_payload</span>(self):
         <span style="color:#e6db74">&#34;&#34;&#34;
@@ -390,7 +390,7 @@ BOT_ID <span style="color:#f92672">=</span> slack_web_client<span style="color:#
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1674 Words
+        1673 Words
       </p>
 
       <p>

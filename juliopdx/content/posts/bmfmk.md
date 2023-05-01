@@ -142,8 +142,8 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 Size before:
-   text	   data	    bss	    dec	    hex	filename
-      0	  19794	      0	  19794	   4d52	maple_computing_minidox_rev1_default.hex
+   text    data     bss     dec     hex filename
+      0   19794       0   19794    4d52 maple_computing_minidox_rev1_default.hex
 
 Compiling: quantum/command.c                                                                        [OK]
 Linking: .build/maple_computing_minidox_rev1_default.elf                                            [OK]

@@ -1,0 +1,41 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.4.0
+    hooks:
+      - id: trailing-whitespace
+        files: juliopdx/content/posts
+      - id: end-of-file-fixer
+        files: juliopdx/content/posts
+        exclude_types: [svg, json]
+
+  # - repo: https://github.com/tcort/markdown-link-check
+  #   rev: v3.10.3
+  #   hooks:
+  #     - id: markdown-link-check
+  #       name: Markdown Link Check
+  #       description: Extracts links from markdown texts and checks they're all alive (i.e. return status 200 OK).
+  #       entry: markdown-link-check
+  #       exclude_types: [png, jpeg]
+  #       files: juliopdx/content/posts
+  #       language: node
+  #       types: [markdown]
+  #       stages: [commit, push, manual]
+  #       args:
+  #         - --quiet
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.33.0
+    hooks:
+      - id: markdownlint
+        name: Check for Linting errors on MarkDown files
+        files: juliopdx/content/posts
+        args:
+          - --fix
+
+  - repo: https://github.com/errata-ai/vale
+    rev: v2.24.1
+    hooks:
+      - id: vale
+        files: juliopdx/content/posts

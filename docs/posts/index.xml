@@ -6,8 +6,163 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-        <lastBuildDate>Mon, 02 Jan 2023 14:18:17 -0800</lastBuildDate>
+        <lastBuildDate>Sat, 29 Apr 2023 11:14:03 -0700</lastBuildDate>
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Building my first mechanical keyboard</title>
+            <link>https://juliopdx.com/2023/04/29/building-my-first-mechanical-keyboard/</link>
+            <pubDate>Sat, 29 Apr 2023 11:14:03 -0700</pubDate>
+            
+            <guid>https://juliopdx.com/2023/04/29/building-my-first-mechanical-keyboard/</guid>
+            <description>Introduction I recently went down the rabbit hole that is mechanical keyboards and, even worse, attempted to build my own. This blog will show you some random dude&amp;rsquo;s journey to making his first mechanical keyboard and avoiding some of my mistakes. I hope you enjoy the blog, and thank you for visiting the site.
+Why build vs. buy Why would you build a keyboard? I mean, you could buy one, right?</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>I recently went down the rabbit hole that is mechanical keyboards and, even worse, attempted to build my own. This blog will show you some random dude&rsquo;s journey to making his first mechanical keyboard and avoiding some of my mistakes. I hope you enjoy the blog, and thank you for visiting the site.</p>
+<h2 id="why-build-vs-buy">Why build vs. buy</h2>
+<p>Why would you build a keyboard? I mean, you could buy one, right? That is correct, and there&rsquo;s nothing wrong with buying a keyboard or mechanical keyboard pre-assembled. In fact, two other keyboards I own came pre-assembled. One is the <a href="https://shop.keyboard.io/products/keyboardio-atreus">Keyboardio Atreus</a> (still use this for travel) and the <a href="https://keeb.io/collections/iris-split-ergonomic-keyboard">Iris</a> keyboard I purchased from Keebio. Both are excellent, and I still use them today.</p>
+<p>Even though I purchased two previous sets, I wondered if I could build one myself. I compare it to the same journey of putting a puzzle together, a Lego set, or a Gundam kit. Making something and seeing it come together brings a vast amount of joy.</p>
+<h2 id="why-ortholinear">Why Ortholinear</h2>
+<p>If you clicked on the previous links for the two keyboards mentioned above, you might wonder, &ldquo;Why do those keyboards look so weird?&rdquo; Fair question. These keyboards use an ortholinear layout where all the keys are the same size and have a uniform grid vs. a staggered layout found in traditional keyboards. The thought being this replicates the natural movement of our fingers. However, from my reading, there isn&rsquo;t any evidence that this improves the typing experience or leads to fewer wrist injuries.</p>
+<h2 id="why-split">Why split</h2>
+<p>If you click on the Iris keyboard link, you may notice that it&rsquo;s split into two pieces. The primary benefit here, since we have two unique pieces, we can rotate them to align with the natural resting position of our wrists vs. angling our wrists inward to align with a traditional staggered layout. The video below goes over all of this and more in excellent detail.</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/unMXQTSQEak" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<h2 id="picking-the-right-keyboard">Picking the right keyboard</h2>
+<p>I was now set on a split keyboard with an ortholinear layout. This is where it gets fun or tricky. There are many options for mechanical keyboards, and any portion of the build can be customized to fit your needs. The layout, materials, key switches, keycaps, and colors for everything. It can get overwhelming very fast.</p>
+<p>I had some general points to follow to make the selection process manageable. This is in no particular order.</p>
+<ol>
+<li>Wood case or at least wood-filled filament option</li>
+<li>Tactile switches</li>
+<li>Split layout</li>
+<li>Compact</li>
+</ol>
+<p>I don&rsquo;t remember how I found my final choice, but I&rsquo;m happy I did. Have you ever found a thing that makes you say, &ldquo;This fits me.&rdquo; When I saw the Minidox for the first time, I knew that was the keyboard I wanted to build. The Minidox is a more compact version of the popular <a href="https://ergodox-ez.com/">ErgoDox</a>. The PCB for the Minidox was created by <a href="https://github.com/That-Canadian/MiniDox_PCB">That-Canadian</a>, and I can&rsquo;t thank them enough for making this free and open source for the community.</p>
+<h2 id="assembling-the-required-tools">Assembling the required tools</h2>
+<p>I&rsquo;ll provide links to the items I used but feel free to source what works for you. You may have some items that I didn&rsquo;t have when I started. I&rsquo;ll include some optional pieces as well.</p>
+<ol>
+<li><a href="https://www.amazon.com/dp/B014Q44GZU?ref=ppx_yo2ov_dt_b_product_details&amp;th=1">Soldering iron kit</a> (Highly recommend)</li>
+<li>PCB and electronics from <a href="https://shop.profetkeyboards.com/product/minidox-pcb-set">Profet Keyboards</a></li>
+<li>Any switch you like, I went with <a href="https://a.co/d/0Q1eyX7">Glorious Pandas</a> pre-lubed</li>
+<li>Any MX style switches you prefer</li>
+<li>Case <a href="https://www.thingiverse.com/thing:4350283">STL files</a>, printed with <a href="https://www.treatstock.com/">treatstock</a></li>
+<li><a href="https://www.amazon.com/dp/B07CMQ1SQH?ref=ppx_yo2ov_dt_b_product_details&amp;th=1">M3 screws</a> for the case</li>
+<li><a href="https://www.amazon.com/dp/B019EHMN68?ref=ppx_yo2ov_dt_b_product_details&amp;th=1">TRRS cable</a></li>
+</ol>
+<p>The parts above are what I would consider required. Since I was going down this route, I wanted to see if I could improve the sound of the keyboard as much as possible. The items below are optional.</p>
+<ol>
+<li>Replacement <a href="https://www.amazon.com/gp/product/B087CLZ6RY/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&amp;th=1">USB-C Pro Micro</a> for the main side (left). The right side continues to use the micro USB that comes from Profet Keyboards.</li>
+<li><a href="https://www.amazon.com/dp/B0BWXLMX4F?ref=ppx_yo2ov_dt_b_product_details&amp;th=1">Keyboard PE switch pads</a> for sound dampening.</li>
+<li><a href="https://www.amazon.com/dp/B07WTPBQSW?ref=ppx_yo2ov_dt_b_product_details&amp;th=1">Neoprene roll</a> for more sound dampening and to fill in the case.</li>
+<li><a href="https://a.co/d/dIVbiR2">Something to practice soldering</a>.</li>
+</ol>
+<h2 id="practice-practice-and-more-practice">Practice, practice, and more practice</h2>
+<p>The soldering practice item above is optional, but it helped me tremendously. I last soldered eight years ago, and for many, this may be your first time looking at or handling a soldering iron. If I was going to do this, I didn&rsquo;t want the keyboard PCB to be what I practice on. If you like to live dangerously, then go right ahead.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>I leveraged the build guide by <a href="https://imgur.com/a/vImo6">That-Canadian</a> to complete this board. With everything in hand, I started soldering all the main components; diodes, TRRS jacks, and controllers. The image below is one of the few I captured in this build. Take note of how small those diodes are. If you have trouble focusing on small items, I recommend getting a desk magnifying glass or headset unit. The build guide mentions that the diodes can go on the top or the bottom of the PCB. I recommend you install them on the bottom. In case something doesn&rsquo;t work right or you need to replace a non-working diode.</p>
+<p><img src="/blog/images/minidox-soder.jpg" alt="Soder prep"></p>
+<p><img src="/blog/images/minidox-diodes.jpg" alt="Diodes done"></p>
+<h2 id="flashing-qmk-firmware">Flashing QMK firmware</h2>
+<p>Now that all of the diodes are in. This is a great time to flash the controllers before mounting them on the PCB. This build uses <a href="https://github.com/qmk/qmk_firmware">QMK</a> to build and flash the firmware on the controllers. There&rsquo;s a GUI interface for folks on Windows or Mac. I use a Linux machine as my daily driver and went with the command-line route.</p>
+<p>Set a Python virtual environment to install dependencies.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">python3 -m venv venv
+source venv/bin/activate
+pip3 install qmk
+qmk setup
+</code></pre></div><p>I leveraged all the default options during the setup stage. Although you may need to install additional dependencies on Linux, QMK should warn you if there&rsquo;s a missing dependency.</p>
+<p>You can test whether QMK is ready by running the <code>qmk doctor</code> command. You can also attempt to compile a keymap.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">qmk compile -kb maple_computing/minidox/rev1 -km default
+</code></pre></div><p>This is all great, but here&rsquo;s something that took me a little while to figure out. By default, QMK will try to flash a controller compatible with caterina, at least for the Minidox. Please read the documentation of your controller to see what bootloader is available. The USB C Pro Micro I linked earlier runs the DFU bootloader. This required one change in the keyboard&rsquo;s <code>rules.mk</code> file.</p>
+<p>That sounds great but I had no idea where that file lived. Again, I&rsquo;m just a new user of all this tooling and all the documentation seems to assume you know where this lives. If you followed the default install steps for QMK, this will clone down the QMK repository to your main directory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat qmk_firmware/keyboards/maple_computing/minidox/rules.mk
+<span style="color:#75715e"># Build Options</span>
+<span style="color:#75715e">#   change yes to no to disable</span>
+<span style="color:#75715e">#</span>
+BOOTMAGIC_ENABLE <span style="color:#f92672">=</span> no       <span style="color:#75715e"># Enable Bootmagic Lite</span>
+MOUSEKEY_ENABLE <span style="color:#f92672">=</span> yes       <span style="color:#75715e"># Mouse keys</span>
+EXTRAKEY_ENABLE <span style="color:#f92672">=</span> yes       <span style="color:#75715e"># Audio control and System control</span>
+CONSOLE_ENABLE <span style="color:#f92672">=</span> no         <span style="color:#75715e"># Console for debug</span>
+COMMAND_ENABLE <span style="color:#f92672">=</span> yes        <span style="color:#75715e"># Commands for debug and configuration</span>
+NKRO_ENABLE <span style="color:#f92672">=</span> no            <span style="color:#75715e"># Enable N-Key Rollover</span>
+BACKLIGHT_ENABLE <span style="color:#f92672">=</span> no       <span style="color:#75715e"># Enable keyboard backlight functionality</span>
+RGBLIGHT_ENABLE <span style="color:#f92672">=</span> no        <span style="color:#75715e"># Enable keyboard RGB underglow</span>
+AUDIO_ENABLE <span style="color:#f92672">=</span> no           <span style="color:#75715e"># Audio output</span>
+
+SPLIT_KEYBOARD <span style="color:#f92672">=</span> yes
+
+DEFAULT_FOLDER <span style="color:#f92672">=</span> maple_computing/minidox/rev1
+</code></pre></div><p>The required setting for this controller is to add <code>BOOTLOADER = atmel-dfu</code> to the <code>rules.mk</code> file.</p>
+<p>Now if we follow the required steps, we should see a new option for the bootloader to try and flash.</p>
+<ol>
+<li>Compile your keymap of choice</li>
+<li>run <code>qmk flash -kb maple_computing/minidox/rev1 -km default</code></li>
+<li>Plug in the controller USB to your PC</li>
+<li>Either hit the reset button if installed or use tweezers on the reset and ground pins.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">qmk flash -kb maple_computing/minidox/rev1 -km default
+Ψ Compiling keymap with gmake --jobs<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> maple_computing/minidox/rev1:default:flash
+
+
+QMK Firmware 0.20.5
+Making maple_computing/minidox/rev1 with keymap default and target flash
+
+avr-gcc <span style="color:#f92672">(</span>GCC<span style="color:#f92672">)</span> 5.4.0
+Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">2015</span> Free Software Foundation, Inc.
+This is free software; see the source <span style="color:#66d9ef">for</span> copying conditions.  There is NO
+warranty; not even <span style="color:#66d9ef">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Size before:
+   text    data     bss     dec     hex filename
+      <span style="color:#ae81ff">0</span>   <span style="color:#ae81ff">19794</span>       <span style="color:#ae81ff">0</span>   <span style="color:#ae81ff">19794</span>    4d52 maple_computing_minidox_rev1_default.hex
+
+Compiling: quantum/command.c                                                                        <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+Linking: .build/maple_computing_minidox_rev1_default.elf                                            <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+Creating load file <span style="color:#66d9ef">for</span> flashing: .build/maple_computing_minidox_rev1_default.hex                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+Copying maple_computing_minidox_rev1_default.hex to qmk_firmware folder                             <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+Checking file size of maple_computing_minidox_rev1_default.hex                                      <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+ * The firmware size is fine - 19794/28672 <span style="color:#f92672">(</span>69%, <span style="color:#ae81ff">8878</span> bytes free<span style="color:#f92672">)</span>
+Flashing <span style="color:#66d9ef">for</span> bootloader: atmel-dfu
+Bootloader not found. Make sure the board is in bootloader mode. See https://docs.qmk.fm/#/newbs_flashing
+ Trying again every 0.5s <span style="color:#f92672">(</span>Ctrl+C to cancel<span style="color:#f92672">)</span>...
+</code></pre></div><p>Ultimately, I settled on a keymap variation of the one posted by <a href="https://github.com/fernando-jascovich/qmk_firmware/tree/fernando-jascovich_minidox_layout/keyboards/minidox/keymaps/khitsule">khitsule</a>.</p>
+<p><img src="/blog/images/minidox.png" alt="Layout"></p>
+<p>The color coding references what the keys will do depending on whether we hold the lower or raise key down.</p>
+<h2 id="why-isnt-this-working">Why isn&rsquo;t this working</h2>
+<p>At this point, everything is flashed and ready to go. I even have some switches installed on the case and the controller. I have enough connected to connect the two boards and see if all the keys work. The dream is that everything works on the first try, and I won&rsquo;t have to desolder anything. I was so wrong. Whenever I connected the two boards with the TRRS jacks, both boards would shut off. Long story short, after a lot of troubleshooting and desoldering the right side PCB not once but TWICE!!! The error could have been avoided if I just read the manual.</p>
+<p><img src="/blog/images/minidox-pcb.jpg" alt="PCB"></p>
+<p>Suppose you decide to build your own mechanical keyboard. In that case, I am sending you all the good vibes that you never have to remove the Pro Micro, at least not for troubleshooting reasons. Isn&rsquo;t this the ugliest thing you&rsquo;ve ever seen?</p>
+<p><img src="/blog/images/minidox-removal.jpg" alt="Fail"></p>
+<h2 id="quick-note-on-cases">Quick note on cases</h2>
+<p>My father-in-law was kind enough to spare his time and material to print the case for my first build. That is very awesome of him. The case was linked earlier, but shout out to designers willing to share your awesome designs with the community.</p>
+<p>Minor spoiler, but in case you don&rsquo;t have access to a 3D printer, you can use Treat Stock to order 3D prints. I don&rsquo;t have any affiliate links or sponsors. I used the service and think it&rsquo;s a neat option. Treat Stock gives you access to a vast list of printers. Think of it like Etsy for 3D prints. This allows you to select whatever color and materials are available.</p>
+<p><img src="/blog/images/minidox-case1.jpg" alt="Case 1"></p>
+<p><img src="/blog/images/minidox-case2.jpg" alt="Case 2"></p>
+<h2 id="rtfm">RTFM</h2>
+<p>Back to my reading the manual thought. After reading the build guide and soldering 30 diodes, I got too confident. So much so that I looked at the build guide but didn&rsquo;t read the not-so-fine print but rather the large print. The right-side controller has to be installed upside down because these PCBs are reversible. I can only blame myself. Just look at this screengrab from the actual build guide.</p>
+<p><img src="/blog/images/pcb-check.png" alt="Case 2"></p>
+<p>When I was desoldering the Pro Micro not once but TWICE, I seriously thought about quitting on this project. At this point it was getting spendy and time consuming. A veteran of building keyboards could probably put this together in under an hour. I was easily over two weekends on this. I pushed through, desoldered the Pro Micro, and soldered everything back into place.</p>
+<h2 id="the-sweet-feeling-of-success">The sweet feeling of success</h2>
+<p>Once everything was back in place, it was time to test again. Although the step back at the time seemed insurmountable, it was now just a funny memory of the past. Seeing it all work is a beautiful thing.</p>
+<p><img src="/blog/images/minidox-test.jpg" alt="Case 2"></p>
+<p><img src="/blog/images/minidox-complete.jpg" alt="Complete"></p>
+<h2 id="would-i-do-it-again">Would I do it again</h2>
+<p>Oddly enough, I had so much fun with the build that I completed the second one in a day or so, this time with no Pro Micro issues!</p>
+<p>I used the Keyboard PE switch pads only on the second build. I cut out three neoprene foam layers to fill the case and improve the sound. If anyone is curious about a sound test, please let me know. I can always update the blog with a small audio clip.</p>
+<p><img src="/blog/images/minidox-pe.jpg" alt="PE"></p>
+<p>Pro Micro is installed correctly on the right side :). I used <a href="https://hippokeys.com/products/gopolar-azure-dragon-v2-tactile-switches">Azure dragon V2</a> switches on the second build.</p>
+<p><img src="/blog/images/minidox-pro.jpg" alt="PE"></p>
+<p>The case for the second build was ordered through Treat Stock in bronze PLA.</p>
+<p><img src="/blog/images/minidox-2.jpg" alt="PE"></p>
+<h2 id="outro">Outro</h2>
+<p>Thank you all for reading this far. It really means a lot. Stepping into the world of mechanical keyboards has been fun. I&rsquo;ll make at least one more Minidox in the future, and after that, who knows. So let me know what you think, and stay safe out there.</p>
+<ul>
+<li>Featured image by <a href="https://unsplash.com/photos/8cVbbGCllOI">Kirk Lai</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>RPKI in the Lab</title>
@@ -7393,7 +7548,7 @@ pip install napalm-aruba-cx
         facts <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>get_interfaces()
         my_file <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps(facts, indent<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
         <span style="color:#66d9ef">return</span> my_file
-</code></pre></div><p>The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The _get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.</p>
+</code></pre></div><p>The second portion of interacting with the networking device is constructing the message. The following method will return a working format to post a file type message in Slack. Notice towards the bottom the “content” key is actually calling the “_get_facts” method above? The_get_facts method is just returning some pretty formatted JSON string that we can then pass into our method to build a slack message.</p>
 <p><code>get_network.py</code></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_file_payload</span>(self):
         <span style="color:#e6db74">&#34;&#34;&#34;

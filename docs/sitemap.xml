@@ -2,6 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://juliopdx.com/2023/04/29/building-my-first-mechanical-keyboard/</loc>
+    <lastmod>2023-04-29T11:14:03-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/keyboard/</loc>
+    <lastmod>2023-04-29T11:14:03-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2023-04-29T11:14:03-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2023-04-29T11:14:03-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/</loc>
+    <lastmod>2023-04-29T11:14:03-07:00</lastmod>
+  </url><url>
     <loc>https://juliopdx.com/tags/arista/</loc>
     <lastmod>2023-01-02T14:18:17-08:00</lastmod>
   </url><url>
@@ -11,19 +26,10 @@
     <loc>https://juliopdx.com/tags/containerlab/</loc>
     <lastmod>2023-01-02T14:18:17-08:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/posts/</loc>
-    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/rpki/</loc>
     <lastmod>2023-01-02T14:18:17-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</loc>
-    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/</loc>
     <lastmod>2023-01-02T14:18:17-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/gcp/</loc>

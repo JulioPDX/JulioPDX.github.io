@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 02 Jan 2023 14:18:17 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 29 Apr 2023 11:14:03 -0700</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building my first mechanical keyboard</title>
+      <link>https://juliopdx.com/2023/04/29/building-my-first-mechanical-keyboard/</link>
+      <pubDate>Sat, 29 Apr 2023 11:14:03 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/2023/04/29/building-my-first-mechanical-keyboard/</guid>
+      <description>Introduction I recently went down the rabbit hole that is mechanical keyboards and, even worse, attempted to build my own. This blog will show you some random dude&amp;rsquo;s journey to making his first mechanical keyboard and avoiding some of my mistakes. I hope you enjoy the blog, and thank you for visiting the site.
+Why build vs. buy Why would you build a keyboard? I mean, you could buy one, right?</description>
+    </item>
+    
     <item>
       <title>RPKI in the Lab</title>
       <link>https://juliopdx.com/2023/01/02/rpki-in-the-lab/</link>
@@ -90,16 +100,6 @@ A while back I mentioned that Containerlab could be an amazing resource in learn
       
       <guid>https://juliopdx.com/2022/01/22/multipoint-redistribution-and-sr-linux/</guid>
       <description>Introduction I’ve been working my way through Optimal Routing Design by Russ White, Don Slice, and Alvaro Retana. It has been a great read so far and I highly recommend it. When I work through a book I usually try and lab up any concept I can, this helps me make it stick as much as possible. Early on in the book the authors mention redistribution and possible issues that can come with doing it at more than one point in the network.</description>
-    </item>
-    
-    <item>
-      <title>Learning a Little About Search Algorithms With Python</title>
-      <link>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</link>
-      <pubDate>Wed, 12 Jan 2022 15:12:30 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2022/01/12/learning-a-little-about-search-algorithms-with-python/</guid>
-      <description>Introduction Hello and thank you for tuning in to another episode. First off, I was recently notified that this blog made it to the Cisco IT Blog Awards final! Pretty wild to think about, but thank you to all those involved. This one is definitely going to be different and out of my comfort zone and I appreciate you sticking with me.
-I have been working through the Introduction to Computer Science course by CS50x (Harvard).</description>
     </item>
     
   </channel>
