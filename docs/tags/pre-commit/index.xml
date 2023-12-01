@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pre-commit on Welcome to the World of Tomorrow</title>
+    <link>https://juliopdx.com/tags/pre-commit/</link>
+    <description>Recent content in pre-commit on Welcome to the World of Tomorrow</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sat, 25 Nov 2023 19:33:45 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/pre-commit/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Network CI and Open Source</title>
+      <link>https://juliopdx.com/2023/11/25/network-ci-and-open-source/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/2023/11/25/network-ci-and-open-source/</guid>
+      <description>Introduction Wow, it&amp;rsquo;s been a long time since my last blog post. I recently attended the first AutoCon event focusing on network automation. Long story short, it was terrific. Check it out and be on the lookout for the next one. Shortly after AutoCon, two community members sprung up with sweet blog posts. My colleague and friend Dan Hertzberg are resurrecting the blog. The first post went over leveraging ygot to create Go structs.</description>
+    </item>
+    
+  </channel>
+</rss>

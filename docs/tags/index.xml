@@ -7,7 +7,70 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 29 Apr 2023 11:14:03 -0700</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 25 Nov 2023 19:33:45 -0800</lastBuildDate><atom:link href="https://juliopdx.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ansible</title>
+      <link>https://juliopdx.com/tags/ansible/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/ansible/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AVD</title>
+      <link>https://juliopdx.com/tags/avd/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/avd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Containerlab</title>
+      <link>https://juliopdx.com/tags/containerlab/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/containerlab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://juliopdx.com/tags/docker/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GitHub</title>
+      <link>https://juliopdx.com/tags/github/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/github/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pre-commit</title>
+      <link>https://juliopdx.com/tags/pre-commit/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/pre-commit/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ruff</title>
+      <link>https://juliopdx.com/tags/ruff/</link>
+      <pubDate>Sat, 25 Nov 2023 19:33:45 -0800</pubDate>
+      
+      <guid>https://juliopdx.com/tags/ruff/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>keyboard</title>
       <link>https://juliopdx.com/tags/keyboard/</link>
@@ -32,69 +95,6 @@
       <pubDate>Mon, 02 Jan 2023 14:18:17 -0800</pubDate>
       
       <guid>https://juliopdx.com/tags/bgp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Containerlab</title>
-      <link>https://juliopdx.com/tags/containerlab/</link>
-      <pubDate>Mon, 02 Jan 2023 14:18:17 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/containerlab/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>RPKI</title>
-      <link>https://juliopdx.com/tags/rpki/</link>
-      <pubDate>Mon, 02 Jan 2023 14:18:17 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/rpki/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>GCP</title>
-      <link>https://juliopdx.com/tags/gcp/</link>
-      <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/gcp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>IaC</title>
-      <link>https://juliopdx.com/tags/iac/</link>
-      <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/iac/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MkDocs</title>
-      <link>https://juliopdx.com/tags/mkdocs/</link>
-      <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/mkdocs/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Pulumi</title>
-      <link>https://juliopdx.com/tags/pulumi/</link>
-      <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/pulumi/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>YAML</title>
-      <link>https://juliopdx.com/tags/yaml/</link>
-      <pubDate>Sun, 06 Nov 2022 14:20:59 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/tags/yaml/</guid>
       <description></description>
     </item>
     
