@@ -50,7 +50,7 @@ I will commit and push this up to our dev branch.
 
 ![Pipe Fail](/blog/images/pipe_fail.png)
 
-The Black format check has failed and listed what files would need to be updated. This is very useful to maintain some set standards for yourself or the team on the code style you choose to follow. Below is an example of a success, in this case I have updated that new Python file. Another option to add in this step is something like [Pylint](https://pylint.org/). At this time I have not added this to the pipeline but I encourage the reader to check it out. Pylint will go as far as giving the code a score and provide improvement options.
+The Black format check has failed and listed what files would need to be updated. This is very useful to maintain some set standards for yourself or the team on the code style you choose to follow. Below is an example of a success, in this case I have updated that new Python file. Another option to add in this step is something like Pylint. At this time I have not added this to the pipeline but I encourage the reader to check it out. Pylint will go as far as giving the code a score and provide improvement options.
 
 `my_list.py updated`
 

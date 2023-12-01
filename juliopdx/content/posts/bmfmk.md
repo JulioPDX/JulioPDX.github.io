@@ -206,7 +206,7 @@ I used the Keyboard PE switch pads only on the second build. I cut out three neo
 
 ![PE](/blog/images/minidox-pe.jpg)
 
-Pro Micro is installed correctly on the right side :). I used [Azure dragon V2](https://hippokeys.com/products/gopolar-azure-dragon-v2-tactile-switches) switches on the second build.
+Pro Micro is installed correctly on the right side :). I used Azure dragon V2 switches on the second build.
 
 ![PE](/blog/images/minidox-pro.jpg)
 
