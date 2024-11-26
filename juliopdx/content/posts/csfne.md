@@ -1,7 +1,7 @@
 ---
 title: "Codespaces for Network Engineers and Educators"
 date: 2024-11-25T15:08:58-07:00
-draft: false
+draft: true
 toc: true
 mermaid: true
 images:
