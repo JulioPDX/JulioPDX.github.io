@@ -11,6 +11,7 @@ tags:
   - GitHub
   - Arista
   - Marp
+  - Containerlab
 ---
 
 ## Introduction
@@ -53,7 +54,7 @@ Below is an example of our Codespaces project. I'll go over most files to get yo
 └── topo.yml
 ```
 
-### .devcontainer
+### .devcontainer/devcontainer.json
 
 The .devcontainer directory will host most of our workflow for this environment. For starters we have a `devcontainer.json` file. If your project didn't require a lot of extra tooling (maybe a Python project), the file could look something like the following.
 
@@ -98,28 +99,19 @@ The example above is using a pre-built container image hosted by Microsoft. In t
             ]
         }
     },
-    "mounts": [
-        "source=clab-vscode-home-dir,target=/home/vscode,type=volume",
-        "source=clab-docker-root-config,target=/root/.docker,type=volume",
-        "target=/home/vscode/.vscode-server,type=volume"
-    ],
     "postCreateCommand": "postCreate.sh",
     "postStartCommand": "sudo clab deploy -t topo.yml --reconfigure"
 }
 ```
 
-#### build and a Dockerfile
+### build and a Dockerfile
 
-The first portion of the JSON file calls out a build step. We are not using a pre-built container image to load our environment. We will load a Dockerfile local to our project to spin up the environment and install the required tooling. We could in theory build our container image outside of this workflow and call it with the `image` key you saw earlier. Below is a quick view of our `Dockerfile` file.
+The first portion of the JSON file calls out a build step. We are not using a pre-built container image to load our environment. We will load a Dockerfile local to our project to spin up the environment and install the required tooling. We could in theory build our container image outside of this workflow and call it with the `image` key you saw earlier. Below is a quick view of our `Dockerfile`.
 
 ```Docker
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
 ARG CEOS_LAB_VERSION_ARG
-
-# Set permissions for mounts in devcontainer.json
-RUN mkdir -p /home/vscode/.vscode-server/bin
-RUN chown -R vscode:vscode /home/vscode/.vscode-server
 
 ENV CEOS_LAB_VERSION=${CEOS_LAB_VERSION_ARG}
 
@@ -151,13 +143,12 @@ In summary, this file is performing the following:
 
 - Start FROM the base Ubuntu image hosted by Microsoft
 - We use the ARG key to pass data into the build environment (in our case this comes from the `.devcontainer.json` file)
-- We RUN a set of commands to set permissions for volumes that will be mounted in our `.devcontainer.json` file.
 - We then set an ENV variable that will be available within the container (notice that we pass along the ARG we set earlier)
 - We then RUN a set of commands to install basic tooling like ping and Python3.
 - We then COPY a file called `postCreate.sh` (more on this later)
 - Towards the end we have one more RUN command, this ensures we have [Containerlab](https://containerlab.dev/) and [eos-downloader](https://github.com/titom73/eos-downloader) installed in our environment
 
-#### hostRequirements
+### hostRequirements
 
 When starting a Codespace, you have the option to size it to one of the option given to us by GitHub. The `hostRequirements` key allows us to set minimum values that are required to run this lab. If you don't have the option to use a larger Codespace, this may require contacting them to give you access to larger images (still free but uses more free credits per month).
 
@@ -169,7 +160,7 @@ When starting a Codespace, you have the option to size it to one of the option g
     },
 ```
 
-#### containerEnv and secrets
+### containerEnv and secrets
 
 I'll combine these two sections. `contanierEnv` sets environment variables that our container will have access to. One is used as a token to download our Arista cEOS images. If you would like to leverage the Codespace in this example, please create an account with a business email on [arista.com](https://www.arista.com/en/) (free). The other variable will be used in a future workflow to specify which image we would like to download.
 
@@ -189,17 +180,124 @@ The `ARTOKEN` secret will be available to our container or future `.devcontainer
 
 ![ARTOKEN set](/blog/images/csfne/csfne-artoken.png)
 
-### Installing tools
+### features
 
-### Lab Container Images
+`features` is another incredible feature of Codespaces and devcontainers. We can essentially tell our environment what extra features we would like installed. Think of these as premade scripts that handle the install for us. We add the GitHub CLI feature to simplify our future workflows. Maybe the students aren't git wizards and need a more simple interface to interact with git. We also install the `docker-in-docker` feature to allow us to work with Containerlab. Features are incredibly powerful, if you would like to see a list of features, please see the [official documentation](https://containers.dev/features).
 
-### Making it Look Pretty
+```json
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+```
 
-### Extensions
+### customizations.vscode.extensions
 
-### Styling
+These extensions allow us to extend the functionality or look of VS Code. In this case I am adding my current favorite theme extensions: `catppuccin`. If you were say a University or Company, you could create a custom extension with your own styling. I also load a terminals extension that will give our students the ability to quickly open terminals to the different nodes in the environment. I also install the Marp extension but more on that later.
+
+```json
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "catppuccin.catppuccin-vsc",
+                "catppuccin.catppuccin-vsc-icons",
+                "fabiospampinato.vscode-terminals",
+                "marp-team.marp-vscode"
+            ]
+        }
+    },
+```
+
+### .vscode/settings.json
+
+A small break to take a look at our `settings.json` file. Again this can be very deep and complicated but for this example we kept it as simple as possible.
+
+```json
+{
+    "workbench.colorTheme": "Catppuccin Frappé",
+    "workbench.iconTheme": "catppuccin-frappe",
+    "markdown.marp.themes": [
+        "https://raw.githubusercontent.com/mastern2k3/marpit-nord-theme/master/build/nord-theme.css"
+    ]
+}
+```
+
+Here we set the theme of our VS Code instance and our icon theme. We also set our Marp theme (again explained in a moment). The final version has a lof more Marp themes but that was more for exploration and testing.
+
+### .vscode/terminals.json
+
+Another small break, the code block below shows the configuration definition of our Terminals extension. We set the extension to not autorun and then define the terminals as a list of dictionaries. We can then provide some basic information like the name, icon, color, and command to run on the new terminal. The image below shows an example when running `Terminals: Run` from the Codespaces command palette.
+
+```json
+{
+    "autorun": false,
+    "autokill": true,
+    "terminals": [
+      {
+        "name": "r1",
+        "description": "r1 view",
+        "icon": "code",
+        "color": "terminal.ansiBlue",
+        "command": "ssh student@r1",
+        "recycle": false,
+        "open": true,
+        "focus": true
+      },
+      {
+        "name": "r2",
+        "description": "r2 view",
+        "icon": "code",
+        "color": "terminal.ansiRed",
+        "command": "ssh student@r2",
+        "recycle": false,
+        "open": true,
+        "focus": false
+      }
+    ]
+}
+```
+
+The gif below shows an example when running `'cmd/ctrl+alt+t'` from VS Code to connect to any pre-defined terminal or running `Terminals:run` to connect to all defined terminals.
+
+![Terminals extension gif](/blog/images/csfne/csfne-terminals.gif)
+
+### postCreateCommand
+
+The following portion will run after the container has finished building. Nothing too fancy, we are essentially using eos-downloader to get a specific version of cEOS and having it run the Docker import step for us. We then immediately tag the image with `ceos:latest`.
+
+```json
+    "postCreateCommand": "postCreate.sh",
+```
+
+```bash
+#!/usr/bin/env bash
+
+set +e
+
+ardl get eos --image-type cEOS --version ${CEOS_LAB_VERSION} --import-docker
+docker tag arista/ceos:${CEOS_LAB_VERSION} ceos:latest
+
+```
+
+### postStartCommand
+
+We made it to the final portion of the Codespace build, deploying the lab. No surprise here as we are running the Containerlab deploy command to ensure our cEOS nodes are running. We run it with the `--reconfigure` flag to ensure we have no issues when the Codespace shuts down and turns back on.
+
+The only things of note here is that we created startup configurations to set management network stuff in a separate VRF and a student user that did not require passwords to connect. Those can be seen in the `startup` directory.
+
+```json
+    "postStartCommand": "sudo clab deploy -t topo.yml --reconfigure"
+```
+
+You can see some of the Containerlab output in the Gif above.
 
 ## Slides with Marp
+
+We are almost there. We now have an environment to learn about networking concepts or maybe even network automation. In my mind an instructor needs a tool to present this information. Again, I love a good README but giving that to a student and telling them "good luck" is going to have a wide degree of results.
+
+In comes Marp. Marp tags itself as a Markdown Presentation Ecosystem. That sounds fancy but at its core it allows us to write presentations in Markdown format. I wrote about a distant relative [slidev](https://juliopdx.com/2022/11/01/slidev/) in an earlier blog. For this example I felt slidev was a bit heavy and all that I needed to get Marp going was a VS Code extension.
+
+Below is an example of the slides when rendered within the Codespace. You can find this presentation in `ne101/01-routing-ospf/lesson.md` file.
 
 ## An Example Lesson
 
