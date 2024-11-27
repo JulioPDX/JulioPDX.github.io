@@ -165,6 +165,8 @@ When starting a Codespace, you can size it to one of the options given to us by 
 
 I'll combine these two sections. `contanierEnv` sets environment variables to which our container will have access. One is used as a token to download our Arista cEOS images. If you would like to leverage the Codespace in this example, please create an account with a business email on [arista.com](https://www.arista.com/en/) (free). The other variable will be used in a future workflow to specify which image we would like to download.
 
+> It's been brought to my attention that Arista customers who register will get a token to download images. Apologies for the confusion.
+
 ```json
     "containerEnv": {
         "ARISTA_TOKEN": "${localEnv:ARTOKEN}",

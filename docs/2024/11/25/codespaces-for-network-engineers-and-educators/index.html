@@ -46,7 +46,7 @@ This blog is going to take a bit of a turn. I usually write in the form of a too
 <meta itemprop="description" content="Introduction Can you believe it&rsquo;s been almost a year since my last blog? It&rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&rsquo;t thank you enough for all the support and encouragement I&rsquo;ve received on this journey.
 This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &ldquo;This is incredible; more people should know about it."><meta itemprop="datePublished" content="2024-11-25T15:08:58-07:00" />
 <meta itemprop="dateModified" content="2024-11-25T15:08:58-07:00" />
-<meta itemprop="wordCount" content="1965"><meta itemprop="image" content="https://juliopdx.com/blog/images/csfne/yanapi-senaud.jpg">
+<meta itemprop="wordCount" content="1987"><meta itemprop="image" content="https://juliopdx.com/blog/images/csfne/yanapi-senaud.jpg">
 <meta itemprop="keywords" content="OSPF,GitHub,Arista,Marp,Containerlab,VSCode," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://juliopdx.com/blog/images/csfne/yanapi-senaud.jpg"/>
@@ -305,6 +305,9 @@ This blog is going to take a bit of a turn. I usually write in the form of a too
     }<span style="color:#960050;background-color:#1e0010">,</span>
 </code></pre></div><h3 id="containerenv-and-secrets">containerEnv and secrets</h3>
 <p>I&rsquo;ll combine these two sections. <code>contanierEnv</code> sets environment variables to which our container will have access. One is used as a token to download our Arista cEOS images. If you would like to leverage the Codespace in this example, please create an account with a business email on <a href="https://www.arista.com/en/">arista.com</a> (free). The other variable will be used in a future workflow to specify which image we would like to download.</p>
+<blockquote>
+<p>It&rsquo;s been brought to my attention that Arista customers who register will get a token to download images. Apologies for the confusion.</p>
+</blockquote>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;containerEnv&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
         <span style="color:#f92672">&#34;ARISTA_TOKEN&#34;</span>: <span style="color:#e6db74">&#34;${localEnv:ARTOKEN}&#34;</span>,
         <span style="color:#f92672">&#34;CEOS_LAB_VERSION&#34;</span>: <span style="color:#e6db74">&#34;4.32.2.1F&#34;</span>
@@ -434,7 +437,7 @@ docker tag arista/ceos:<span style="color:#e6db74">${</span>CEOS_LAB_VERSION<spa
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1965 Words
+        1987 Words
       </p>
 
       <p>
