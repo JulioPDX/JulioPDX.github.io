@@ -2,25 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://juliopdx.com/tags/arista/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/containerlab/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/github/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/marp/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/ospf/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/vscode/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/</loc>
+    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+  </url><url>
     <loc>https://juliopdx.com/tags/ansible/</loc>
     <lastmod>2023-11-25T19:33:45-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/avd/</loc>
     <lastmod>2023-11-25T19:33:45-08:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/tags/containerlab/</loc>
-    <lastmod>2023-11-25T19:33:45-08:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/docker/</loc>
     <lastmod>2023-11-25T19:33:45-08:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/tags/github/</loc>
-    <lastmod>2023-11-25T19:33:45-08:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/2023/11/25/network-ci-and-open-source/</loc>
-    <lastmod>2023-11-25T19:33:45-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/posts/</loc>
     <lastmod>2023-11-25T19:33:45-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/pre-commit/</loc>
@@ -29,20 +50,11 @@
     <loc>https://juliopdx.com/tags/ruff/</loc>
     <lastmod>2023-11-25T19:33:45-08:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2023-11-25T19:33:45-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/</loc>
-    <lastmod>2023-11-25T19:33:45-08:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/2023/04/29/building-my-first-mechanical-keyboard/</loc>
     <lastmod>2023-04-29T11:14:03-07:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/keyboard/</loc>
     <lastmod>2023-04-29T11:14:03-07:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/arista/</loc>
-    <lastmod>2023-01-02T14:18:17-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/bgp/</loc>
     <lastmod>2023-01-02T14:18:17-08:00</lastmod>
@@ -93,9 +105,6 @@
     <lastmod>2022-02-13T21:07:43-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/2022/02/13/network-simulation-tools-and-containerlab/</loc>
-    <lastmod>2022-02-13T21:07:43-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/ospf/</loc>
     <lastmod>2022-02-13T21:07:43-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</loc>

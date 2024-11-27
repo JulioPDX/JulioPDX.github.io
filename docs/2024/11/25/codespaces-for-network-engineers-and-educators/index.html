@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author"
+    content="">
+<meta name="description"
+    content="Introduction Can you believe it&amp;rsquo;s been almost a year since my last blog? It&amp;rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&amp;rsquo;t thank you enough for all the support and encouragement I&amp;rsquo;ve received on this journey.
+This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &amp;ldquo;This is incredible; more people should know about it." />
+<meta name="keywords"
+    content=", OSPF, GitHub, Arista, Marp, Containerlab, VSCode" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/" />
+
+
+<title>
+    
+    Codespaces for Network Engineers and Educators :: Welcome to the World of Tomorrow  — Welcome to my blog!
+    
+</title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.57323f540d7cbe7c215b2d5060bc45c58f58b905f86869d7183bb27c42937f00.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Codespaces for Network Engineers and Educators">
+<meta itemprop="description" content="Introduction Can you believe it&rsquo;s been almost a year since my last blog? It&rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&rsquo;t thank you enough for all the support and encouragement I&rsquo;ve received on this journey.
+This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &ldquo;This is incredible; more people should know about it."><meta itemprop="datePublished" content="2024-11-25T15:08:58-07:00" />
+<meta itemprop="dateModified" content="2024-11-25T15:08:58-07:00" />
+<meta itemprop="wordCount" content="1965"><meta itemprop="image" content="https://juliopdx.com/blog/images/csfne/yanapi-senaud.jpg">
+<meta itemprop="keywords" content="OSPF,GitHub,Arista,Marp,Containerlab,VSCode," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.com/blog/images/csfne/yanapi-senaud.jpg"/>
+
+<meta name="twitter:title" content="Codespaces for Network Engineers and Educators"/>
+<meta name="twitter:description" content="Introduction Can you believe it&rsquo;s been almost a year since my last blog? It&rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&rsquo;t thank you enough for all the support and encouragement I&rsquo;ve received on this journey.
+This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &ldquo;This is incredible; more people should know about it."/>
+
+
+
+<meta property="og:title" content="Codespaces for Network Engineers and Educators" />
+<meta property="og:description" content="Introduction Can you believe it&rsquo;s been almost a year since my last blog? It&rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&rsquo;t thank you enough for all the support and encouragement I&rsquo;ve received on this journey.
+This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &ldquo;This is incredible; more people should know about it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/" /><meta property="og:image" content="https://juliopdx.com/blog/images/csfne/yanapi-senaud.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-11-25T15:08:58-07:00" />
+<meta property="article:modified_time" content="2024-11-25T15:08:58-07:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
+
+
+
+
+
+
+<meta property="article:published_time" content="2024-11-25 15:08:58 -0700 -0700" />
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: 'dark', align: 'center' });</script>
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">#</span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#41FF00;
+                   animation-duration:2s;">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        10 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/">Codespaces for Network Engineers and Educators</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#the-idea-behind-codespaces">The Idea Behind Codespaces</a></li>
+    <li><a href="#codespaces-for-network-engineers-and-educators">Codespaces for Network Engineers and Educators</a></li>
+    <li><a href="#building-a-codespace">Building a Codespace</a>
+      <ul>
+        <li><a href="#devcontainerdevcontainerjson">.devcontainer/devcontainer.json</a></li>
+        <li><a href="#build-and-a-dockerfile">build and a Dockerfile</a></li>
+        <li><a href="#hostrequirements">hostRequirements</a></li>
+        <li><a href="#containerenv-and-secrets">containerEnv and secrets</a></li>
+        <li><a href="#features">features</a></li>
+        <li><a href="#customizationsvscodeextensions">customizations.vscode.extensions</a></li>
+        <li><a href="#vscodesettingsjson">.vscode/settings.json</a></li>
+        <li><a href="#vscodeterminalsjson">.vscode/terminals.json</a></li>
+        <li><a href="#postcreatecommand">postCreateCommand</a></li>
+        <li><a href="#poststartcommand">postStartCommand</a></li>
+      </ul>
+    </li>
+    <li><a href="#slides-with-marp">Slides with Marp</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>Can you believe it&rsquo;s been almost a year since my last blog? It&rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&rsquo;t thank you enough for all the support and encouragement I&rsquo;ve received on this journey.</p>
+<p>This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &ldquo;This is incredible; more people should know about it.&rdquo; My other perspective is, &ldquo;Can I explain this thing in a somewhat more consumable way.&rdquo; This stems from the idea that to really challenge your understanding, teach.</p>
+<p>Teaching leads us to the idea behind this blog. I was recently at AutoCon 2 by <a href="https://networkautomation.forum/">Network Automation Forum</a> (great event) and I met an interesting individual from New Mexico. I won&rsquo;t say their name publicly, but let&rsquo;s call them Bob for this blog. Bob is an instructor at a college and teaches future engineers about all things networking. Their students go through Introductory courses (think CCNA level). However, Bob has an interesting challenge: they want their students to continue learning advanced networking concepts. Bob has a tight budget (if any) and would like to avoid managing a fleet of resources to manage students' lab environments.</p>
+<p>You all know Containerlab was at the forefront of my mind. Containerlab and a concept a colleague of mine has been working on to build reproducible labs with GitHub Codespaces got my brain spinning on a possible solution for Bob and their students.</p>
+<h2 id="the-idea-behind-codespaces">The Idea Behind Codespaces</h2>
+<p>Some of you may be wondering, &ldquo;What a Codespace?&rdquo; Think of a Codespace as an environment running on GitHub&rsquo;s infrastructure. Another way to look at it is like a portable development environment that can be accessed by a web browser. In its most basic form, all you need to access a Codespace is a GitHub account (free), computer, and internet access. Please see the <a href="https://github.com/features/codespaces">official documentation</a> for more information. The image below was inspired by the official documentation. In this example, our Codespace would be the box highlighted in red.</p>
+<p><img src="/blog/images/csfne/d2-codespace.svg" alt="Codespaces infrastructure image"></p>
+<h2 id="codespaces-for-network-engineers-and-educators">Codespaces for Network Engineers and Educators</h2>
+<p>I started pondering what a Network Engineer and Educator would need in a Codespace. We would definitely need network nodes in the environment. Reading about concepts is excellent, but seeing them come to life is even more powerful. We should also make the environment easy to use for anyone at any stage of their journey. Because styling is life, it must be pretty. Lastly, we need to be able to present the information to students in something other than a README file (even though I love a good README).</p>
+<h2 id="building-a-codespace">Building a Codespace</h2>
+<p>Below is an example of our Codespaces (link at the bottom of the blog) project. I&rsquo;ll go over most of the files to give you an idea of how to build an environment like this.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">&gt; tree
+.
+├── .devcontainer
+│   ├── devcontainer.json
+│   └── Dockerfile
+│   └── postCreate.sh
+├── ne101
+│   └── 01-routing-ospf
+│       └── lesson.md
+├── startup
+│   ├── r1.cfg
+│   └── r2.cfg
+└── topo.yml
+</code></pre></div><h3 id="devcontainerdevcontainerjson">.devcontainer/devcontainer.json</h3>
+<p>The .devcontainer directory will host most of our workflow for this environment. For starters, we have a <code>devcontainer.json</code> file. If your project didn&rsquo;t require a lot of extra tooling (maybe a Python project), the file could look something like the following.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#75715e">// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+</span><span style="color:#75715e"></span>{
+  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Python 3&#34;</span>,
+  <span style="color:#f92672">&#34;image&#34;</span>: <span style="color:#e6db74">&#34;mcr.microsoft.com/devcontainers/python:0-3.11-bullseye&#34;</span>,
+}
+</code></pre></div><p>The example above is using a pre-built container image hosted by Microsoft. In this case, the project is leveraging Python 3.11. The example below provides a more in-depth and realistic view of a <code>.devcontainer.json</code> file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;build&#34;</span>: { <span style="color:#f92672">&#34;dockerfile&#34;</span>: <span style="color:#e6db74">&#34;Dockerfile&#34;</span> },
+    <span style="color:#f92672">&#34;hostRequirements&#34;</span>: {
+        <span style="color:#f92672">&#34;cpus&#34;</span>: <span style="color:#ae81ff">4</span>,
+        <span style="color:#f92672">&#34;memory&#34;</span>: <span style="color:#e6db74">&#34;16gb&#34;</span>,
+        <span style="color:#f92672">&#34;storage&#34;</span>: <span style="color:#e6db74">&#34;32gb&#34;</span>
+    },
+    <span style="color:#f92672">&#34;containerEnv&#34;</span>: {
+        <span style="color:#f92672">&#34;ARISTA_TOKEN&#34;</span>: <span style="color:#e6db74">&#34;${localEnv:ARTOKEN}&#34;</span>,
+        <span style="color:#f92672">&#34;CEOS_LAB_VERSION&#34;</span>: <span style="color:#e6db74">&#34;4.32.2.1F&#34;</span>
+    },
+    <span style="color:#f92672">&#34;features&#34;</span>: {
+        <span style="color:#f92672">&#34;ghcr.io/devcontainers/features/github-cli:1&#34;</span>: {},
+        <span style="color:#f92672">&#34;ghcr.io/devcontainers/features/docker-in-docker:2&#34;</span>: {}
+    },
+    <span style="color:#f92672">&#34;secrets&#34;</span>: {
+        <span style="color:#f92672">&#34;ARTOKEN&#34;</span>: {
+            <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;token to auto-download EOS images from arista.com.&#34;</span>
+        }
+    },
+    <span style="color:#f92672">&#34;customizations&#34;</span>: {
+        <span style="color:#f92672">&#34;vscode&#34;</span>: {
+            <span style="color:#f92672">&#34;extensions&#34;</span>: [
+                <span style="color:#e6db74">&#34;catppuccin.catppuccin-vsc&#34;</span>,
+                <span style="color:#e6db74">&#34;catppuccin.catppuccin-vsc-icons&#34;</span>,
+                <span style="color:#e6db74">&#34;fabiospampinato.vscode-terminals&#34;</span>,
+                <span style="color:#e6db74">&#34;marp-team.marp-vscode&#34;</span>
+            ]
+        }
+    },
+    <span style="color:#f92672">&#34;postCreateCommand&#34;</span>: <span style="color:#e6db74">&#34;postCreate.sh&#34;</span>,
+    <span style="color:#f92672">&#34;postStartCommand&#34;</span>: <span style="color:#e6db74">&#34;sudo clab deploy -t topo.yml --reconfigure&#34;</span>
+}
+</code></pre></div><h3 id="build-and-a-dockerfile">build and a Dockerfile</h3>
+<p>The first portion of the JSON file calls out a build step. We are not using a pre-built container image to load our environment. We will load a Dockerfile locally for our project to spin up the environment and install the required tooling. We could, in theory, build our container image outside of this workflow and call it with the <code>image</code> key you saw earlier. Below is a quick view of our <code>Dockerfile</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Docker" data-lang="Docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/devcontainers/base:ubuntu</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ARG</span> CEOS_LAB_VERSION_ARG<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> CEOS_LAB_VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>CEOS_LAB_VERSION_ARG<span style="color:#e6db74">}</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># install some basic tools inside the container</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> apt-get update <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> apt-get install -y --no-install-recommends <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    sshpass <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    iputils-ping <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    htop <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    python3 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    python3-pip <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> rm -rf /var/lib/apt/lists/* <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> rm -Rf /usr/share/doc <span style="color:#f92672">&amp;&amp;</span> rm -Rf /usr/share/man <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> apt-get clean<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># copy postCreate script</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> ./postCreate.sh /bin/postCreate.sh<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> chmod +x /bin/postCreate.sh<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">USER</span><span style="color:#e6db74"> vscode</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># install the latest containerlab and eos-downloader</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> bash -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -sL https://get.containerlab.dev<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> pip3 install --user <span style="color:#e6db74">&#34;eos-downloader&gt;=0.10.1&#34;</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>In summary, this file is performing the following:</p>
+<ul>
+<li>Start FROM the base Ubuntu image hosted by Microsoft</li>
+<li>We use the ARG key to pass data into the build environment (in our case this comes from the <code>.devcontainer.json</code> file)</li>
+<li>We then set an ENV variable that will be available within the container (notice that we pass along the ARG we set earlier)</li>
+<li>We then RUN a set of commands to install basic tooling like ping and Python3.</li>
+<li>We then COPY a file called <code>postCreate.sh</code> (more on this later) and make it executable</li>
+<li>Towards the end, we have one more RUN command; this ensures we have <a href="https://containerlab.dev/">Containerlab</a> and <a href="https://github.com/titom73/eos-downloader">eos-downloader</a> installed in our environment</li>
+</ul>
+<h3 id="hostrequirements">hostRequirements</h3>
+<p>When starting a Codespace, you can size it to one of the options given to us by GitHub. The <code>hostRequirements</code> key allows us to set the minimum values required to run this lab. Suppose you don&rsquo;t have the option to use a larger Codespace. In that case, you may need to contact GitHub to give you access to larger images (still free but uses more free credits per month).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;hostRequirements&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+        <span style="color:#f92672">&#34;cpus&#34;</span>: <span style="color:#ae81ff">4</span>,
+        <span style="color:#f92672">&#34;memory&#34;</span>: <span style="color:#e6db74">&#34;16gb&#34;</span>,
+        <span style="color:#f92672">&#34;storage&#34;</span>: <span style="color:#e6db74">&#34;32gb&#34;</span>
+    }<span style="color:#960050;background-color:#1e0010">,</span>
+</code></pre></div><h3 id="containerenv-and-secrets">containerEnv and secrets</h3>
+<p>I&rsquo;ll combine these two sections. <code>contanierEnv</code> sets environment variables to which our container will have access. One is used as a token to download our Arista cEOS images. If you would like to leverage the Codespace in this example, please create an account with a business email on <a href="https://www.arista.com/en/">arista.com</a> (free). The other variable will be used in a future workflow to specify which image we would like to download.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;containerEnv&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+        <span style="color:#f92672">&#34;ARISTA_TOKEN&#34;</span>: <span style="color:#e6db74">&#34;${localEnv:ARTOKEN}&#34;</span>,
+        <span style="color:#f92672">&#34;CEOS_LAB_VERSION&#34;</span>: <span style="color:#e6db74">&#34;4.32.2.1F&#34;</span>
+    }<span style="color:#960050;background-color:#1e0010">,</span>
+    <span style="color:#e6db74">&#34;secrets&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+        <span style="color:#f92672">&#34;ARTOKEN&#34;</span>: {
+            <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;token to auto-download EOS images from arista.com.&#34;</span>
+        }
+    }<span style="color:#960050;background-color:#1e0010">,</span>
+</code></pre></div><p>The <code>ARTOKEN</code> secret will be available to our container in future workflows. The screenshot below shows an example before setting any value for <code>ARTOKEN</code>.</p>
+<p><img src="/blog/images/csfne/csfne-artoken.png" alt="ARTOKEN set"></p>
+<h3 id="features">features</h3>
+<p><code>features</code> is another incredible feature of Codespaces and devcontainers. We can tell our environment what extra features we want to install. Think of these as pre-made scripts that handle the installation for us. We add the GitHub CLI feature to simplify our future workflows. Maybe the students aren&rsquo;t Git wizards and need a more straightforward interface to interact with Git. We also install the <code>docker-in-docker</code> feature to allow us to work with Containerlab. Features are incredibly powerful; if you want to see a list of features, please see the <a href="https://containers.dev/features">official documentation</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;features&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+        <span style="color:#f92672">&#34;ghcr.io/devcontainers/features/github-cli:1&#34;</span>: {},
+        <span style="color:#f92672">&#34;ghcr.io/devcontainers/features/docker-in-docker:2&#34;</span>: {}
+    }<span style="color:#960050;background-color:#1e0010">,</span>
+</code></pre></div><h3 id="customizationsvscodeextensions">customizations.vscode.extensions</h3>
+<p>These extensions allow us to extend the functionality or look of VS Code. I am adding my current favorite theme extension: <code>catppuccin</code>. If you were a University or Company, you could create a custom extension with your own styling. I also load a terminals extension that will give our students the ability to quickly open terminals to the different nodes in the environment. I also install the Marp extension, but more on that later.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;customizations&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+        <span style="color:#f92672">&#34;vscode&#34;</span>: {
+            <span style="color:#f92672">&#34;extensions&#34;</span>: [
+                <span style="color:#e6db74">&#34;catppuccin.catppuccin-vsc&#34;</span>,
+                <span style="color:#e6db74">&#34;catppuccin.catppuccin-vsc-icons&#34;</span>,
+                <span style="color:#e6db74">&#34;fabiospampinato.vscode-terminals&#34;</span>,
+                <span style="color:#e6db74">&#34;marp-team.marp-vscode&#34;</span>
+            ]
+        }
+    }<span style="color:#960050;background-color:#1e0010">,</span>
+</code></pre></div><h3 id="vscodesettingsjson">.vscode/settings.json</h3>
+<p>We&rsquo;re taking a small break to look at our settings.json file. Again, this can be very deep and complicated, but for this example, we kept it as simple as possible.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;workbench.colorTheme&#34;</span>: <span style="color:#e6db74">&#34;Catppuccin Frappé&#34;</span>,
+    <span style="color:#f92672">&#34;workbench.iconTheme&#34;</span>: <span style="color:#e6db74">&#34;catppuccin-frappe&#34;</span>,
+    <span style="color:#f92672">&#34;markdown.marp.themes&#34;</span>: [
+        <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/mastern2k3/marpit-nord-theme/master/build/nord-theme.css&#34;</span>
+    ]
+}
+</code></pre></div><p>Here, we set the theme of our VS Code instance and icon theme. We also set our Marp theme (again, explained in a moment). The final version has a few more Marp themes, but that was more for exploration and testing.</p>
+<h3 id="vscodeterminalsjson">.vscode/terminals.json</h3>
+<p>Another small break, the code block below shows the configuration of our Terminals extension. We set the extension to not autorun and then defined the terminals as a list of dictionaries. We can then provide basic information like the name, icon, color, and command to run on the new terminal.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;autorun&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;autokill&#34;</span>: <span style="color:#66d9ef">true</span>,
+    <span style="color:#f92672">&#34;terminals&#34;</span>: [
+      {
+        <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;r1&#34;</span>,
+        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;r1 view&#34;</span>,
+        <span style="color:#f92672">&#34;icon&#34;</span>: <span style="color:#e6db74">&#34;code&#34;</span>,
+        <span style="color:#f92672">&#34;color&#34;</span>: <span style="color:#e6db74">&#34;terminal.ansiBlue&#34;</span>,
+        <span style="color:#f92672">&#34;command&#34;</span>: <span style="color:#e6db74">&#34;ssh student@r1&#34;</span>,
+        <span style="color:#f92672">&#34;recycle&#34;</span>: <span style="color:#66d9ef">false</span>,
+        <span style="color:#f92672">&#34;open&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;focus&#34;</span>: <span style="color:#66d9ef">true</span>
+      },
+      {
+        <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;r2&#34;</span>,
+        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;r2 view&#34;</span>,
+        <span style="color:#f92672">&#34;icon&#34;</span>: <span style="color:#e6db74">&#34;code&#34;</span>,
+        <span style="color:#f92672">&#34;color&#34;</span>: <span style="color:#e6db74">&#34;terminal.ansiRed&#34;</span>,
+        <span style="color:#f92672">&#34;command&#34;</span>: <span style="color:#e6db74">&#34;ssh student@r2&#34;</span>,
+        <span style="color:#f92672">&#34;recycle&#34;</span>: <span style="color:#66d9ef">false</span>,
+        <span style="color:#f92672">&#34;open&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;focus&#34;</span>: <span style="color:#66d9ef">false</span>
+      }
+    ]
+}
+</code></pre></div><p>The GIF below shows an example of running <code>'cmd/ctrl+alt+t'</code> from VS Code to connect to any pre-defined terminal or running <code>Terminals:run</code> to connect to all defined terminals.</p>
+<p><img src="https://media.giphy.com/media/qBY7dCwzj4oqTsIU2T/giphy.gif" alt="Terminals extension GIF"></p>
+<h3 id="postcreatecommand">postCreateCommand</h3>
+<p>The following portion will run after the container has finished building. Nothing too fancy; we are using eos-downloader to get a specific version of cEOS and have it run the Docker import step. We then immediately tag the image with <code>ceos:latest</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;postCreateCommand&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;postCreate.sh&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+set +e
+
+ardl get eos --image-type cEOS --version <span style="color:#e6db74">${</span>CEOS_LAB_VERSION<span style="color:#e6db74">}</span> --import-docker
+docker tag arista/ceos:<span style="color:#e6db74">${</span>CEOS_LAB_VERSION<span style="color:#e6db74">}</span> ceos:latest
+
+</code></pre></div><h3 id="poststartcommand">postStartCommand</h3>
+<p>We made it to the final portion of the Codespace build, how we deployed the lab. This is no surprise, as we are running the Containerlab deploy command to ensure our cEOS nodes are running. We run it with the <code>--reconfigure</code> flag to ensure we have no issues when the Codespace shuts down and turns back on.</p>
+<p>The only thing of note here is that we created startup configurations to set management network stuff in a separate VRF and a student user that did not require passwords to connect. Those can be seen in the <code>startup</code> directory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">    <span style="color:#e6db74">&#34;postStartCommand&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;sudo clab deploy -t topo.yml --reconfigure&#34;</span>
+</code></pre></div><p>You can see some of the Containerlab output in the GIF above.</p>
+<h2 id="slides-with-marp">Slides with Marp</h2>
+<p>We are almost there. We now have an environment to learn about networking concepts or even network automation. An instructor needs a tool to present this information. Again, I love a good README, but giving that to a student and telling them &ldquo;good luck&rdquo; is going to have a wide range of results.</p>
+<p>In comes Marp, Which tags itself as a Markdown Presentation Ecosystem. That sounds fancy, but at its core, it allows us to write presentations in Markdown format. I wrote about a distant relative, <a href="https://juliopdx.com/2022/11/01/slidev/">slidev</a>, in an earlier blog. For this example, I felt slidev was a bit heavy, and all that I needed to get Marp going was a VS Code extension.</p>
+<p>Below is an example of the slides when rendered within the Codespace. To view this presentation, we just hit &ldquo;preview&rdquo; on the markdown file like we would any file in VS Code. You can find this presentation in the <code>ne101/01-routing-ospf/lesson.md</code> file. If you started the Codespace, feel free to follow along with the lesson.</p>
+<p><img src="/blog/images/csfne/lesson.png" alt="Example of network engineering lesson rendered with Marp"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>Thank you all for reading this far; it really means a lot. I hope you learned a little bit about Codespaces and that it inspires you to create something beautiful in the future. If you have any feedback or improvements, please reach out. All the best!</p>
+<ul>
+<li><a href="https://unsplash.com/photos/person-pouring-coffee-beans-on-a-machine-6HR8vpjYUHo">Featured Image by Yanapi Senaud</a></li>
+<li><a href="https://github.com/codespaces/new?hide_repo_select=true&amp;ref=main&amp;repo=892895632&amp;skip_quickstart=true">Codespace featured in this blog</a></li>
+<li><a href="https://github.com/JulioPDX/csfne">GitHub repository</a></li>
+<li><a href="https://github.com/aristanetworks/aclabs">Advanced examples of Codespaces on Arista acLabs</a></li>
+<li><a href="https://youtu.be/DhsLh1adVcc?si=JYVR-jll5CB8Nhna">Codespaces for Network Engineers video</a></li>
+<li><a href="https://pll.harvard.edu/course/cs50-introduction-computer-science">Codespaces leveraged in Harvards CS50 course</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.com/tags/ospf/">OSPF</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/github/">GitHub</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/arista/">Arista</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/marp/">Marp</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/containerlab/">Containerlab</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/vscode/">VSCode</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1965 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-11-25 14:08
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.com/2023/11/25/network-ci-and-open-source/">
+                    <span class="button__text">Network CI and Open Source</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2024</span>
+            <span><a href="https://juliopdx.com/"></a></span>
+            
+            <span><a href="https://juliopdx.com/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="juliopdx" data-description="Support me on Buy me a coffee!" data-message="Thank you for all the support. Caffeine helps keep the blogs coming!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
+
+
+
+    </body>
+</html>

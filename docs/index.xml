@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Sat, 25 Nov 2023 19:33:45 -0800</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Nov 2024 15:08:58 -0700</lastBuildDate><atom:link href="https://juliopdx.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Codespaces for Network Engineers and Educators</title>
+      <link>https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/</link>
+      <pubDate>Mon, 25 Nov 2024 15:08:58 -0700</pubDate>
+      
+      <guid>https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/</guid>
+      <description>Introduction Can you believe it&amp;rsquo;s been almost a year since my last blog? It&amp;rsquo;s incredible how fast time flies. Thank you all for continuing to read the blog and sharing it with engineers in the community. I can&amp;rsquo;t thank you enough for all the support and encouragement I&amp;rsquo;ve received on this journey.
+This blog is going to take a bit of a turn. I usually write in the form of a tool I have used or been presented with and think, &amp;ldquo;This is incredible; more people should know about it.</description>
+    </item>
+    
     <item>
       <title>Network CI and Open Source</title>
       <link>https://juliopdx.com/2023/11/25/network-ci-and-open-source/</link>
@@ -91,15 +101,6 @@ For the longest time, I wasn&amp;rsquo;t a fan of how code blocks looked in thes
       <guid>https://juliopdx.com/2022/01/28/learning-labs-with-containerlab/</guid>
       <description>Hello everyone and thank you for checking in. I’m back with another post. To be honest this one is not the norm as it will just redirect you to a project I’ve been working on with Containerlab. I’m still progressing through the Optimal Routing Design book by Cisco Press. I still haven’t finished the OSPF chapter but little by little.
 A while back I mentioned that Containerlab could be an amazing resource in learning environments for individuals getting into IT or instructors trying to show students some routing design or technology involved.</description>
-    </item>
-    
-    <item>
-      <title>EIGRP Network Design in the Lab</title>
-      <link>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</link>
-      <pubDate>Tue, 25 Jan 2022 15:50:47 -0800</pubDate>
-      
-      <guid>https://juliopdx.com/2022/01/25/eigrp-network-design-in-the-lab/</guid>
-      <description>Introduction I just finished the chapter on EIGRP network design in Optimal Routing Design (Cisco Press), I wanted to provide a high level overview of what I learned and incorporated that in the lab. This book really has been great as it provides advanced routing techniques but keeps it in a maintainable format. I hope you enjoy the post and learn something along the way. I would advise you to research on your own and compare the pros and cons.</description>
     </item>
     
   </channel>
