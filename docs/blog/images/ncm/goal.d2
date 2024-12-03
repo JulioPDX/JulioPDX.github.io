@@ -1,0 +1,11 @@
+direction: right
+publisher -> nats server: dc1.spine1.configure
+
+nats server -> runner 1: dc1.spine1.configure
+nats server -> runner 2: dc1.leaf1.configure
+runner 1 -> spine1: configure the device
+
+(publisher -> nats server)[0].style.stroke: green
+(nats server -> runner 1)[0].style.stroke: green
+(nats server -> runner 2)[0].style.stroke: red
+(runner 1 -> spine1)[0].style.stroke: green

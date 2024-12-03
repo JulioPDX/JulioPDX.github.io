@@ -1,0 +1,9 @@
+direction: right
+publisher -> nats server: say.hello
+
+nats server -> subscriber1: say.hello
+nats server -> subscriber2: say.goodbye
+
+(publisher -> nats server)[0].style.stroke: green
+(nats server -> subscriber1)[0].style.stroke: green
+(nats server -> subscriber2)[0].style.stroke: red

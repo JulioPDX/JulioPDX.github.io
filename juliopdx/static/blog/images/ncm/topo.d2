@@ -1,0 +1,20 @@
+direction: right
+localhost.builder: {
+    AVD -> Config files
+    Watch service <- Config files
+}
+localhost.clab: {
+    NATS Server
+    NATS Server -> Runner 1
+    NATS Server -> Runner 2
+    NATS Server -> Runner 3
+    Runner 1
+    Runner 2
+    Runner 3
+    spine1 -- leaf1
+    spine1 -- leaf2
+    Runner 1 -> spine1
+    Runner 2 -> leaf1
+    Runner 3 -> leaf2
+}
+localhost.builder.Watch service -> localhost.clab.NATS Server

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author"
+    content="">
+<meta name="description"
+    content="Introduction Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.
+I caught the first half of a talk by Mircea Ulinic from Digitial Ocean." />
+<meta name="keywords"
+    content=", NATS, Arista, Containerlab, AVD, NAPALM" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://juliopdx.com/2024/12/02/nats-and-configuration-minions/" />
+
+
+<title>
+    
+    NATS and Configuration Minions :: Welcome to the World of Tomorrow  — Welcome to my blog!
+    
+</title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.57323f540d7cbe7c215b2d5060bc45c58f58b905f86869d7183bb27c42937f00.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="NATS and Configuration Minions">
+<meta itemprop="description" content="Introduction Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.
+I caught the first half of a talk by Mircea Ulinic from Digitial Ocean."><meta itemprop="datePublished" content="2024-12-02T14:53:36-08:00" />
+<meta itemprop="dateModified" content="2024-12-02T14:53:36-08:00" />
+<meta itemprop="wordCount" content="1534"><meta itemprop="image" content="https://juliopdx.com/blog/images/ncm/jiayuan-lian.jpg">
+<meta itemprop="keywords" content="NATS,Arista,Containerlab,AVD,NAPALM," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://juliopdx.com/blog/images/ncm/jiayuan-lian.jpg"/>
+
+<meta name="twitter:title" content="NATS and Configuration Minions"/>
+<meta name="twitter:description" content="Introduction Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.
+I caught the first half of a talk by Mircea Ulinic from Digitial Ocean."/>
+
+
+
+<meta property="og:title" content="NATS and Configuration Minions" />
+<meta property="og:description" content="Introduction Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.
+I caught the first half of a talk by Mircea Ulinic from Digitial Ocean." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://juliopdx.com/2024/12/02/nats-and-configuration-minions/" /><meta property="og:image" content="https://juliopdx.com/blog/images/ncm/jiayuan-lian.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-12-02T14:53:36-08:00" />
+<meta property="article:modified_time" content="2024-12-02T14:53:36-08:00" /><meta property="og:site_name" content="Welcome to the World of Tomorrow" />
+
+
+
+
+
+
+
+<meta property="article:published_time" content="2024-12-02 14:53:36 -0800 PST" />
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: 'dark', align: 'center' });</script>
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">#</span>
+            <span class="logo__text">JulioPDX</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#41FF00;
+                   animation-duration:2s;">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        8 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://juliopdx.com/2024/12/02/nats-and-configuration-minions/">NATS and Configuration Minions</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#what-is-nats">What is NATS</a></li>
+    <li><a href="#the-workflow">The Workflow</a></li>
+    <li><a href="#the-topology">The Topology</a>
+      <ul>
+        <li><a href="#the-builder-and-the-watch-service">The Builder and the Watch Service</a></li>
+        <li><a href="#the-nats-server">The NATS Server</a></li>
+        <li><a href="#the-nats-runners-or-minions">The NATS Runners or Minions</a></li>
+      </ul>
+    </li>
+    <li><a href="#watch-it-live">Watch it Live</a></li>
+    <li><a href="#outro-and-links">Outro and Links</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.</p>
+<p>I caught the first half of a talk by Mircea Ulinic from Digitial Ocean. In that talk, Mircea went over how the company leverages automation at an incredible scale. They eventually covered a bit on <a href="https://github.com/saltstack/salt">Salt</a> and how they leverage proxy minions to effectively have a one-to-one mapping to a networking node. Imagine one proxy being deployed for each device; the proxy would handle the job when a task needs to be performed on said device.</p>
+<p>I wanted to try making something similar, but with the huge caveat I would only tackle one portion—configuration management. I know everyone talks about configuration management, but stick with me and let me have a little fun in my small world. This is a breakdown of how I got a minimal viable product (MVP) running.</p>
+<h2 id="what-is-nats">What is NATS</h2>
+<p>I&rsquo;m not going to bore anyone with a drawn-out definition, but at its core, <a href="https://nats.io/">NATS</a> is a messaging system that ensures your message will arrive at most once at a subscribed destination. NATS does this in the way of subjects. We might publish a message to <code>say.hello</code> and someone else will be subscribed to listen to messages on <code>say.hello</code>. The subscriber would then get the message and whatever content is included in the message. The NATS server handles the passing of messages. There you go, NATS in a nutshell or paragraph. Side note, the <a href="https://docs.nats.io/">NATS documentation</a> is excellent. Please go check it out.</p>
+<p><img src="/blog/images/ncm/nats.svg" alt="Example of a NATS workflow"></p>
+<h2 id="the-workflow">The Workflow</h2>
+<p>That sounds cool, but again, this blog is focused mainly on Network Engineering, so why do we care? For this example, we will leverage NATS as our messaging system to communicate with our minions or runners or whatever other name you&rsquo;d like to give them. We&rsquo;ll do this through subjects like you saw earlier, but our subjects will be named after nodes and the action we would like performed.</p>
+<p><img src="/blog/images/ncm/goal.svg" alt="Example of a NATS workflow with network devices"></p>
+<h2 id="the-topology">The Topology</h2>
+<p>The topology below looks a bit wild at first glance, but honestly, it&rsquo;s not as wild as some network diagrams I&rsquo;ve seen in the past 😅. I&rsquo;ll go over each portion piece by piece.</p>
+<p><img src="/blog/images/ncm/topo.svg" alt="The overall topology"></p>
+<h3 id="the-builder-and-the-watch-service">The Builder and the Watch Service</h3>
+<p>Everything in this lab is running on my 2019 Lenovo X1 Carbon laptop. You should be able to run this as well 😅. I think phones are more powerful at this point. The builder (my computer) is running <a href="https://avd.arista.com/stable/index.html">AVD</a>; this isn&rsquo;t required as we&rsquo;re only using AVD to generate our final device configurations. You can use whatever methodology or framework you prefer. AVD will generate device configurations in the <code>deployment/intended/configs</code> directory. Each file will be called something like <code>leaf1.cfg</code>.</p>
+<p><img src="/blog/images/ncm/builder.svg" alt="The builder topology"></p>
+<p>The watch service is fairly short-winded for this example. We leverage the <a href="https://github.com/samuelcolvin/watchfiles">watchfiles</a> Python package and point it to a directory to look for file changes. Once we see a change, we massage some data to get our device name and read the contents. When this is done, we leverage the <a href="https://github.com/nats-io/nats.py">NATS</a> Python package to publish a message to the specific subject.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> asyncio
+<span style="color:#f92672">import</span> os
+
+<span style="color:#f92672">import</span> aiofiles
+<span style="color:#f92672">import</span> nats
+<span style="color:#f92672">from</span> watchfiles <span style="color:#f92672">import</span> awatch
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">watch_directory</span>(nc, path):
+    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">for</span> changes <span style="color:#f92672">in</span> awatch(path):
+        <span style="color:#66d9ef">for</span> _, file_path <span style="color:#f92672">in</span> changes:
+            <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> aiofiles<span style="color:#f92672">.</span>open(file_path, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> f:
+                contents <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> f<span style="color:#f92672">.</span>read()
+                device_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>splitext(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(file_path))
+                <span style="color:#66d9ef">await</span> nc<span style="color:#f92672">.</span>publish(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;dc1.</span><span style="color:#e6db74">{</span>device_name[<span style="color:#ae81ff">0</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">.configure&#34;</span>, contents<span style="color:#f92672">.</span>encode())
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    nc <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> nats<span style="color:#f92672">.</span>connect(<span style="color:#e6db74">&#34;nats://localhost:4222&#34;</span>)
+    <span style="color:#66d9ef">await</span> watch_directory(nc, <span style="color:#e6db74">&#34;deployment/intended/configs&#34;</span>)
+    <span style="color:#66d9ef">await</span> asyncio<span style="color:#f92672">.</span>Event()<span style="color:#f92672">.</span>wait()
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    asyncio<span style="color:#f92672">.</span>run(main())
+
+</code></pre></div><p><img src="/blog/images/ncm/watch.svg" alt="The Watch service"></p>
+<h3 id="the-nats-server">The NATS Server</h3>
+<p>The NATS Server will handle all the communication between the publishers and subscribers. There&rsquo;s a lot we could do with the configuration, but again, I kept it as simple as possible for MVP. The code block below is all that is required to get a NATS server running with Containerlab. If you have <a href="https://docs.nats.io/running-a-nats-service/introduction/running">NATS Server</a> installed, all you need to get a server running is the following command: <code>nats-server</code> 😊.</p>
+<p><img src="/blog/images/ncm/nats-server.svg" alt="The NATS Server"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">nats</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats:latest</span>
+      <span style="color:#f92672">ports</span>:
+        - <span style="color:#ae81ff">4222</span>:<span style="color:#ae81ff">4222</span>
+</code></pre></div><h3 id="the-nats-runners-or-minions">The NATS Runners or Minions</h3>
+<p>The NATS runners are where we get more complex. The runners are more containers. Just like the Server is running as a container, so will the runners. The runners themselves contain a simple Python application that is subscribed to specific subjects. The block below is our Dockerfile definition for building the runners.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Docker" data-lang="Docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.12-alpine</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> requirements.txt .<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> pip install --no-cache-dir -r requirements.txt<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> config-replace.py .<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;python&#34;</span>, <span style="color:#e6db74">&#34;config-replace.py&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>Again, trying to keep things as contained as possible. We start with a reasonably small Python base image. We then copy the requirements for our application. Once copied, we immediately install the requirements.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">aiofiles
+napalm
+nats-py
+watchfiles
+
+</code></pre></div><p>We then copy over our <code>config-replace.py</code> file. This file holds the subscriber code and configuration replacement task for our runners. We also specify the command to run once the container is started.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> asyncio
+<span style="color:#f92672">import</span> os
+
+<span style="color:#f92672">import</span> nats
+<span style="color:#f92672">from</span> napalm <span style="color:#f92672">import</span> get_network_driver
+
+<span style="color:#75715e"># Load DEVICE environment variable to build device construct</span>
+DEVICE <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;DEVICE&#34;</span>]
+
+device <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#34;hostname&#34;</span>: DEVICE,
+    <span style="color:#e6db74">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+    <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+}
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_config_replace</span>(data):
+    driver <span style="color:#f92672">=</span> get_network_driver(<span style="color:#e6db74">&#34;eos&#34;</span>)
+    conn <span style="color:#f92672">=</span> driver(<span style="color:#f92672">**</span>device)
+    <span style="color:#66d9ef">try</span>:
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Connecting to </span><span style="color:#e6db74">{</span>device[<span style="color:#e6db74">&#39;hostname&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#34;</span>)
+        conn<span style="color:#f92672">.</span>open()  <span style="color:#75715e"># Open the connection to the device</span>
+        print(<span style="color:#e6db74">&#34;Connection established.&#34;</span>)
+
+        <span style="color:#75715e"># Load and preview the replacement configuration</span>
+        print(<span style="color:#e6db74">&#34;Loading configuration...&#34;</span>)
+        conn<span style="color:#f92672">.</span>load_replace_candidate(config<span style="color:#f92672">=</span>data)
+        print(<span style="color:#e6db74">&#34;Configuration changes preview:&#34;</span>)
+        print(conn<span style="color:#f92672">.</span>compare_config())
+
+        <span style="color:#75715e"># Commit the changes</span>
+        <span style="color:#66d9ef">if</span> conn<span style="color:#f92672">.</span>compare_config():
+            print(<span style="color:#e6db74">&#34;Applying configuration...&#34;</span>)
+            conn<span style="color:#f92672">.</span>commit_config()
+            print(<span style="color:#e6db74">&#34;Configuration replaced successfully.&#34;</span>)
+        <span style="color:#66d9ef">else</span>:
+            print(<span style="color:#e6db74">&#34;No changes detected. Skipping commit.&#34;</span>)
+
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;An error occurred: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#75715e"># Rollback in case of any failure</span>
+        print(<span style="color:#e6db74">&#34;Rolling back configuration...&#34;</span>)
+        conn<span style="color:#f92672">.</span>rollback()
+    <span style="color:#66d9ef">finally</span>:
+        <span style="color:#75715e"># Close the connection</span>
+        conn<span style="color:#f92672">.</span>close()
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Disconnected from </span><span style="color:#e6db74">{</span>device[<span style="color:#e6db74">&#39;hostname&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">.&#34;</span>)
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    nc <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> nats<span style="color:#f92672">.</span>connect(<span style="color:#e6db74">&#34;nats://nats:4222&#34;</span>)
+
+    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">message_handler</span>(msg):
+        subject <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>subject
+        data <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>decode()
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Received message on subject &#39;</span><span style="color:#e6db74">{</span>subject<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>data<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#66d9ef">await</span> send_config_replace(data)
+
+    <span style="color:#66d9ef">await</span> nc<span style="color:#f92672">.</span>subscribe(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;dc1.</span><span style="color:#e6db74">{</span>DEVICE<span style="color:#e6db74">}</span><span style="color:#e6db74">.configure&#34;</span>, cb<span style="color:#f92672">=</span>message_handler)
+    <span style="color:#75715e"># Wait indefinitely until the program is interrupted</span>
+    <span style="color:#66d9ef">await</span> asyncio<span style="color:#f92672">.</span>Event()<span style="color:#f92672">.</span>wait()
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    asyncio<span style="color:#f92672">.</span>run(main())
+
+</code></pre></div><p>That&rsquo;s neat, but a lot of it is just some <a href="https://github.com/napalm-automation/napalm">NAPALM</a> code to perform a configuration replacement on our devices. There are two interesting points to mention. When we start these containers, we will pass along an environment variable to tell the runner which device it&rsquo;s effectively assigned to. We use that to build the device dictionary.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">DEVICE <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;DEVICE&#34;</span>]
+
+device <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#34;hostname&#34;</span>: DEVICE,
+    <span style="color:#e6db74">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+    <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+}
+</code></pre></div><p>Then, in our main function, we initially connect to our NATS Server on <code>nats:4222</code>. We also build a message handler to instruct the application to do something once a message is received on a particular subject. In our case, we will call the <code>send_config_replace</code> function while also passing along the configuration data.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    nc <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> nats<span style="color:#f92672">.</span>connect(<span style="color:#e6db74">&#34;nats://nats:4222&#34;</span>)
+
+    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">message_handler</span>(msg):
+        subject <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>subject
+        data <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>decode()
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Received message on subject &#39;</span><span style="color:#e6db74">{</span>subject<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>data<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#66d9ef">await</span> send_config_replace(data)
+
+    <span style="color:#66d9ef">await</span> nc<span style="color:#f92672">.</span>subscribe(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;dc1.</span><span style="color:#e6db74">{</span>DEVICE<span style="color:#e6db74">}</span><span style="color:#e6db74">.configure&#34;</span>, cb<span style="color:#f92672">=</span>message_handler)
+    <span style="color:#75715e"># Wait indefinitely until the program is interrupted</span>
+    <span style="color:#66d9ef">await</span> asyncio<span style="color:#f92672">.</span>Event()<span style="color:#f92672">.</span>wait()
+</code></pre></div><p>Once we have all of these pieces defined, we can build the local container image by running the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker build -t nats-config:latest .
+</code></pre></div><p>The code block below is how we define the runners in our topology file and pass along their respective node assignments.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">nodes</span>:
+...
+    <span style="color:#f92672">runner1</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats-config:latest</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">DEVICE</span>: <span style="color:#ae81ff">spine1</span>
+    <span style="color:#f92672">runner2</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats-config:latest</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">DEVICE</span>: <span style="color:#ae81ff">leaf1</span>
+    <span style="color:#f92672">runner3</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats-config:latest</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">DEVICE</span>: <span style="color:#ae81ff">leaf2</span>
+</code></pre></div><p><img src="/blog/images/ncm/minions.svg" alt="The runners"></p>
+<h2 id="watch-it-live">Watch it Live</h2>
+<p>One thing I did not capture in the clips, you need to be running the watch application while testing this out. You can do so by running <code>python watch.py</code> on the builder. The clips below are woefully small, and I apologize in advance. The first clip shows a few things from left to right:</p>
+<ul>
+<li>AVD data models have been updated, and we are rebuilding the configuration file artifacts</li>
+<li>Localhost is running <code>nats sub &quot;dc1.*.configure&quot;</code> so we can view the messages (giant wall of configuration)</li>
+<li>Viewing <code>watch show ip name-server</code> from leaf1</li>
+<li>Viewing <code>watch show ip name-server</code> from leaf2</li>
+<li>Viewing <code>watch show ip name-server</code> from spine1</li>
+</ul>
+<p><img src="https://media.giphy.com/media/Z2rv4mcOHdZn59XopY/giphy.gif" alt="Application in action"></p>
+<p>In the second clip, we get a view from within one of the runners—in this case, the runner assigned to leaf1. Once we run a new build, we can see the print statements from the config-replace script.</p>
+<p><img src="https://media.giphy.com/media/1XMByX7XL5QKzPJ03n/giphy.gif" alt="Application in action"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>With the correct control mechanisms, I could see something like this leveraged in areas where a lot of change occurs frequently. Another area where I could see this is if you are starting to run into the scale limitations of running entire jobs from one server or control node. NATS deployments can include multiple servers in a dynamic mesh. I could see an army of minions assigned to the cluster, all listening for configuration jobs.</p>
+<p>Another area where this could be interesting is sending messages to minions to perform things like health checks or validations—something for down the road. Another point I want to emphasize is that the code you see here is nowhere near production level. The config replace portion could use a lot of love and someone who really knows how to write async stuff. Thank you all for reading this far. I hope you enjoyed it and got something out of it.</p>
+<ul>
+<li><a href="https://unsplash.com/photos/a-group-of-minion-figurines-sitting-on-top-of-a-counter-uoII4yXTCao">Featured Image by Jiayuan Lian</a></li>
+<li><a href="https://github.com/JulioPDX/nats-config-minions">Github Repository</a></li>
+<li><a href="https://docs.nats.io/">NATS</a></li>
+<li><a href="https://avd.arista.com/">AVD</a></li>
+<li><a href="https://containerlab.dev/">Containerlab</a></li>
+<li><a href="https://github.com/napalm-automation/napalm">NAPALM</a></li>
+<li><a href="https://github.com/samuelcolvin/watchfiles">watchfiles</a></li>
+<li><a href="https://github.com/Tinche/aiofiles">aiofiles</a></li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://juliopdx.com/tags/nats/">NATS</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/arista/">Arista</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/containerlab/">Containerlab</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/avd/">AVD</a></span>
+        <span class="tag"><a href="https://juliopdx.com/tags/napalm/">NAPALM</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1534 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-12-02 14:53
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/">
+                    <span class="button__text">Codespaces for Network Engineers and Educators</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2024</span>
+            <span><a href="https://juliopdx.com/"></a></span>
+            
+            <span><a href="https://juliopdx.com/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="juliopdx" data-description="Support me on Buy me a coffee!" data-message="Thank you for all the support. Caffeine helps keep the blogs coming!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.45347cbb0cde6339c7e2884209e89aa98d055beefeef8208af7478ccbc2924f3f7db788a9419f3598da668e58e658febcd7d84f60c6108ccad165d369af8a363.js" integrity="sha512-RTR8uwzeYznH4ohCCeiaqY0FW&#43;7&#43;74IIr3R4zLwpJPP323iKlBnzWY2maOWOZY/rzX2E9gxhCMytFl02mvijYw=="></script>
+
+
+
+    </body>
+</html>

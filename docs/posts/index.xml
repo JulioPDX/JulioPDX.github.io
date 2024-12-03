@@ -6,8 +6,228 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-        <lastBuildDate>Mon, 25 Nov 2024 15:08:58 -0700</lastBuildDate>
+        <lastBuildDate>Mon, 02 Dec 2024 14:53:36 -0800</lastBuildDate>
         <atom:link href="https://juliopdx.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>NATS and Configuration Minions</title>
+            <link>https://juliopdx.com/2024/12/02/nats-and-configuration-minions/</link>
+            <pubDate>Mon, 02 Dec 2024 14:53:36 -0800</pubDate>
+            
+            <guid>https://juliopdx.com/2024/12/02/nats-and-configuration-minions/</guid>
+            <description>Introduction Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.
+I caught the first half of a talk by Mircea Ulinic from Digitial Ocean.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Two blogs in one year. Who do I think I am? In all seriousness, thank you for all the feedback on the previous blog. As always, it really means a lot. This one might go a bit sideways, but building something like this has always been on my mind, and I got another spark to get it done while attending AutoCon2.</p>
+<p>I caught the first half of a talk by Mircea Ulinic from Digitial Ocean. In that talk, Mircea went over how the company leverages automation at an incredible scale. They eventually covered a bit on <a href="https://github.com/saltstack/salt">Salt</a> and how they leverage proxy minions to effectively have a one-to-one mapping to a networking node. Imagine one proxy being deployed for each device; the proxy would handle the job when a task needs to be performed on said device.</p>
+<p>I wanted to try making something similar, but with the huge caveat I would only tackle one portion—configuration management. I know everyone talks about configuration management, but stick with me and let me have a little fun in my small world. This is a breakdown of how I got a minimal viable product (MVP) running.</p>
+<h2 id="what-is-nats">What is NATS</h2>
+<p>I&rsquo;m not going to bore anyone with a drawn-out definition, but at its core, <a href="https://nats.io/">NATS</a> is a messaging system that ensures your message will arrive at most once at a subscribed destination. NATS does this in the way of subjects. We might publish a message to <code>say.hello</code> and someone else will be subscribed to listen to messages on <code>say.hello</code>. The subscriber would then get the message and whatever content is included in the message. The NATS server handles the passing of messages. There you go, NATS in a nutshell or paragraph. Side note, the <a href="https://docs.nats.io/">NATS documentation</a> is excellent. Please go check it out.</p>
+<p><img src="/blog/images/ncm/nats.svg" alt="Example of a NATS workflow"></p>
+<h2 id="the-workflow">The Workflow</h2>
+<p>That sounds cool, but again, this blog is focused mainly on Network Engineering, so why do we care? For this example, we will leverage NATS as our messaging system to communicate with our minions or runners or whatever other name you&rsquo;d like to give them. We&rsquo;ll do this through subjects like you saw earlier, but our subjects will be named after nodes and the action we would like performed.</p>
+<p><img src="/blog/images/ncm/goal.svg" alt="Example of a NATS workflow with network devices"></p>
+<h2 id="the-topology">The Topology</h2>
+<p>The topology below looks a bit wild at first glance, but honestly, it&rsquo;s not as wild as some network diagrams I&rsquo;ve seen in the past 😅. I&rsquo;ll go over each portion piece by piece.</p>
+<p><img src="/blog/images/ncm/topo.svg" alt="The overall topology"></p>
+<h3 id="the-builder-and-the-watch-service">The Builder and the Watch Service</h3>
+<p>Everything in this lab is running on my 2019 Lenovo X1 Carbon laptop. You should be able to run this as well 😅. I think phones are more powerful at this point. The builder (my computer) is running <a href="https://avd.arista.com/stable/index.html">AVD</a>; this isn&rsquo;t required as we&rsquo;re only using AVD to generate our final device configurations. You can use whatever methodology or framework you prefer. AVD will generate device configurations in the <code>deployment/intended/configs</code> directory. Each file will be called something like <code>leaf1.cfg</code>.</p>
+<p><img src="/blog/images/ncm/builder.svg" alt="The builder topology"></p>
+<p>The watch service is fairly short-winded for this example. We leverage the <a href="https://github.com/samuelcolvin/watchfiles">watchfiles</a> Python package and point it to a directory to look for file changes. Once we see a change, we massage some data to get our device name and read the contents. When this is done, we leverage the <a href="https://github.com/nats-io/nats.py">NATS</a> Python package to publish a message to the specific subject.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> asyncio
+<span style="color:#f92672">import</span> os
+
+<span style="color:#f92672">import</span> aiofiles
+<span style="color:#f92672">import</span> nats
+<span style="color:#f92672">from</span> watchfiles <span style="color:#f92672">import</span> awatch
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">watch_directory</span>(nc, path):
+    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">for</span> changes <span style="color:#f92672">in</span> awatch(path):
+        <span style="color:#66d9ef">for</span> _, file_path <span style="color:#f92672">in</span> changes:
+            <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> aiofiles<span style="color:#f92672">.</span>open(file_path, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> f:
+                contents <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> f<span style="color:#f92672">.</span>read()
+                device_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>splitext(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(file_path))
+                <span style="color:#66d9ef">await</span> nc<span style="color:#f92672">.</span>publish(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;dc1.</span><span style="color:#e6db74">{</span>device_name[<span style="color:#ae81ff">0</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">.configure&#34;</span>, contents<span style="color:#f92672">.</span>encode())
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    nc <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> nats<span style="color:#f92672">.</span>connect(<span style="color:#e6db74">&#34;nats://localhost:4222&#34;</span>)
+    <span style="color:#66d9ef">await</span> watch_directory(nc, <span style="color:#e6db74">&#34;deployment/intended/configs&#34;</span>)
+    <span style="color:#66d9ef">await</span> asyncio<span style="color:#f92672">.</span>Event()<span style="color:#f92672">.</span>wait()
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    asyncio<span style="color:#f92672">.</span>run(main())
+
+</code></pre></div><p><img src="/blog/images/ncm/watch.svg" alt="The Watch service"></p>
+<h3 id="the-nats-server">The NATS Server</h3>
+<p>The NATS Server will handle all the communication between the publishers and subscribers. There&rsquo;s a lot we could do with the configuration, but again, I kept it as simple as possible for MVP. The code block below is all that is required to get a NATS server running with Containerlab. If you have <a href="https://docs.nats.io/running-a-nats-service/introduction/running">NATS Server</a> installed, all you need to get a server running is the following command: <code>nats-server</code> 😊.</p>
+<p><img src="/blog/images/ncm/nats-server.svg" alt="The NATS Server"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">nodes</span>:
+    <span style="color:#f92672">nats</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats:latest</span>
+      <span style="color:#f92672">ports</span>:
+        - <span style="color:#ae81ff">4222</span>:<span style="color:#ae81ff">4222</span>
+</code></pre></div><h3 id="the-nats-runners-or-minions">The NATS Runners or Minions</h3>
+<p>The NATS runners are where we get more complex. The runners are more containers. Just like the Server is running as a container, so will the runners. The runners themselves contain a simple Python application that is subscribed to specific subjects. The block below is our Dockerfile definition for building the runners.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Docker" data-lang="Docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.12-alpine</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> requirements.txt .<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> pip install --no-cache-dir -r requirements.txt<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> config-replace.py .<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;python&#34;</span>, <span style="color:#e6db74">&#34;config-replace.py&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>Again, trying to keep things as contained as possible. We start with a reasonably small Python base image. We then copy the requirements for our application. Once copied, we immediately install the requirements.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">aiofiles
+napalm
+nats-py
+watchfiles
+
+</code></pre></div><p>We then copy over our <code>config-replace.py</code> file. This file holds the subscriber code and configuration replacement task for our runners. We also specify the command to run once the container is started.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> asyncio
+<span style="color:#f92672">import</span> os
+
+<span style="color:#f92672">import</span> nats
+<span style="color:#f92672">from</span> napalm <span style="color:#f92672">import</span> get_network_driver
+
+<span style="color:#75715e"># Load DEVICE environment variable to build device construct</span>
+DEVICE <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;DEVICE&#34;</span>]
+
+device <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#34;hostname&#34;</span>: DEVICE,
+    <span style="color:#e6db74">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+    <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+}
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_config_replace</span>(data):
+    driver <span style="color:#f92672">=</span> get_network_driver(<span style="color:#e6db74">&#34;eos&#34;</span>)
+    conn <span style="color:#f92672">=</span> driver(<span style="color:#f92672">**</span>device)
+    <span style="color:#66d9ef">try</span>:
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Connecting to </span><span style="color:#e6db74">{</span>device[<span style="color:#e6db74">&#39;hostname&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#34;</span>)
+        conn<span style="color:#f92672">.</span>open()  <span style="color:#75715e"># Open the connection to the device</span>
+        print(<span style="color:#e6db74">&#34;Connection established.&#34;</span>)
+
+        <span style="color:#75715e"># Load and preview the replacement configuration</span>
+        print(<span style="color:#e6db74">&#34;Loading configuration...&#34;</span>)
+        conn<span style="color:#f92672">.</span>load_replace_candidate(config<span style="color:#f92672">=</span>data)
+        print(<span style="color:#e6db74">&#34;Configuration changes preview:&#34;</span>)
+        print(conn<span style="color:#f92672">.</span>compare_config())
+
+        <span style="color:#75715e"># Commit the changes</span>
+        <span style="color:#66d9ef">if</span> conn<span style="color:#f92672">.</span>compare_config():
+            print(<span style="color:#e6db74">&#34;Applying configuration...&#34;</span>)
+            conn<span style="color:#f92672">.</span>commit_config()
+            print(<span style="color:#e6db74">&#34;Configuration replaced successfully.&#34;</span>)
+        <span style="color:#66d9ef">else</span>:
+            print(<span style="color:#e6db74">&#34;No changes detected. Skipping commit.&#34;</span>)
+
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;An error occurred: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#75715e"># Rollback in case of any failure</span>
+        print(<span style="color:#e6db74">&#34;Rolling back configuration...&#34;</span>)
+        conn<span style="color:#f92672">.</span>rollback()
+    <span style="color:#66d9ef">finally</span>:
+        <span style="color:#75715e"># Close the connection</span>
+        conn<span style="color:#f92672">.</span>close()
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Disconnected from </span><span style="color:#e6db74">{</span>device[<span style="color:#e6db74">&#39;hostname&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">.&#34;</span>)
+
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    nc <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> nats<span style="color:#f92672">.</span>connect(<span style="color:#e6db74">&#34;nats://nats:4222&#34;</span>)
+
+    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">message_handler</span>(msg):
+        subject <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>subject
+        data <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>decode()
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Received message on subject &#39;</span><span style="color:#e6db74">{</span>subject<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>data<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#66d9ef">await</span> send_config_replace(data)
+
+    <span style="color:#66d9ef">await</span> nc<span style="color:#f92672">.</span>subscribe(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;dc1.</span><span style="color:#e6db74">{</span>DEVICE<span style="color:#e6db74">}</span><span style="color:#e6db74">.configure&#34;</span>, cb<span style="color:#f92672">=</span>message_handler)
+    <span style="color:#75715e"># Wait indefinitely until the program is interrupted</span>
+    <span style="color:#66d9ef">await</span> asyncio<span style="color:#f92672">.</span>Event()<span style="color:#f92672">.</span>wait()
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    asyncio<span style="color:#f92672">.</span>run(main())
+
+</code></pre></div><p>That&rsquo;s neat, but a lot of it is just some <a href="https://github.com/napalm-automation/napalm">NAPALM</a> code to perform a configuration replacement on our devices. There are two interesting points to mention. When we start these containers, we will pass along an environment variable to tell the runner which device it&rsquo;s effectively assigned to. We use that to build the device dictionary.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">DEVICE <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;DEVICE&#34;</span>]
+
+device <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#34;hostname&#34;</span>: DEVICE,
+    <span style="color:#e6db74">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+    <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
+}
+</code></pre></div><p>Then, in our main function, we initially connect to our NATS Server on <code>nats:4222</code>. We also build a message handler to instruct the application to do something once a message is received on a particular subject. In our case, we will call the <code>send_config_replace</code> function while also passing along the configuration data.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    nc <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> nats<span style="color:#f92672">.</span>connect(<span style="color:#e6db74">&#34;nats://nats:4222&#34;</span>)
+
+    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">message_handler</span>(msg):
+        subject <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>subject
+        data <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>decode()
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Received message on subject &#39;</span><span style="color:#e6db74">{</span>subject<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>data<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#66d9ef">await</span> send_config_replace(data)
+
+    <span style="color:#66d9ef">await</span> nc<span style="color:#f92672">.</span>subscribe(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;dc1.</span><span style="color:#e6db74">{</span>DEVICE<span style="color:#e6db74">}</span><span style="color:#e6db74">.configure&#34;</span>, cb<span style="color:#f92672">=</span>message_handler)
+    <span style="color:#75715e"># Wait indefinitely until the program is interrupted</span>
+    <span style="color:#66d9ef">await</span> asyncio<span style="color:#f92672">.</span>Event()<span style="color:#f92672">.</span>wait()
+</code></pre></div><p>Once we have all of these pieces defined, we can build the local container image by running the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker build -t nats-config:latest .
+</code></pre></div><p>The code block below is how we define the runners in our topology file and pass along their respective node assignments.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">topology</span>:
+  <span style="color:#f92672">nodes</span>:
+...
+    <span style="color:#f92672">runner1</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats-config:latest</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">DEVICE</span>: <span style="color:#ae81ff">spine1</span>
+    <span style="color:#f92672">runner2</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats-config:latest</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">DEVICE</span>: <span style="color:#ae81ff">leaf1</span>
+    <span style="color:#f92672">runner3</span>:
+      <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">linux</span>
+      <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nats-config:latest</span>
+      <span style="color:#f92672">env</span>:
+        <span style="color:#f92672">DEVICE</span>: <span style="color:#ae81ff">leaf2</span>
+</code></pre></div><p><img src="/blog/images/ncm/minions.svg" alt="The runners"></p>
+<h2 id="watch-it-live">Watch it Live</h2>
+<p>One thing I did not capture in the clips, you need to be running the watch application while testing this out. You can do so by running <code>python watch.py</code> on the builder. The clips below are woefully small, and I apologize in advance. The first clip shows a few things from left to right:</p>
+<ul>
+<li>AVD data models have been updated, and we are rebuilding the configuration file artifacts</li>
+<li>Localhost is running <code>nats sub &quot;dc1.*.configure&quot;</code> so we can view the messages (giant wall of configuration)</li>
+<li>Viewing <code>watch show ip name-server</code> from leaf1</li>
+<li>Viewing <code>watch show ip name-server</code> from leaf2</li>
+<li>Viewing <code>watch show ip name-server</code> from spine1</li>
+</ul>
+<p><img src="https://media.giphy.com/media/Z2rv4mcOHdZn59XopY/giphy.gif" alt="Application in action"></p>
+<p>In the second clip, we get a view from within one of the runners—in this case, the runner assigned to leaf1. Once we run a new build, we can see the print statements from the config-replace script.</p>
+<p><img src="https://media.giphy.com/media/1XMByX7XL5QKzPJ03n/giphy.gif" alt="Application in action"></p>
+<h2 id="outro-and-links">Outro and Links</h2>
+<p>With the correct control mechanisms, I could see something like this leveraged in areas where a lot of change occurs frequently. Another area where I could see this is if you are starting to run into the scale limitations of running entire jobs from one server or control node. NATS deployments can include multiple servers in a dynamic mesh. I could see an army of minions assigned to the cluster, all listening for configuration jobs.</p>
+<p>Another area where this could be interesting is sending messages to minions to perform things like health checks or validations—something for down the road. Another point I want to emphasize is that the code you see here is nowhere near production level. The config replace portion could use a lot of love and someone who really knows how to write async stuff. Thank you all for reading this far. I hope you enjoyed it and got something out of it.</p>
+<ul>
+<li><a href="https://unsplash.com/photos/a-group-of-minion-figurines-sitting-on-top-of-a-counter-uoII4yXTCao">Featured Image by Jiayuan Lian</a></li>
+<li><a href="https://github.com/JulioPDX/nats-config-minions">Github Repository</a></li>
+<li><a href="https://docs.nats.io/">NATS</a></li>
+<li><a href="https://avd.arista.com/">AVD</a></li>
+<li><a href="https://containerlab.dev/">Containerlab</a></li>
+<li><a href="https://github.com/napalm-automation/napalm">NAPALM</a></li>
+<li><a href="https://github.com/samuelcolvin/watchfiles">watchfiles</a></li>
+<li><a href="https://github.com/Tinche/aiofiles">aiofiles</a></li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>Codespaces for Network Engineers and Educators</title>

@@ -1,0 +1,9 @@
+direction: right
+localhost.builder: {
+  files.spine1 cfg
+  files.leaf1 cfg
+  files.leaf2 cfg
+  watch service
+  files -- watch service: change seen?
+}
+localhost.builder.watch service -> localhost.nats server: notify subject

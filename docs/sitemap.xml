@@ -3,12 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://juliopdx.com/tags/arista/</loc>
-    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/</loc>
-    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
+    <loc>https://juliopdx.com/tags/avd/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/containerlab/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/napalm/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/nats/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/2024/12/02/nats-and-configuration-minions/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/posts/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/tags/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/</loc>
+    <lastmod>2024-12-02T14:53:36-08:00</lastmod>
+  </url><url>
+    <loc>https://juliopdx.com/2024/11/25/codespaces-for-network-engineers-and-educators/</loc>
     <lastmod>2024-11-25T15:08:58-07:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/github/</loc>
@@ -20,22 +41,10 @@
     <loc>https://juliopdx.com/tags/ospf/</loc>
     <lastmod>2024-11-25T15:08:58-07:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/posts/</loc>
-    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/</loc>
-    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/vscode/</loc>
     <lastmod>2024-11-25T15:08:58-07:00</lastmod>
   </url><url>
-    <loc>https://juliopdx.com/</loc>
-    <lastmod>2024-11-25T15:08:58-07:00</lastmod>
-  </url><url>
     <loc>https://juliopdx.com/tags/ansible/</loc>
-    <lastmod>2023-11-25T19:33:45-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/avd/</loc>
     <lastmod>2023-11-25T19:33:45-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/docker/</loc>
@@ -162,9 +171,6 @@
     <lastmod>2021-10-31T11:26:48-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/2021/10/31/building-a-network-ci/cd-pipeline-part-4/</loc>
-    <lastmod>2021-10-31T11:26:48-08:00</lastmod>
-  </url><url>
-    <loc>https://juliopdx.com/tags/napalm/</loc>
     <lastmod>2021-10-31T11:26:48-08:00</lastmod>
   </url><url>
     <loc>https://juliopdx.com/tags/nornir/</loc>
